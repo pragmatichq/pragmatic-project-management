@@ -14,7 +14,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Home() {
   const { organization, memberships } = useOrganization({
@@ -23,23 +22,16 @@ export default function Home() {
     },
   });
   const { orgId, userId } = useAuth();
-  const memberList = memberships!.data?.find(
-    (item) => item.publicUserData.userId === userId
-  );
-
-  console.log(memberList);
+  let memberList;
+  if (memberships != null) {
+    memberList = memberships.data?.find(
+      (item) => item.publicUserData.userId === userId
+    );
+  }
 
   return (
     <main>
-      {memberships != null &&
-        memberships.data?.map((membership) => (
-          <li key={membership.id}>
-            {membership.publicUserData.firstName}{" "}
-            {membership.publicUserData.lastName}
-            {membership.publicUserData.imageUrl}
-          </li>
-        ))}
-
+      {memberList?.publicUserData.firstName}
       <div className="hidden flex-col md:flex">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">

@@ -1,44 +1,123 @@
-import { mutation } from "./_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+  QueryCtx,
+} from "./_generated/server";
+
+import { v } from "convex/values";
+import { Doc, Id } from "./_generated/dataModel";
+import { UserJSON } from "@clerk/backend";
 
 /**
- * Insert or update the user in a Convex table then return the document's ID.
+ * Whether the current user is fully logged in, including having their information
+ * synced from Clerk via webhook.
  *
- * The `UserIdentity.tokenIdentifier` string is a stable and unique value we use
- * to look up identities.
- *
- * Keep in mind that `UserIdentity` has a number of optional fields, the
- * presence of which depends on the identity provider chosen. It's up to the
- * application developer to determine which ones are available and to decide
- * which of those need to be persisted. For Clerk the fields are determined
- * by the JWT token's Claims config.
+ * Like all Convex queries, errors on expired Clerk token.
  */
-export const store = mutation({
-  args: {},
-  handler: async (ctx) => {
+export const userLoginStatus = query(
+  async (
+    ctx
+  ): Promise<
+    | ["No JWT Token", null]
+    | ["No Clerk User", null]
+    | ["Logged In", Doc<"users">]
+  > => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Called storeUser without authentication present");
+      // no JWT token, user hasn't completed login flow yet
+      return ["No JWT Token", null];
     }
+    const user = await getCurrentUser(ctx);
+    if (user === null) {
+      // If Clerk has not told us about this user we're still waiting for the
+      // webhook notification.
+      return ["No Clerk User", null];
+    }
+    return ["Logged In", user];
+  }
+);
 
-    // Check if we've already stored this identity before.
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
-      .unique();
-    if (user !== null) {
-      // If we've seen this identity before but the name has changed, patch the value.
-      if (user.name !== identity.name) {
-        await ctx.db.patch(user._id, { name: identity.name });
-      }
-      return user._id;
-    }
-    // If it's a new identity, create a new `User`.
-    console.log(identity);
-    return await ctx.db.insert("users", {
-      email: identity.email!,
-      tokenIdentifier: identity.tokenIdentifier,
-    });
+/** The current user, containing user preferences and Clerk user info. */
+export const currentUser = query((ctx: QueryCtx) => getCurrentUser(ctx));
+
+/** Get user by Clerk use id (AKA "subject" on auth)  */
+export const getUser = internalQuery({
+  args: { subject: v.string() },
+  async handler(ctx, args) {
+    return await userQuery(ctx, args.subject);
   },
 });
+
+/** Create a new Clerk user or update existing Clerk user data. */
+export const updateOrCreateUser = internalMutation({
+  args: { clerkUser: v.any() }, // no runtime validation, trust Clerk
+  async handler(ctx, { clerkUser }: { clerkUser: UserJSON }) {
+    const userRecord = await userQuery(ctx, clerkUser.id);
+
+    if (userRecord === null) {
+      const colors = ["red", "green", "blue"];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      await ctx.db.insert("users", { clerkUser, color });
+    } else {
+      await ctx.db.patch(userRecord._id, { clerkUser });
+    }
+  },
+});
+
+/** Delete a user by clerk user ID. */
+export const deleteUser = internalMutation({
+  args: { id: v.string() },
+  async handler(ctx, { id }) {
+    const userRecord = await userQuery(ctx, id);
+
+    if (userRecord === null) {
+      console.warn("can't delete user, does not exist", id);
+    } else {
+      await ctx.db.delete(userRecord._id);
+    }
+  },
+});
+
+/** Set the user preference of the color of their text. */
+export const setColor = mutation({
+  args: { color: v.string() },
+  handler: async (ctx, { color }) => {
+    const user = await mustGetCurrentUser(ctx);
+    await ctx.db.patch(user._id, { color });
+  },
+});
+
+// Helpers
+
+export async function userQuery(
+  ctx: QueryCtx,
+  clerkUserId: string
+): Promise<(Omit<Doc<"users">, "clerkUser"> & { clerkUser: UserJSON }) | null> {
+  return await ctx.db
+    .query("users")
+    .withIndex("by_clerk_id", (q) => q.eq("clerkUser.id", clerkUserId))
+    .unique();
+}
+
+export async function userById(
+  ctx: QueryCtx,
+  id: Id<"users">
+): Promise<(Omit<Doc<"users">, "clerkUser"> & { clerkUser: UserJSON }) | null> {
+  return await ctx.db.get(id);
+}
+
+async function getCurrentUser(ctx: QueryCtx): Promise<Doc<"users"> | null> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (identity === null) {
+    return null;
+  }
+  return await userQuery(ctx, identity.subject);
+}
+
+export async function mustGetCurrentUser(ctx: QueryCtx): Promise<Doc<"users">> {
+  const userRecord = await getCurrentUser(ctx);
+  if (!userRecord) throw new Error("Can't get current user");
+  return userRecord;
+}

@@ -3,7 +3,8 @@ import { v } from "convex/values";
 
 export default defineSchema({
   users: defineTable({
-    email: v.string(),
-    tokenIdentifier: v.string(),
-  }).index("by_token", ["tokenIdentifier"]),
+    // this is UserJSON from @clerk/backend
+    clerkUser: v.any(),
+    color: v.string(),
+  }).index("by_clerk_id", ["clerkUser.id"]),
 });
