@@ -1,7 +1,6 @@
 import {
   internalMutation,
   internalQuery,
-  mutation,
   query,
   QueryCtx,
 } from "./_generated/server";
@@ -57,9 +56,7 @@ export const updateOrCreateUser = internalMutation({
     const userRecord = await userQuery(ctx, clerkUser.id);
 
     if (userRecord === null) {
-      const colors = ["red", "green", "blue"];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      await ctx.db.insert("users", { clerkUser, color });
+      await ctx.db.insert("users", { clerkUser });
     } else {
       await ctx.db.patch(userRecord._id, { clerkUser });
     }
@@ -77,15 +74,6 @@ export const deleteUser = internalMutation({
     } else {
       await ctx.db.delete(userRecord._id);
     }
-  },
-});
-
-/** Set the user preference of the color of their text. */
-export const setColor = mutation({
-  args: { color: v.string() },
-  handler: async (ctx, { color }) => {
-    const user = await mustGetCurrentUser(ctx);
-    await ctx.db.patch(user._id, { color });
   },
 });
 
