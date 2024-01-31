@@ -21,6 +21,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
       status: 400,
     });
   }
+
   switch (event.type) {
     case "user.created": // intentional fallthrough
     case "user.updated": {
@@ -42,6 +43,35 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
       await ctx.runMutation(internal.users.deleteUser, { id });
       break;
     }
+
+    case "organization.created": // intentional fallthrough
+    case "organization.updated": {
+      const existingOrganization = await ctx.runQuery(
+        internal.organizations.getOrganization,
+        {
+          subject: event.data.id,
+        }
+      );
+      if (existingOrganization && event.type === "organization.created") {
+        console.warn(
+          "Overwriting organization",
+          event.data.id,
+          "with",
+          event.data
+        );
+      }
+      console.log("creating/updating organization", event.data.id);
+      await ctx.runMutation(internal.organizations.updateOrCreateOrganization, {
+        clerkOrganization: event.data,
+      });
+      break;
+    }
+    case "organization.deleted": {
+      // Clerk docs say this is required, but the types say optional?
+      const id = event.data.id!;
+      await ctx.runMutation(internal.organizations.deleteOrganization, { id });
+      break;
+    }
     default: {
       console.log("ignored Clerk webhook event", event.type);
     }
@@ -53,7 +83,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
 
 const http = httpRouter();
 http.route({
-  path: "/clerk-users-webhook",
+  path: "/clerk-webhook",
   method: "POST",
   handler: handleClerkWebhook,
 });
