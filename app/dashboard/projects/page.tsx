@@ -6,9 +6,9 @@ import { useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 
-import { NewProjectForm } from "./components/new-project-form";
+import { NewProjectForm } from "./_components/new-project-form";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { ProjectList } from "./components/project-list";
+import { ProjectList } from "./_components/project-list";
 
 export default function Component() {
   const { orgId } = useAuth();
