@@ -12,8 +12,6 @@ export default defineSchema({
   }).index("by_clerk_id", ["clerkOrganization.id"]),
   projects: defineTable({
     title: v.string(),
-    is_completed: v.boolean(),
-    category: v.string(),
     organization: v.string(),
-  }),
+  }).index("by_title", ["title"]),
 });

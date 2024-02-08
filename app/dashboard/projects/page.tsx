@@ -6,9 +6,9 @@ import { useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 
-import { NewProjectForm } from "./components/newProjectForm";
-import { DataTableDemo } from "./components/table";
+import { NewProjectForm } from "./components/new-project-form";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ProjectList } from "./components/project-list";
 
 export default function Component() {
   const { orgId } = useAuth();
@@ -21,7 +21,7 @@ export default function Component() {
     <main>
       <section className="p-10">
         {projects != null ? (
-          <DataTableDemo data={projects!} />
+          <ProjectList projects={projects} />
         ) : (
           <LoadingSpinner />
         )}

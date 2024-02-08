@@ -1,5 +1,6 @@
 "use client";
 import { notFound } from "next/navigation";
+import React from "react";
 
 import { api } from "@/convex/_generated/api";
 
@@ -24,6 +25,8 @@ import { Input } from "@/components/ui/input";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   let loading = true;
+  const [isOpen, setIsOpen] = React.useState(false);
+
   const { orgId } = useAuth();
 
   const activeOrgId: string = orgId ?? "";
@@ -45,29 +48,43 @@ export default function Template({ children }: { children: React.ReactNode }) {
             <nav className="flex-grow md:block px-4 pb-4 md:pb-0 md:overflow-y-auto">
               <Link
                 className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full"
-                href="#"
+                href="/dashboard/"
               >
                 <HomeIcon className="w-5 h-5 mr-3" />
                 Dashboard
               </Link>
-              <Collapsible>
-                <Link href="/projects/">
-                  <CollapsibleTrigger className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full">
+              <Collapsible
+                open={isOpen}
+                onOpenChange={setIsOpen}
+                className="group"
+              >
+                <div className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full">
+                  <Link
+                    href="/dashboard/projects/"
+                    onClick={() => setIsOpen(true)}
+                    className="group flex items-center"
+                  >
                     <FolderIcon className="w-5 h-5 mr-3" />
                     Projects
-                    <ChevronDownIcon className="ml-auto h-5 w-5" />
+                  </Link>
+                  <CollapsibleTrigger className="ml-auto h-5 w-5">
+                    <ChevronDownIcon className="rounded hover:bg-gray-100 hover:text-gray-600 group-data-[state=closed]:-rotate-90 group-data-[state=open]:rotate-0" />
                   </CollapsibleTrigger>
-                </Link>
+                </div>
                 <CollapsibleContent>
-                  {projects?.map((project) => (
-                    <Link
-                      className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full"
-                      href={"/projects/" + project._id}
-                      key={project._id}
-                    >
-                      <span className="ml-6">{project.title}</span>
-                    </Link>
-                  ))}
+                  {projects?.length == 0 ? (
+                    <div className="px-2 py-2 text-sm">No Projects</div>
+                  ) : (
+                    projects?.map((project) => (
+                      <Link
+                        className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full"
+                        href={"/dashboard/projects/" + project._id}
+                        key={project._id}
+                      >
+                        <span className="ml-6">{project.title}</span>
+                      </Link>
+                    ))
+                  )}
                 </CollapsibleContent>
               </Collapsible>
               <Link

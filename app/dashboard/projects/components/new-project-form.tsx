@@ -1,0 +1,94 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+import React from "react";
+
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetClose,
+} from "@/components/ui/sheet";
+
+import { Plus } from "lucide-react";
+
+const formSchema = z.object({
+  title: z.string().min(2, {
+    message: "Project title must be at least 2 characters.",
+  }),
+});
+
+export function NewProjectForm({ activeOrgId }: { activeOrgId: string }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+    },
+  });
+
+  const createProject = useMutation(api.projects.createProject);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await createProject({
+      title: values.title,
+      organization: activeOrgId,
+    });
+    form.reset();
+    setIsOpen(false);
+  }
+
+  return (
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <Button className="float-right">
+          <Plus className="mr-2 h-4 w-4" />
+          New Project
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="bottom" className="px-42">
+        <SheetHeader className="mb-5">
+          <SheetTitle>New Project</SheetTitle>
+          <SheetDescription>Add a new project</SheetDescription>
+        </SheetHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Project Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Project title..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
+  );
+}

@@ -6,8 +6,8 @@ export const getProjectList = query({
   handler: async (ctx, args) => {
     const projects = await ctx.db
       .query("projects")
+      .withIndex("by_title")
       .filter((q) => q.eq(q.field("organization"), args.organization))
-      .order("desc")
       .take(100);
     return projects;
   },
@@ -28,16 +28,12 @@ export const getProject = query({
 export const createProject = mutation({
   args: {
     title: v.string(),
-    is_completed: v.boolean(),
     organization: v.string(),
-    category: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("projects", {
       title: args.title,
-      is_completed: args.is_completed,
       organization: args.organization,
-      category: args.category,
     });
   },
 });
