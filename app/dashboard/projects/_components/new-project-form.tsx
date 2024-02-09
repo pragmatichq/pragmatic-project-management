@@ -25,7 +25,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetClose,
 } from "@/components/ui/sheet";
 
 import { Plus } from "lucide-react";

@@ -62,7 +62,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
                   <Link
                     href="/dashboard/projects/"
                     onClick={() => setIsOpen(true)}
-                    className="group flex items-center"
+                    className="group flex items-center w-full"
                   >
                     <FolderIcon className="w-5 h-5 mr-3" />
                     Projects

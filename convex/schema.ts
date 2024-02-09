@@ -13,5 +13,6 @@ export default defineSchema({
   projects: defineTable({
     title: v.string(),
     organization: v.string(),
+    status: v.string(),
   }).index("by_title", ["title"]),
 });

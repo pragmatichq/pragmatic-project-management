@@ -8,20 +8,23 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 
-import { Badge } from "@/components/ui/badge";
-
 import Link from "next/link";
 
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import React from "react";
+
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { StatusSelector } from "./status-selector";
+import { TableNames } from "@/convex/_generated/dataModel";
+import { GenericId } from "convex/values";
 
 export function ProjectList({ projects }: { projects: any }) {
   const deleteProject = useMutation(api.projects.deleteProject);
 
-  async function deleteCurrentProject(project_id: string) {
+  async function deleteCurrentProject(project_id: GenericId<"projects">) {
     await deleteProject({
       id: project_id,
     });
@@ -32,7 +35,7 @@ export function ProjectList({ projects }: { projects: any }) {
       <TableHeader>
         <TableRow>
           <TableHead>Project</TableHead>
-          <TableHead className="w-32">Status</TableHead>
+          <TableHead className="w-44">Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -40,7 +43,7 @@ export function ProjectList({ projects }: { projects: any }) {
           <div className="p-4">No Projects</div>
         ) : (
           projects?.map((project: any) => (
-            <TableRow>
+            <TableRow key={project._id}>
               <TableCell className="font-medium">
                 <Link
                   href={"/dashboard/projects/" + project._id}
@@ -50,7 +53,10 @@ export function ProjectList({ projects }: { projects: any }) {
                 </Link>
               </TableCell>
               <TableCell>
-                <Badge>In Progress</Badge>
+                <StatusSelector
+                  currentStatus={project.status}
+                  projectID={project._id}
+                />
               </TableCell>
               <TableCell className="w-16">
                 <Button
@@ -63,10 +69,12 @@ export function ProjectList({ projects }: { projects: any }) {
             </TableRow>
           ))
         )}
-        <TableFooter>
-          <TableCell>0 of {projects.length}</TableCell>
-        </TableFooter>
       </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell>0 of {projects.length}</TableCell>
+        </TableRow>
+      </TableFooter>
     </Table>
   );
 }

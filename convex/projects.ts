@@ -34,26 +34,22 @@ export const createProject = mutation({
     await ctx.db.insert("projects", {
       title: args.title,
       organization: args.organization,
+      status: "In Progress",
     });
   },
 });
 
 export const deleteProject = mutation({
-  args: { id: v.string() },
-  async handler(ctx, { id }) {
-    const projectRecord = await projectQuery(ctx, id);
-
-    if (projectRecord === null) {
-      console.warn("can't delete project, does not exist", id);
-    } else {
-      await ctx.db.delete(projectRecord._id);
-    }
+  args: { id: v.id("projects") },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.id);
   },
 });
 
-export async function projectQuery(ctx: QueryCtx, projectId: string) {
-  return await ctx.db
-    .query("projects")
-    .filter((q) => q.eq(q.field("_id"), projectId))
-    .unique();
-}
+export const updateProjectStatus = mutation({
+  args: { id: v.id("projects"), status: v.string() },
+  handler: async (ctx, args) => {
+    const { id, status } = args;
+    await ctx.db.patch(id, { status: status });
+  },
+});
