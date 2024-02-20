@@ -16,12 +16,31 @@ export default function Component() {
   const projects = useQuery(api.projects.getProjectList, {
     organization: activeOrgId,
   });
+  const inProgressProjects = projects?.filter(
+    (project) => project.status == "In Progress"
+  );
+  const nextUpProjects = projects?.filter(
+    (project) => project.status == "Next Up"
+  );
+  const considerationProjects = projects?.filter(
+    (project) => project.status == "Consideration"
+  );
 
   return (
     <main>
       <section className="p-10">
         {projects != null ? (
-          <ProjectList projects={projects} />
+          <section>
+            <ProjectList
+              projects={inProgressProjects}
+              headerName="In Progress"
+            />
+            <ProjectList projects={nextUpProjects} headerName="Next Up" />
+            <ProjectList
+              projects={considerationProjects}
+              headerName="Consideration"
+            />
+          </section>
         ) : (
           <LoadingSpinner />
         )}

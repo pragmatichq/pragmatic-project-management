@@ -15,4 +15,10 @@ export default defineSchema({
     organization: v.string(),
     status: v.string(),
   }).index("by_title", ["title"]),
+  tasks: defineTable({
+    title: v.string(),
+    project: v.string(),
+    organization: v.string(),
+    status: v.string(),
+  }).index("by_project", ["project"]),
 });

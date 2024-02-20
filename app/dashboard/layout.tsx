@@ -41,7 +41,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b px-6">
             <Link className="flex items-center gap-2 font-semibold" href="#">
-              <span className="">upMarketer</span>
+              <span className="">Pragmatic</span>
             </Link>
           </div>
           <div className="flex-1 overflow-auto py-2">
@@ -58,22 +58,24 @@ export default function Template({ children }: { children: React.ReactNode }) {
                 onOpenChange={setIsOpen}
                 className="group"
               >
-                <div className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full">
+                <div className="flex">
                   <Link
                     href="/dashboard/projects/"
                     onClick={() => setIsOpen(true)}
-                    className="group flex items-center w-full"
+                    className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full"
                   >
                     <FolderIcon className="w-5 h-5 mr-3" />
                     Projects
                   </Link>
-                  <CollapsibleTrigger className="ml-auto h-5 w-5">
-                    <ChevronDownIcon className="rounded hover:bg-gray-100 hover:text-gray-600 group-data-[state=closed]:-rotate-90 group-data-[state=open]:rotate-0" />
+                  <CollapsibleTrigger className="ml-auto">
+                    <ChevronDownIcon className="h-5 w-5 rounded text-gray-600 hover:text-gray-900 hover:bg-gray-200 group-data-[state=closed]:-rotate-90 group-data-[state=open]:rotate-0" />
                   </CollapsibleTrigger>
                 </div>
                 <CollapsibleContent>
                   {projects?.length == 0 ? (
-                    <div className="px-2 py-2 text-sm">No Projects</div>
+                    <div className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 ml-6">
+                      No Projects
+                    </div>
                   ) : (
                     projects?.map((project) => (
                       <Link

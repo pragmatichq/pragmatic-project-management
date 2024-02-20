@@ -38,9 +38,11 @@ export function StatusSelector({
     setStatus(status);
   }
 
-  useEffect(() => {
+  const [prevStatus, setPrevStatus] = React.useState(status);
+  if (status !== prevStatus) {
+    setPrevStatus(status);
     handleStatusChange(status);
-  }, [status]);
+  }
 
   return (
     <DropdownMenu>
