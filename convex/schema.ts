@@ -20,5 +20,6 @@ export default defineSchema({
     project: v.string(),
     organization: v.string(),
     status: v.string(),
+    assignees: v.optional(v.array(v.string())),
   }).index("by_project", ["project"]),
 });

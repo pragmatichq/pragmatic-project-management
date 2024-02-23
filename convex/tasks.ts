@@ -13,3 +13,11 @@ export const getTasksByProject = query({
     return tasks;
   },
 });
+
+export const updateTaskAssignees = mutation({
+  args: { id: v.id("tasks"), assignees: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    const { id, assignees } = args;
+    await ctx.db.patch(id, { assignees: assignees });
+  },
+});

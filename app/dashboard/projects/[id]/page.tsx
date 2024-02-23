@@ -13,6 +13,7 @@ import { StatusSelector } from "../_components/status-selector";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TaskList } from "./_components/task-list";
 
 export default function Page({ params }: { params: { id: string } }) {
   let loading = true;
@@ -68,7 +69,9 @@ export default function Page({ params }: { params: { id: string } }) {
                 <CardHeader>
                   <CardTitle>Tasks</CardTitle>
                 </CardHeader>
-                <CardContent>{tasks?.map((task) => task.title)}</CardContent>
+                <CardContent>
+                  <TaskList tasks={tasks} />
+                </CardContent>
               </Card>
             </TabsContent>
             <TabsContent value="discussions">

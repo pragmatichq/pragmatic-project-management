@@ -29,6 +29,7 @@ export function StatusSelector({
   const [status, setStatus] = React.useState(currentStatus);
 
   const updateStatus = useMutation(api.projects.updateProjectStatus);
+  const [prevStatus, setPrevStatus] = React.useState(status);
 
   async function handleStatusChange(status: string) {
     await updateStatus({
@@ -38,7 +39,6 @@ export function StatusSelector({
     setStatus(status);
   }
 
-  const [prevStatus, setPrevStatus] = React.useState(status);
   if (status !== prevStatus) {
     setPrevStatus(status);
     handleStatusChange(status);
