@@ -30,9 +30,15 @@ export const updateOrCreateOrganization = internalMutation({
     );
 
     if (organizationRecord === null) {
-      await ctx.db.insert("organizations", { clerkOrganization });
+      await ctx.db.insert("organizations", {
+        clerkOrganization,
+        clerkId: clerkOrganization.id,
+      });
     } else {
-      await ctx.db.patch(organizationRecord._id, { clerkOrganization });
+      await ctx.db.patch(organizationRecord._id, {
+        clerkOrganization,
+        clerkId: clerkOrganization.id,
+      });
     }
   },
 });
@@ -64,9 +70,7 @@ export async function organizationQuery(
 > {
   return await ctx.db
     .query("organizations")
-    .withIndex("by_clerk_id", (q) =>
-      q.eq("clerkOrganization.id", clerkOrganizationId)
-    )
+    .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkOrganizationId))
     .unique();
 }
 

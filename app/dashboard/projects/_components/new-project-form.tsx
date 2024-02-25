@@ -59,10 +59,12 @@ export function NewProjectForm({ activeOrgId }: { activeOrgId: string }) {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button className="float-right">
-          <Plus className="mr-2 h-4 w-4" />
-          New Project
-        </Button>
+        <div className="flex justify-end">
+          <Button className="mt-4">
+            <Plus className="mr-2 h-4 w-4" />
+            New Project
+          </Button>
+        </div>
       </SheetTrigger>
       <SheetContent side="bottom" className="px-42">
         <SheetHeader className="mb-5">

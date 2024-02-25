@@ -1,16 +1,40 @@
 import { query, mutation, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
+import { getAll } from "convex-helpers/server/relationships";
+
+import { asyncMap } from "convex-helpers";
+import { Id } from "./_generated/dataModel";
+
 export const getTasksByProject = query({
   args: { organization: v.string(), project: v.string() },
   handler: async (ctx, args) => {
     const tasks = await ctx.db
       .query("tasks")
-      .withIndex("by_project")
-      .filter((q) => q.eq(q.field("organization"), args.organization))
-      .filter((q) => q.eq(q.field("project"), args.project))
+      .withIndex("by_organization_project", (q) =>
+        q.eq("organization", args.organization).eq("project", args.project)
+      )
       .take(100);
     return tasks;
+  },
+});
+
+export const getTasksByOrganization = query({
+  args: { organization: v.string() },
+  handler: async (ctx, args) => {
+    const tasks = await ctx.db
+      .query("tasks")
+      .withIndex("by_organization", (q) =>
+        q.eq("organization", args.organization)
+      )
+      .take(100);
+    const projectIds: Iterable<any> = tasks.map((task) => task.project);
+    const projects = await getAll(ctx.db, projectIds);
+    const tasksWithProjects = tasks.map((task) => ({
+      ...task,
+      projectDetails: projects.find((project) => project?._id == task.project),
+    }));
+    return tasksWithProjects;
   },
 });
 
@@ -19,5 +43,13 @@ export const updateTaskAssignees = mutation({
   handler: async (ctx, args) => {
     const { id, assignees } = args;
     await ctx.db.patch(id, { assignees: assignees });
+  },
+});
+
+export const updateDueDate = mutation({
+  args: { id: v.id("tasks"), dueDate: v.string() },
+  handler: async (ctx, args) => {
+    const { id, dueDate } = args;
+    await ctx.db.patch(id, { dueDate: dueDate });
   },
 });

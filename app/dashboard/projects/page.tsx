@@ -4,6 +4,8 @@ import { useAuth } from "@clerk/nextjs";
 
 import { useQuery } from "convex/react";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { api } from "@/convex/_generated/api";
 
 import { NewProjectForm } from "./_components/new-project-form";
@@ -28,23 +30,30 @@ export default function Component() {
 
   return (
     <main>
-      <section className="p-10">
-        {projects != null ? (
-          <section>
-            <ProjectList
-              projects={inProgressProjects}
-              headerName="In Progress"
-            />
-            <ProjectList projects={nextUpProjects} headerName="Next Up" />
-            <ProjectList
-              projects={considerationProjects}
-              headerName="Consideration"
-            />
-          </section>
-        ) : (
-          <LoadingSpinner />
-        )}
-        <NewProjectForm activeOrgId={activeOrgId} />
+      <section className="p-5">
+        <Card>
+          <CardHeader>
+            <CardTitle>Projects</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {projects != null ? (
+              <section>
+                <ProjectList
+                  projects={inProgressProjects}
+                  headerName="In Progress"
+                />
+                <ProjectList projects={nextUpProjects} headerName="Next Up" />
+                <ProjectList
+                  projects={considerationProjects}
+                  headerName="Consideration"
+                />
+              </section>
+            ) : (
+              <LoadingSpinner />
+            )}
+            <NewProjectForm activeOrgId={activeOrgId} />
+          </CardContent>
+        </Card>
       </section>
     </main>
   );

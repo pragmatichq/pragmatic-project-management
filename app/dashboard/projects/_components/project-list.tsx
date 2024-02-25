@@ -57,10 +57,10 @@ export function ProjectList({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group mb-4">
       <CollapsibleTrigger>
-        <Badge className="font-bold text-md">
+        <Button variant="link" className="font-bold text-md">
           {headerName}
           <ChevronDownIcon className="group-data-[state=closed]:-rotate-90 group-data-[state=open]:rotate-0 ml-1" />
-        </Badge>
+        </Button>
         <span className="text-xs font-light ml-2 text-left">
           {projects.length} projects
         </span>

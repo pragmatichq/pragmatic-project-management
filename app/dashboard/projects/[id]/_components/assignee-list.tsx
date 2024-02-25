@@ -67,23 +67,23 @@ export function AssigneeList({
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="p-1 h-8">
-            <AvatarGroup limit={3}>
+          <Button variant="ghost" className="p-1 h-auto rounded-sm">
+            <AvatarGroup limit={2}>
               <AvatarGroupList>
                 {assigneeDetails.length <= 0 ? (
-                  <div className="p-4">-</div>
+                  <div className="h-8 w-8">-</div>
                 ) : (
                   assigneeDetails?.map((assignee) => (
                     <Avatar className="h-8 w-8">
                       <AvatarImage
                         src={assignee?.publicUserData.imageUrl}
-                        className="border-solid border-white border-[1px]"
+                        className="h-8 w-8 border-solid border-white border-[1px] object-cover"
                       />
                     </Avatar>
                   ))
                 )}
               </AvatarGroupList>
-              <AvatarOverflowIndicator />
+              <AvatarOverflowIndicator className="w-8 h-8" />
             </AvatarGroup>
           </Button>
         </DropdownMenuTrigger>
@@ -95,8 +95,11 @@ export function AssigneeList({
                 handleCheckedChange(checked, member.publicUserData.userId!);
               }}
             >
-              <Avatar>
-                <AvatarImage src={member.publicUserData.imageUrl} />
+              <Avatar className="w-6 h-6 mr-1">
+                <AvatarImage
+                  src={member.publicUserData.imageUrl}
+                  className="object-cover"
+                />
               </Avatar>{" "}
               {member.publicUserData.firstName} {member.publicUserData.lastName}
             </DropdownMenuCheckboxItem>

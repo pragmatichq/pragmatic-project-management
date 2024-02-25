@@ -3,13 +3,12 @@ import { v } from "convex/values";
 
 export default defineSchema({
   users: defineTable({
-    // this is UserJSON from @clerk/backend
     clerkUser: v.any(),
   }).index("by_clerk_id", ["clerkUser.id"]),
   organizations: defineTable({
-    // this is UserJSON from @clerk/backend
     clerkOrganization: v.any(),
-  }).index("by_clerk_id", ["clerkOrganization.id"]),
+    clerkId: v.optional(v.string()),
+  }).index("by_clerk_id", ["clerkId"]),
   projects: defineTable({
     title: v.string(),
     organization: v.string(),
@@ -21,5 +20,8 @@ export default defineSchema({
     organization: v.string(),
     status: v.string(),
     assignees: v.optional(v.array(v.string())),
-  }).index("by_project", ["project"]),
+    dueDate: v.optional(v.string()),
+  })
+    .index("by_organization_project", ["organization", "project"])
+    .index("by_organization", ["organization"]),
 });
