@@ -3,9 +3,6 @@ import { v } from "convex/values";
 
 import { getAll } from "convex-helpers/server/relationships";
 
-import { asyncMap } from "convex-helpers";
-import { Id } from "./_generated/dataModel";
-
 export const getTasksByProject = query({
   args: { organization: v.string(), project: v.string() },
   handler: async (ctx, args) => {
@@ -16,6 +13,18 @@ export const getTasksByProject = query({
       )
       .take(100);
     return tasks;
+  },
+});
+
+export const getTask = query({
+  args: { organization: v.string(), _id: v.string() },
+  handler: async (ctx, args) => {
+    const task = await ctx.db
+      .query("tasks")
+      .filter((q) => q.eq(q.field("organization"), args.organization))
+      .filter((q) => q.eq(q.field("_id"), args._id))
+      .unique();
+    return task;
   },
 });
 

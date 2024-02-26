@@ -15,7 +15,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskList } from "./_components/task-list";
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function SingleProject({
+  params,
+}: {
+  params: { project_id: string };
+}) {
   let loading = true;
   const { orgId } = useAuth();
 
@@ -23,12 +27,12 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const project = useQuery(api.projects.getProject, {
     organization: activeOrgId,
-    _id: params.id,
+    _id: params.project_id,
   });
 
   const tasks = useQuery(api.tasks.getTasksByProject, {
     organization: activeOrgId,
-    project: params.id,
+    project: params.project_id,
   });
 
   if (project === undefined) {

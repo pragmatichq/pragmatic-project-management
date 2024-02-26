@@ -10,17 +10,18 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { DueDate } from "./due-date";
+import Link from "next/link";
 
 export function TaskList({ tasks }: { tasks: any }) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-5/12">Title</TableHead>
-          <TableHead className="w-2/12">Flags</TableHead>
-          <TableHead className="w-2/12">Status</TableHead>
-          <TableHead className="w-1/12">Assignees</TableHead>
-          <TableHead className="w-2/12">Due Date</TableHead>
+          <TableHead className="w-1/2">Title</TableHead>
+          <TableHead className="w-{1/8}">Flags</TableHead>
+          <TableHead className="w-{1/8}">Status</TableHead>
+          <TableHead className="w-{1/8}">Assignees</TableHead>
+          <TableHead className="w-{1/8}">Due Date</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -38,7 +39,11 @@ export function TaskList({ tasks }: { tasks: any }) {
                 ) : (
                   ""
                 )}
-                {task.title}
+                <Link
+                  href={`/dashboard/projects/${task.project}/task/${task._id}`}
+                >
+                  {task.title}
+                </Link>
               </TableCell>
               <TableCell>
                 <Badge variant="destructive">Need Information</Badge>

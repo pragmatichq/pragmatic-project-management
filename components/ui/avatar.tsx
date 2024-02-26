@@ -4,6 +4,8 @@ import * as React from "react";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { VariantProps, cva } from "class-variance-authority";
 
+import { useEffect } from "react";
+
 import { cn } from "@/lib/utils";
 
 const Avatar = React.forwardRef<
@@ -137,7 +139,9 @@ AvatarGroup.displayName = "AvatarGroup";
 const AvatarGroupList = ({ children }: { children?: React.ReactNode }) => {
   const { limit, setCount } = useAvatarGroupContext();
 
-  setCount?.(React.Children.count(children));
+  useEffect(() => {
+    setCount?.(React.Children.count(children));
+  }, [setCount]);
 
   return (
     <>{limit ? React.Children.toArray(children).slice(0, limit) : children}</>

@@ -1,3 +1,8 @@
+import React, { useEffect, useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { GenericId } from "convex/values";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,16 +13,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 
-import { useEffect } from "react";
-
-import { api } from "@/convex/_generated/api";
-
-import { useMutation } from "convex/react";
-
 import { Badge } from "@/components/ui/badge";
-
-import React from "react";
-import { GenericId } from "convex/values";
 
 export function StatusSelector({
   currentStatus,
@@ -26,23 +22,18 @@ export function StatusSelector({
   currentStatus: string;
   projectID: GenericId<"projects">;
 }) {
-  const [status, setStatus] = React.useState(currentStatus);
-
+  const [status, setStatus] = useState(currentStatus);
   const updateStatus = useMutation(api.projects.updateProjectStatus);
-  const [prevStatus, setPrevStatus] = React.useState(status);
 
-  async function handleStatusChange(status: string) {
-    await updateStatus({
-      id: projectID,
-      status: status,
-    });
-    setStatus(status);
-  }
+  useEffect(() => {
+    const handleStatusChange = async () => {
+      if (status !== currentStatus) {
+        await updateStatus({ id: projectID, status: status });
+      }
+    };
 
-  if (status !== prevStatus) {
-    setPrevStatus(status);
-    handleStatusChange(status);
-  }
+    handleStatusChange();
+  }, [status, currentStatus, projectID, updateStatus]);
 
   return (
     <DropdownMenu>
