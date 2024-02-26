@@ -15,27 +15,51 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 
-export function StatusSelector({
-  currentStatus,
-  projectID,
-  statuses,
-}: {
+interface StatusProps {
   currentStatus: string;
-  projectID: GenericId<"projects">;
   statuses: string[];
-}) {
+}
+
+interface WithProject extends StatusProps {
+  projectID: GenericId<"projects">;
+  taskID?: never;
+}
+
+// Extended interface with a different additional property
+interface WithTask extends StatusProps {
+  projectID?: never;
+  taskID: GenericId<"tasks">;
+}
+
+type ExclusiveProps = WithTask | WithProject;
+
+export const StatusSelector: React.FC<ExclusiveProps> = ({
+  currentStatus,
+  statuses,
+  projectID,
+  taskID,
+}) => {
   const [status, setStatus] = useState(currentStatus);
-  const updateStatus = useMutation(api.projects.updateProjectStatus);
+  const updateProjectStatus = useMutation(api.projects.updateProjectStatus);
+  const updateTaskStatus = useMutation(api.tasks.updateTaskStatus);
 
   useEffect(() => {
-    const handleStatusChange = async () => {
-      if (status !== currentStatus) {
-        await updateStatus({ id: projectID, status: status });
-      }
-    };
-
-    handleStatusChange();
-  }, [status, currentStatus, projectID, updateStatus]);
+    if (projectID) {
+      const handleStatusChange = async () => {
+        if (status !== currentStatus) {
+          await updateProjectStatus({ id: projectID, status: status });
+        }
+      };
+      handleStatusChange();
+    } else if (taskID) {
+      const handleStatusChange = async () => {
+        if (status !== currentStatus) {
+          await updateTaskStatus({ id: taskID, status: status });
+        }
+      };
+      handleStatusChange();
+    }
+  }, [status, currentStatus, projectID, updateProjectStatus, updateTaskStatus]);
 
   return (
     <DropdownMenu>
@@ -55,4 +79,4 @@ export function StatusSelector({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

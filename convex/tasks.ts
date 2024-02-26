@@ -55,10 +55,18 @@ export const updateTaskAssignees = mutation({
   },
 });
 
-export const updateDueDate = mutation({
+export const updateTaskDueDate = mutation({
   args: { id: v.id("tasks"), dueDate: v.string() },
   handler: async (ctx, args) => {
     const { id, dueDate } = args;
     await ctx.db.patch(id, { dueDate: dueDate });
+  },
+});
+
+export const updateTaskStatus = mutation({
+  args: { id: v.id("tasks"), status: v.string() },
+  handler: async (ctx, args) => {
+    const { id, status } = args;
+    await ctx.db.patch(id, { status: status });
   },
 });

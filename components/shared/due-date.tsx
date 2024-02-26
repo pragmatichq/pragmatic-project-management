@@ -25,11 +25,11 @@ export function DueDate({
   const [date, setDate] = useState<Date | undefined>(new Date(dueDate));
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const updateDueDate = useMutation(api.tasks.updateDueDate);
+  const updateTaskDueDate = useMutation(api.tasks.updateTaskDueDate);
 
   useEffect(() => {
     async function handleDueDateChange(date: Date | undefined) {
-      await updateDueDate({
+      await updateTaskDueDate({
         id: task,
         dueDate: date ? date.toISOString() : "",
       });
@@ -38,7 +38,7 @@ export function DueDate({
     if (date) {
       handleDueDateChange(date);
     }
-  }, [date, task, updateDueDate]);
+  }, [date, task, updateTaskDueDate]);
 
   useEffect(() => {
     setDate(new Date(dueDate));

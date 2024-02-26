@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { AssigneeList } from "@/components/shared/assignee-list";
 import { DueDate } from "@/components/shared/due-date";
+import { StatusSelector } from "../shared/status-selector";
 
 export function TaskList({ tasks }: { tasks: any }) {
   return (
@@ -50,7 +51,11 @@ export function TaskList({ tasks }: { tasks: any }) {
                 <Badge variant="destructive">Need Information</Badge>
               </TableCell>
               <TableCell>
-                <Badge>In Progress</Badge>
+                <StatusSelector
+                  currentStatus={task.status}
+                  taskID={task._id}
+                  statuses={["In Progress", "Next Up", "With External", "Done"]}
+                />
               </TableCell>
               <TableCell>
                 <AssigneeList task={task._id} assignees={task.assignees} />
