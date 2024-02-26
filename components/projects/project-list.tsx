@@ -22,7 +22,7 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 
-import { StatusSelector } from "./status-selector";
+import { StatusSelector } from "../shared/status-selector";
 
 export function ProjectList({
   projects,
@@ -85,6 +85,7 @@ export function ProjectList({
                     <StatusSelector
                       currentStatus={project.status}
                       projectID={project._id}
+                      statuses={["In Progress", "Next Up", "Consideration"]}
                     />
                   </TableCell>
                   <TableCell className="w-16">

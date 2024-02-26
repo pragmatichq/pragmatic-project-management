@@ -18,9 +18,11 @@ import { Badge } from "@/components/ui/badge";
 export function StatusSelector({
   currentStatus,
   projectID,
+  statuses,
 }: {
   currentStatus: string;
   projectID: GenericId<"projects">;
+  statuses: string[];
 }) {
   const [status, setStatus] = useState(currentStatus);
   const updateStatus = useMutation(api.projects.updateProjectStatus);
@@ -44,15 +46,11 @@ export function StatusSelector({
         <DropdownMenuLabel>Project Status</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={status} onValueChange={setStatus}>
-          <DropdownMenuRadioItem value="In Progress">
-            <Badge>In Progress</Badge>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="Next Up">
-            <Badge>Next Up</Badge>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="Consideration">
-            <Badge>Consideration</Badge>
-          </DropdownMenuRadioItem>
+          {statuses.map((statusOption) => (
+            <DropdownMenuRadioItem key={statusOption} value={statusOption}>
+              <Badge>{statusOption}</Badge>
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -7,7 +7,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { TaskList } from "./projects/[project_id]/_components/task-list";
+import { TaskList } from "@/components/tasks/task-list";
 
 export default function Component() {
   const { orgId, userId } = useAuth();

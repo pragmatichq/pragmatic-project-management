@@ -1,4 +1,5 @@
-import { AssigneeList } from "./assignee-list";
+import Link from "next/link";
+
 import {
   Table,
   TableBody,
@@ -7,10 +8,10 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-
 import { Badge } from "@/components/ui/badge";
-import { DueDate } from "./due-date";
-import Link from "next/link";
+
+import { AssigneeList } from "@/components/shared/assignee-list";
+import { DueDate } from "@/components/shared/due-date";
 
 export function TaskList({ tasks }: { tasks: any }) {
   return (

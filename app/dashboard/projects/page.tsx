@@ -8,25 +8,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { api } from "@/convex/_generated/api";
 
-import { NewProjectForm } from "./_components/new-project-form";
+import { NewProjectForm } from "@/components/projects/project-creation-form";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { ProjectList } from "./_components/project-list";
+import { ProjectList } from "@/components/projects/project-list";
 
-export default function Component() {
+export default function ProjectListPage() {
   const { orgId } = useAuth();
   const activeOrgId: string = orgId ?? "";
   const projects = useQuery(api.projects.getProjectList, {
     organization: activeOrgId,
   });
-  const inProgressProjects = projects?.filter(
-    (project) => project.status == "In Progress"
-  );
-  const nextUpProjects = projects?.filter(
-    (project) => project.status == "Next Up"
-  );
-  const considerationProjects = projects?.filter(
-    (project) => project.status == "Consideration"
-  );
+
+  const statusOptions = ["In Progress", "Next Up", "Consideration"];
+
+  const filteredProjects = statusOptions.map((status) => ({
+    status,
+    projects: projects?.filter((project) => project.status === status),
+  }));
 
   return (
     <main>
@@ -37,17 +35,13 @@ export default function Component() {
           </CardHeader>
           <CardContent>
             {projects != null ? (
-              <section>
+              filteredProjects.map((filter) => (
                 <ProjectList
-                  projects={inProgressProjects}
-                  headerName="In Progress"
+                  key={filter.status}
+                  projects={filter.projects}
+                  headerName={filter.status}
                 />
-                <ProjectList projects={nextUpProjects} headerName="Next Up" />
-                <ProjectList
-                  projects={considerationProjects}
-                  headerName="Consideration"
-                />
-              </section>
+              ))
             ) : (
               <LoadingSpinner />
             )}
