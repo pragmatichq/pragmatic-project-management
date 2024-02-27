@@ -11,10 +11,12 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { ProjectDetails } from "@/components/projects/project-details";
 
+import { Id } from "@/convex/_generated/dataModel";
+
 export default function SingleProjectPage({
   params,
 }: {
-  params: { project_id: string };
+  params: { project_id: Id<"projects"> };
 }) {
   let loading = true;
   const { orgId } = useAuth();

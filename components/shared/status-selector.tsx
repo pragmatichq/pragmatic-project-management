@@ -25,7 +25,6 @@ interface WithProject extends StatusProps {
   taskID?: never;
 }
 
-// Extended interface with a different additional property
 interface WithTask extends StatusProps {
   projectID?: never;
   taskID: GenericId<"tasks">;
@@ -44,22 +43,25 @@ export const StatusSelector: React.FC<ExclusiveProps> = ({
   const updateTaskStatus = useMutation(api.tasks.updateTaskStatus);
 
   useEffect(() => {
-    if (projectID) {
-      const handleStatusChange = async () => {
-        if (status !== currentStatus) {
-          await updateProjectStatus({ id: projectID, status: status });
+    const updateStatus = async () => {
+      // Only perform the update if the status has actually changed
+      if (status !== currentStatus) {
+        if (projectID) {
+          await updateProjectStatus({ id: projectID, status });
+        } else if (taskID) {
+          await updateTaskStatus({ id: taskID, status });
         }
-      };
-      handleStatusChange();
-    } else if (taskID) {
-      const handleStatusChange = async () => {
-        if (status !== currentStatus) {
-          await updateTaskStatus({ id: taskID, status: status });
-        }
-      };
-      handleStatusChange();
+      }
+    };
+    updateStatus();
+  }, [status, projectID, taskID, updateProjectStatus, updateTaskStatus]);
+
+  useEffect(() => {
+    // This effect is solely responsible for syncing the local state with props
+    if (status !== currentStatus) {
+      setStatus(currentStatus);
     }
-  }, [status, currentStatus, projectID, updateProjectStatus, updateTaskStatus]);
+  }, [currentStatus]);
 
   return (
     <DropdownMenu>

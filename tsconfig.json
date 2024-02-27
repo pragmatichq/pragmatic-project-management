@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "convex/auth.config.js"
-  ],
+, "app/app.config.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
 import type { OrganizationMembershipResource } from "@clerk/types";
@@ -30,9 +30,11 @@ interface AssigneeListProps {
 export function AssigneeList({ assignees, task }: AssigneeListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
 
+  const [checkedList, setChecked] = useState(assignees);
+
   const assigneeDetails = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
-    return assignees
+    return checkedList
       .map((assignee) =>
         memberships.data.find(
           (member) => member.publicUserData.userId === assignee
@@ -44,9 +46,9 @@ export function AssigneeList({ assignees, task }: AssigneeListProps) {
       );
   }, [assignees, memberships, isLoaded]);
 
-  const [checkedList, setChecked] = useState(assignees);
-
-  const isChecked = (item: string) => checkedList.includes(item);
+  useEffect(() => {
+    setChecked(assignees);
+  }, [assignees]);
 
   const updateAssignees = useMutation(api.tasks.updateTaskAssignees);
 
@@ -93,7 +95,9 @@ export function AssigneeList({ assignees, task }: AssigneeListProps) {
               key={
                 member.publicUserData.userId ?? `member-placeholder-${index}`
               }
-              checked={isChecked(member.publicUserData.userId ?? "")}
+              checked={
+                checkedList.includes(member.publicUserData.userId!) ?? ""
+              }
               onCheckedChange={(checked) => {
                 if (member.publicUserData.userId) {
                   handleCheckedChange(checked, member.publicUserData.userId);

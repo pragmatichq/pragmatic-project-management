@@ -2,9 +2,10 @@ import { query, mutation, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
 import { getAll } from "convex-helpers/server/relationships";
+import { getOneFrom } from "convex-helpers/server/relationships";
 
 export const getTasksByProject = query({
-  args: { organization: v.string(), project: v.string() },
+  args: { organization: v.string(), project: v.id("projects") },
   handler: async (ctx, args) => {
     const tasks = await ctx.db
       .query("tasks")
@@ -12,7 +13,12 @@ export const getTasksByProject = query({
         q.eq("organization", args.organization).eq("project", args.project)
       )
       .take(100);
-    return tasks;
+    const project = await ctx.db.get(args.project);
+    const tasksWithProjects = tasks.map((task) => ({
+      ...task,
+      projectDetails: project,
+    }));
+    return tasksWithProjects;
   },
 });
 
