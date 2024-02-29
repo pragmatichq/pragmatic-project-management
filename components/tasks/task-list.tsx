@@ -9,14 +9,13 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
-import { Badge } from "@/components/ui/badge";
-
 import { AssigneeList } from "@/components/shared/assignee-list";
 import { DueDate } from "@/components/shared/due-date";
 import { StatusSelector } from "@/components/shared/status-selector";
 import { TaskModal } from "@/components/tasks/task-modal";
 
 import { useState } from "react";
+import { FlagSelector } from "@/components/shared/flag-selector";
 
 export function TaskList({ tasks }: { tasks: any }) {
   const [activeTask, setActiveTask] = useState([]);
@@ -36,11 +35,11 @@ export function TaskList({ tasks }: { tasks: any }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-1/2">Title</TableHead>
-            <TableHead className="w-{1/8}">Flags</TableHead>
-            <TableHead className="w-{1/8}">Status</TableHead>
-            <TableHead className="w-{1/8}">Assignees</TableHead>
-            <TableHead className="w-{1/8}">Due Date</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Flags</TableHead>
+            <TableHead>Assignees</TableHead>
+            <TableHead>Due Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,12 +57,13 @@ export function TaskList({ tasks }: { tasks: any }) {
                   ) : (
                     ""
                   )}
-                  <Button variant="link" onClick={() => switchActiveTask(task)}>
+                  <Button
+                    className="p-0"
+                    variant="link"
+                    onClick={() => switchActiveTask(task)}
+                  >
                     {task.title}
                   </Button>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="destructive">Need Information</Badge>
                 </TableCell>
                 <TableCell>
                   <StatusSelector
@@ -76,6 +76,9 @@ export function TaskList({ tasks }: { tasks: any }) {
                       "Done",
                     ]}
                   />
+                </TableCell>
+                <TableCell>
+                  <FlagSelector task={task._id} flags={task.flags} />
                 </TableCell>
                 <TableCell>
                   <AssigneeList task={task._id} assignees={task.assignees} />

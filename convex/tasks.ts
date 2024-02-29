@@ -1,8 +1,7 @@
-import { query, mutation, QueryCtx } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 import { getAll } from "convex-helpers/server/relationships";
-import { getOneFrom } from "convex-helpers/server/relationships";
 
 export const getTasksByProject = query({
   args: { organization: v.string(), project: v.id("projects") },
@@ -58,6 +57,14 @@ export const updateTaskAssignees = mutation({
   handler: async (ctx, args) => {
     const { id, assignees } = args;
     await ctx.db.patch(id, { assignees: assignees });
+  },
+});
+
+export const updateTaskFlags = mutation({
+  args: { id: v.id("tasks"), flags: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    const { id, flags } = args;
+    await ctx.db.patch(id, { flags: flags });
   },
 });
 

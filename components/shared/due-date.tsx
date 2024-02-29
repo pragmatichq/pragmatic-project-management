@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -22,10 +22,22 @@ export function DueDate({
   task: GenericId<"tasks">;
   dueDate: string;
 }) {
-  const [date, setDate] = useState<Date | undefined>(new Date(dueDate));
+  const [date, setDate] = useState<Date | undefined>(
+    dueDate ? parseDate(dueDate) : undefined
+  );
+
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   const updateTaskDueDate = useMutation(api.tasks.updateTaskDueDate);
+
+  useEffect(() => {
+    setDate(dueDate ? parseDate(dueDate) : undefined);
+  }, [dueDate]);
+
+  function parseDate(dateString: string): Date | undefined {
+    const parsedDate = parseISO(dateString);
+    return isValid(parsedDate) ? parsedDate : undefined;
+  }
 
   useEffect(() => {
     async function handleDueDateChange(date: Date | undefined) {
@@ -35,26 +47,32 @@ export function DueDate({
       });
     }
 
-    if (date) {
-      handleDueDateChange(date);
-    }
+    handleDueDateChange(date);
   }, [date, task, updateTaskDueDate]);
 
-  useEffect(() => {
-    setDate(new Date(dueDate));
-  }, [dueDate]);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return (
     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={cn(
-            "justify-start text-left font-normal",
-            !date && "text-muted-foreground"
-          )}
+          className={cn("justify-start text-left font-normal", {
+            "text-muted-foreground": !date,
+            "border-yellow-200 text-yellow-500 border-2":
+              date && date.getTime() === today.getTime(),
+            "border-red-200 text-red-500 border-2 border-dashed":
+              date && date.getTime() < today.getTime(),
+          })}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <CalendarIcon
+            className={cn("mr-2 h-4 w-4", {
+              "text-muted-foreground": !date,
+              "text-yellow-500": date && date.getTime() === today.getTime(),
+              "text-red-500": date && date.getTime() < today.getTime(),
+            })}
+          />
           {date ? format(date, "MM/dd/yyyy") : <span>No Due Date</span>}
         </Button>
       </PopoverTrigger>
