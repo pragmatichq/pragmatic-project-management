@@ -35,7 +35,7 @@ export function ProjectList({
   const isEmptyProject = projects.length === 0;
   const [isOpen, setIsOpen] = useState(!isEmptyProject);
 
-  const deleteProject = useMutation(api.projects.deleteProject);
+  const deleteProject = useMutation(api.projects.remove);
 
   useEffect(() => {
     setIsOpen(!isEmptyProject);

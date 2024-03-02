@@ -89,10 +89,10 @@ export const update = mutation({
       throw new Error("Unauthorized");
     }
 
-    const document = await ctx.db.patch(args.id, {
+    const task = await ctx.db.patch(args.id, {
       ...rest,
     });
 
-    return document;
+    return task;
   },
 });

@@ -4,13 +4,7 @@ import React from "react";
 
 import { api } from "@/convex/_generated/api";
 
-import { Authenticated, Unauthenticated } from "convex/react";
-import {
-  SignInButton,
-  OrganizationSwitcher,
-  UserButton,
-  useAuth,
-} from "@clerk/nextjs";
+import { OrganizationSwitcher, UserButton, useAuth } from "@clerk/nextjs";
 
 import { useQuery } from "convex/react";
 
@@ -31,18 +25,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   const activeOrgId: string = orgId ?? "";
 
-  const projects = useQuery(api.projects.getProjectList, {
-    organization: activeOrgId,
-  });
+  const projects = useQuery(api.projects.list, {});
 
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[240px_1fr]">
       <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b px-6">
-            <Authenticated>
-              {orgId != null && <OrganizationSwitcher hidePersonal />}
-            </Authenticated>
+            {orgId != null && <OrganizationSwitcher hidePersonal />}
           </div>
           <div className="flex-1 overflow-auto py-2">
             <nav className="flex-grow md:block px-4 pb-4 md:pb-0 md:overflow-y-auto">
@@ -110,9 +100,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
               </div>
             </form>
           </div>
-          <Authenticated>
-            <UserButton afterSignOutUrl="/" />
-          </Authenticated>
+          <UserButton afterSignOutUrl="/" />
         </header>
         {children}
       </div>

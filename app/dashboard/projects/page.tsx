@@ -15,9 +15,7 @@ import { ProjectList } from "@/components/projects/project-list";
 export default function ProjectListPage() {
   const { orgId } = useAuth();
   const activeOrgId: string = orgId ?? "";
-  const projects = useQuery(api.projects.getProjectList, {
-    organization: activeOrgId,
-  });
+  const projects = useQuery(api.projects.list, {});
 
   const statusOptions = ["In Progress", "Next Up", "Consideration"];
 

@@ -45,12 +45,11 @@ export function NewProjectForm({ activeOrgId }: { activeOrgId: string }) {
     },
   });
 
-  const createProject = useMutation(api.projects.createProject);
+  const createProject = useMutation(api.projects.create);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await createProject({
       title: values.title,
-      organization: activeOrgId,
     });
     form.reset();
     setIsOpen(false);
