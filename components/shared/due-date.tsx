@@ -28,7 +28,7 @@ export function DueDate({
 
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const updateTaskDueDate = useMutation(api.tasks.updateTaskDueDate);
+  const updateTaskDueDate = useMutation(api.tasks.update);
 
   useEffect(() => {
     setDate(dueDate ? parseDate(dueDate) : undefined);

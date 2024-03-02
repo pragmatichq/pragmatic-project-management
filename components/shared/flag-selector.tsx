@@ -43,7 +43,7 @@ export function FlagSelector({ flags, task }: flagListProps) {
     setChecked(flags);
   }, [flags]);
 
-  const updateTaskFlags = useMutation(api.tasks.updateTaskFlags);
+  const updateTaskFlags = useMutation(api.tasks.update);
 
   const handleCheckedChange = async (checked: boolean, flag: string) => {
     let updatedList = checked

@@ -29,8 +29,7 @@ export default function SingleProjectPage({
     _id: params.project_id,
   });
 
-  const tasks = useQuery(api.tasks.getTasksByProject, {
-    organization: activeOrgId,
+  const tasks = useQuery(api.tasks.list, {
     project: params.project_id,
   });
 

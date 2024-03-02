@@ -3,25 +3,50 @@ import { v } from "convex/values";
 
 import { getAll } from "convex-helpers/server/relationships";
 
-export const getTasksByProject = query({
-  args: { organization: v.string(), project: v.id("projects") },
+export const list = query({
+  args: { project: v.optional(v.id("projects")) },
   handler: async (ctx, args) => {
-    const tasks = await ctx.db
-      .query("tasks")
-      .withIndex("by_organization_project", (q) =>
-        q.eq("organization", args.organization).eq("project", args.project)
-      )
-      .take(100);
-    const project = await ctx.db.get(args.project);
-    const tasksWithProjects = tasks.map((task) => ({
-      ...task,
-      projectDetails: project,
-    }));
-    return tasksWithProjects;
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // This is hacked together because Convex only allows standard claims
+    const organization = identity.language!;
+
+    if (args.project) {
+      const tasks = await ctx.db
+        .query("tasks")
+        .withIndex("by_organization_project", (q) =>
+          q.eq("organization", organization).eq("project", args.project!)
+        )
+        .take(100);
+      const project = await ctx.db.get(args.project);
+      const tasksWithProjects = tasks.map((task) => ({
+        ...task,
+        projectDetails: project,
+      }));
+      return tasksWithProjects;
+    } else {
+      const tasks = await ctx.db
+        .query("tasks")
+        .withIndex("by_organization", (q) => q.eq("organization", organization))
+        .take(100);
+      const projectIds: Iterable<any> = tasks.map((task) => task.project);
+      const projects = await getAll(ctx.db, projectIds);
+      const tasksWithProjects = tasks.map((task) => ({
+        ...task,
+        projectDetails: projects.find(
+          (project) => project?._id == task.project
+        ),
+      }));
+      return tasksWithProjects;
+    }
   },
 });
 
-export const getTask = query({
+export const getById = query({
   args: { organization: v.string(), _id: v.string() },
   handler: async (ctx, args) => {
     const task = await ctx.db
@@ -33,53 +58,41 @@ export const getTask = query({
   },
 });
 
-export const getTasksByOrganization = query({
-  args: { organization: v.string() },
-  handler: async (ctx, args) => {
-    const tasks = await ctx.db
-      .query("tasks")
-      .withIndex("by_organization", (q) =>
-        q.eq("organization", args.organization)
-      )
-      .take(100);
-    const projectIds: Iterable<any> = tasks.map((task) => task.project);
-    const projects = await getAll(ctx.db, projectIds);
-    const tasksWithProjects = tasks.map((task) => ({
-      ...task,
-      projectDetails: projects.find((project) => project?._id == task.project),
-    }));
-    return tasksWithProjects;
+export const update = mutation({
+  args: {
+    id: v.id("tasks"),
+    title: v.optional(v.string()),
+    status: v.optional(v.string()),
+    flags: v.optional(v.array(v.string())),
+    assignees: v.optional(v.array(v.string())),
+    dueDate: v.optional(v.string()),
   },
-});
-
-export const updateTaskAssignees = mutation({
-  args: { id: v.id("tasks"), assignees: v.array(v.string()) },
   handler: async (ctx, args) => {
-    const { id, assignees } = args;
-    await ctx.db.patch(id, { assignees: assignees });
-  },
-});
+    const identity = await ctx.auth.getUserIdentity();
 
-export const updateTaskFlags = mutation({
-  args: { id: v.id("tasks"), flags: v.array(v.string()) },
-  handler: async (ctx, args) => {
-    const { id, flags } = args;
-    await ctx.db.patch(id, { flags: flags });
-  },
-});
+    if (!identity) {
+      throw new Error("Unauthenticated");
+    }
 
-export const updateTaskDueDate = mutation({
-  args: { id: v.id("tasks"), dueDate: v.string() },
-  handler: async (ctx, args) => {
-    const { id, dueDate } = args;
-    await ctx.db.patch(id, { dueDate: dueDate });
-  },
-});
+    // This is hacked together because Convex only allows standard claims
+    const organization = identity.language;
 
-export const updateTaskStatus = mutation({
-  args: { id: v.id("tasks"), status: v.string() },
-  handler: async (ctx, args) => {
-    const { id, status } = args;
-    await ctx.db.patch(id, { status: status });
+    const { id, ...rest } = args;
+
+    const existingTask = await ctx.db.get(args.id);
+
+    if (!existingTask) {
+      throw new Error("Not found");
+    }
+
+    if (existingTask.organization !== organization) {
+      throw new Error("Unauthorized");
+    }
+
+    const document = await ctx.db.patch(args.id, {
+      ...rest,
+    });
+
+    return document;
   },
 });

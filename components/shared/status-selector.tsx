@@ -40,7 +40,7 @@ export const StatusSelector: React.FC<ExclusiveProps> = ({
 }) => {
   const [status, setStatus] = useState(currentStatus);
   const updateProjectStatus = useMutation(api.projects.updateProjectStatus);
-  const updateTaskStatus = useMutation(api.tasks.updateTaskStatus);
+  const updateTaskStatus = useMutation(api.tasks.update);
 
   useEffect(() => {
     const updateStatus = async () => {

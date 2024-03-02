@@ -50,7 +50,7 @@ export function AssigneeList({ assignees, task }: AssigneeListProps) {
     setChecked(assignees);
   }, [assignees]);
 
-  const updateAssignees = useMutation(api.tasks.updateTaskAssignees);
+  const updateAssignees = useMutation(api.tasks.update);
 
   const handleCheckedChange = async (checked: boolean, member: string) => {
     let updatedList = checked

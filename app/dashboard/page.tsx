@@ -14,9 +14,7 @@ export default function Component() {
 
   const activeOrgId: string = orgId ?? "";
 
-  const tasks = useQuery(api.tasks.getTasksByOrganization, {
-    organization: activeOrgId,
-  });
+  const tasks = useQuery(api.tasks.list, {});
 
   const userTasks = tasks?.filter((task) =>
     task.assignees?.find((assignee) => assignee == userId)

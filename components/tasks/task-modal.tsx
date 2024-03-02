@@ -103,12 +103,14 @@ export function TaskModal({
     form.reset();
   }
 
-  const commentBox = useRef(null);
+  const commentBox = useRef<null | HTMLDivElement>(null);
   const scrollToBottom = () => {
-    commentBox.current.scrollIntoView({
-      behavior: "instant",
-      block: "end",
-    });
+    if (commentBox.current) {
+      commentBox.current.scrollIntoView({
+        behavior: "instant",
+        block: "end",
+      });
+    }
   };
 
   useEffect(() => {
