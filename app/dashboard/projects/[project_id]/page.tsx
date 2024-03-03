@@ -14,9 +14,8 @@ export default function SingleProjectPage({
 }: {
   params: { project_id: Id<"projects"> };
 }) {
-  let loading = true;
-
   let project: Doc<"projects"> | undefined;
+
   try {
     project = useQuery(api.projects.get, {
       id: params.project_id,
