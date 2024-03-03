@@ -23,7 +23,7 @@ export const list = query({
 });
 
 export const get = query({
-  args: { id: v.string() },
+  args: { id: v.id("projects") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -32,13 +32,19 @@ export const get = query({
     }
 
     // This is hacked together because Convex only allows standard claims
-    const organization = identity.language!;
-    const projects = await ctx.db
-      .query("projects")
-      .filter((q) => q.eq(q.field("organization"), organization))
-      .filter((q) => q.eq(q.field("_id"), args.id))
-      .unique();
-    return projects;
+    const organization = identity.language;
+
+    const existingProject = await ctx.db.get(args.id);
+
+    if (!existingProject) {
+      throw new Error("Not found");
+    }
+
+    if (existingProject.organization !== organization) {
+      throw new Error("Unauthorized");
+    }
+
+    return existingProject;
   },
 });
 

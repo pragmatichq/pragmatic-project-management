@@ -1,8 +1,8 @@
+import React from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-import React from "react";
 
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import {
   Sheet,
   SheetTrigger,
@@ -35,7 +34,7 @@ const formSchema = z.object({
   }),
 });
 
-export function NewProjectForm({ activeOrgId }: { activeOrgId: string }) {
+export function NewProjectForm({}: {}) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({

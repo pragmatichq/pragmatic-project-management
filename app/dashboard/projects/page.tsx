@@ -1,20 +1,15 @@
 "use client";
 
-import { useAuth } from "@clerk/nextjs";
-
 import { useQuery } from "convex/react";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { api } from "@/convex/_generated/api";
 
-import { NewProjectForm } from "@/components/projects/project-creation-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+import { NewProjectForm } from "@/components/projects/project-creation-form";
 import { ProjectList } from "@/components/projects/project-list";
 
 export default function ProjectListPage() {
-  const { orgId } = useAuth();
-  const activeOrgId: string = orgId ?? "";
   const projects = useQuery(api.projects.list, {});
 
   const statusOptions = ["In Progress", "Next Up", "Consideration"];
@@ -43,7 +38,7 @@ export default function ProjectListPage() {
             ) : (
               <LoadingSpinner />
             )}
-            <NewProjectForm activeOrgId={activeOrgId} />
+            <NewProjectForm />
           </CardContent>
         </Card>
       </section>

@@ -10,9 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskList } from "@/components/tasks/task-list";
 
 export default function Component() {
-  const { orgId, userId } = useAuth();
-
-  const activeOrgId: string = orgId ?? "";
+  const { userId } = useAuth();
 
   const tasks = useQuery(api.tasks.list, {});
 
