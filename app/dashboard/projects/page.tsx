@@ -34,11 +34,11 @@ export default function ProjectListPage() {
             <CardTitle>Projects</CardTitle>
           </CardHeader>
           <CardContent>
-            {projects != null ? (
+            {filteredProjects ? (
               filteredProjects.map((filter) => (
                 <ProjectList
                   key={filter.status}
-                  projects={filter.projects}
+                  projects={filter.projects || []}
                   headerName={filter.status}
                 />
               ))

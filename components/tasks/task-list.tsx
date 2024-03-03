@@ -19,12 +19,26 @@ import { FlagSelector } from "@/components/shared/flag-selector";
 
 import { Doc } from "@/convex/_generated/dataModel";
 
+import { Id } from "@/convex/_generated/dataModel";
+
+interface ActiveTask {
+  _id: Id<"tasks">;
+  title: string;
+  projectDetails: {
+    title: string;
+  };
+  status: string;
+  flags: string[];
+  assignees: string[];
+  dueDate: string;
+}
+
 interface TaskListProps {
   tasks: Array<Doc<"tasks">>;
 }
 
 export function TaskList({ tasks }: TaskListProps) {
-  const [activeTask, setActiveTask] = useState([]);
+  const [activeTask, setActiveTask] = useState<ActiveTask | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleModalOpen = (newState: boolean) => {
