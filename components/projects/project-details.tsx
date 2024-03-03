@@ -3,14 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { StatusSelector } from "@/components/shared/status-selector";
 import { TaskList } from "@/components/tasks/task-list";
+import { Doc } from "@/convex/_generated/dataModel";
 
-export function ProjectDetails({
-  project,
-  tasks,
-}: {
-  project: any;
-  tasks: any;
-}) {
+interface ProjectDetailsProps {
+  project: Doc<"projects">;
+  tasks: Array<Doc<"tasks">>;
+}
+
+export function ProjectDetails({ project, tasks }: ProjectDetailsProps) {
   return (
     <div>
       <div className="flex items-center">

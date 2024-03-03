@@ -28,14 +28,14 @@ import {
 
 import { Plus } from "lucide-react";
 
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Project title must be at least 2 characters.",
-  }),
-});
-
 export function NewProjectForm({}: {}) {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const formSchema = z.object({
+    title: z.string().min(2, {
+      message: "Project title must be at least 2 characters.",
+    }),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
-import { GenericId } from "convex/values";
+import { Id } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { Badge } from "../ui/badge";
 
 interface flagListProps {
   flags: Array<string>;
-  task: GenericId<"tasks">;
+  task: Id<"tasks">;
 }
 
 export function FlagSelector({ flags, task }: flagListProps) {

@@ -13,15 +13,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { GenericId } from "convex/values";
+import { Id } from "@/convex/_generated/dataModel";
 
-export function DueDate({
-  task,
-  dueDate,
-}: {
-  task: GenericId<"tasks">;
+interface DueDateProps {
+  task: Id<"tasks">;
   dueDate: string;
-}) {
+}
+
+export function DueDate({ task, dueDate }: DueDateProps) {
   const [date, setDate] = useState<Date | undefined>(
     dueDate ? parseDate(dueDate) : undefined
   );

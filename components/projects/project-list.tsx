@@ -24,14 +24,14 @@ import {
 
 import { StatusSelector } from "../shared/status-selector";
 
-export function ProjectList({
-  projects,
-  headerName,
-}: {
-  projects: any;
+import { Doc } from "@/convex/_generated/dataModel";
+
+interface ProjectListProps {
+  projects: Array<Doc<"projects">>;
   headerName: string;
-}) {
-  // Simplified empty project check and state initialization
+}
+
+export function ProjectList({ projects, headerName }: ProjectListProps) {
   const isEmptyProject = projects.length === 0;
   const [isOpen, setIsOpen] = useState(!isEmptyProject);
 

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 
 import {
@@ -13,11 +15,15 @@ import { AssigneeList } from "@/components/shared/assignee-list";
 import { DueDate } from "@/components/shared/due-date";
 import { StatusSelector } from "@/components/shared/status-selector";
 import { TaskModal } from "@/components/tasks/task-modal";
-
-import { useState } from "react";
 import { FlagSelector } from "@/components/shared/flag-selector";
 
-export function TaskList({ tasks }: { tasks: any }) {
+import { Doc } from "@/convex/_generated/dataModel";
+
+interface TaskListProps {
+  tasks: Array<Doc<"tasks">>;
+}
+
+export function TaskList({ tasks }: TaskListProps) {
   const [activeTask, setActiveTask] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
 

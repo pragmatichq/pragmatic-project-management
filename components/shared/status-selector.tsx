@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { GenericId } from "convex/values";
+import { Id } from "@/convex/_generated/dataModel";
 
 import {
   DropdownMenu,
@@ -15,36 +15,35 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 
-interface StatusProps {
+interface StatusSelectorPropsBase {
   currentStatus: string;
   statuses: string[];
 }
 
-interface WithProject extends StatusProps {
-  projectID: GenericId<"projects">;
+interface WithProject extends StatusSelectorPropsBase {
+  projectID: Id<"projects">;
   taskID?: never;
 }
 
-interface WithTask extends StatusProps {
+interface WithTask extends StatusSelectorPropsBase {
   projectID?: never;
-  taskID: GenericId<"tasks">;
+  taskID: Id<"tasks">;
 }
 
-type ExclusiveProps = WithTask | WithProject;
+type StatusSelectorProps = WithTask | WithProject;
 
-export const StatusSelector: React.FC<ExclusiveProps> = ({
+export function StatusSelector({
   currentStatus,
   statuses,
   projectID,
   taskID,
-}) => {
+}: StatusSelectorProps) {
   const [status, setStatus] = useState(currentStatus);
   const updateProjectStatus = useMutation(api.projects.update);
   const updateTaskStatus = useMutation(api.tasks.update);
 
   useEffect(() => {
     const updateStatus = async () => {
-      // Only perform the update if the status has actually changed
       if (status !== currentStatus) {
         if (projectID) {
           await updateProjectStatus({ id: projectID, status });
@@ -57,7 +56,6 @@ export const StatusSelector: React.FC<ExclusiveProps> = ({
   }, [status, projectID, taskID, updateProjectStatus, updateTaskStatus]);
 
   useEffect(() => {
-    // This effect is solely responsible for syncing the local state with props
     if (status !== currentStatus) {
       setStatus(currentStatus);
     }
@@ -81,4 +79,4 @@ export const StatusSelector: React.FC<ExclusiveProps> = ({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-};
+}

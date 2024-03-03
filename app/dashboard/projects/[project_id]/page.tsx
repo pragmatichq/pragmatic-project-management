@@ -9,11 +9,11 @@ import { Id, Doc } from "@/convex/_generated/dataModel";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ProjectDetails } from "@/components/projects/project-details";
 
-export default function SingleProjectPage({
-  params,
-}: {
+interface SingleProjectPageProps {
   params: { project_id: Id<"projects"> };
-}) {
+}
+
+export default function SingleProjectPage({ params }: SingleProjectPageProps) {
   let project: Doc<"projects"> | undefined;
   let tasks: Array<Doc<"tasks">> | undefined;
 

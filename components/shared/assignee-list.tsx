@@ -22,9 +22,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { Id } from "@/convex/_generated/dataModel";
+
 interface AssigneeListProps {
   assignees: Array<string>;
-  task: GenericId<"tasks">;
+  task: Id<"tasks">;
 }
 
 export function AssigneeList({ assignees, task }: AssigneeListProps) {

@@ -19,11 +19,11 @@ import { api } from "@/convex/_generated/api";
 
 import { useOrganization } from "@clerk/nextjs";
 
-export function CommentList({
-  parent,
-}: {
+interface CommentListProps {
   parent: Id<"tasks"> | Id<"discussions">;
-}) {
+}
+
+export function CommentList({ parent }: CommentListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
   let comments: Array<Doc<"comments">> | undefined;
 
