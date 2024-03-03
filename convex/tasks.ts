@@ -31,7 +31,9 @@ export const list = query({
     } else {
       const tasks = await ctx.db
         .query("tasks")
-        .withIndex("by_organization", (q) => q.eq("organization", organization))
+        .withIndex("by_organization_project", (q) =>
+          q.eq("organization", organization)
+        )
         .take(100);
       const projectIds: Iterable<any> = tasks.map((task) => task.project);
       const projects = await getAll(ctx.db, projectIds);

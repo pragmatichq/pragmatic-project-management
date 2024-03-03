@@ -1,35 +1,50 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
-export const getCommentsByParent = query({
+export const list = query({
   args: {
-    organization: v.string(),
     parent: v.union(v.id("tasks"), v.id("discussions")),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // This is hacked together because Convex only allows standard claims
+    const organization = identity.language!;
     const comments = await ctx.db
       .query("comments")
       .withIndex("by_organization_parent", (q) =>
-        q.eq("organization", args.organization).eq("parent", args.parent)
+        q.eq("organization", organization).eq("parent", args.parent)
       )
       .take(100);
     return comments;
   },
 });
 
-export const createComment = mutation({
+export const create = mutation({
   args: {
-    organization: v.string(),
     parent: v.union(v.id("tasks"), v.id("discussions")),
     text: v.string(),
-    author: v.string(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    // This is hacked together because Convex only allows standard claims
+    const userId = identity.subject;
+    const organization = identity.language!;
+
     await ctx.db.insert("comments", {
-      organization: args.organization,
+      organization: organization,
       parent: args.parent,
       text: args.text,
-      author: args.author,
+      author: userId,
     });
   },
 });

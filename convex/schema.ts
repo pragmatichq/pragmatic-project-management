@@ -23,9 +23,7 @@ export default defineSchema({
     flags: v.optional(v.array(v.string())),
     assignees: v.optional(v.array(v.string())),
     dueDate: v.optional(v.string()),
-  })
-    .index("by_organization_project", ["organization", "project"])
-    .index("by_organization", ["organization"]),
+  }).index("by_organization_project", ["organization", "project"]),
   discussions: defineTable({
     title: v.string(),
     date: v.string(),

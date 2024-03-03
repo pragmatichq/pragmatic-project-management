@@ -56,9 +56,9 @@ export const updateOrCreateUser = internalMutation({
     const userRecord = await userQuery(ctx, clerkUser.id);
 
     if (userRecord === null) {
-      await ctx.db.insert("users", { clerkUser });
+      await ctx.db.insert("users", { clerkUser, clerkId: clerkUser.id });
     } else {
-      await ctx.db.patch(userRecord._id, { clerkUser });
+      await ctx.db.patch(userRecord._id, { clerkUser, clerkId: clerkUser.id });
     }
   },
 });
