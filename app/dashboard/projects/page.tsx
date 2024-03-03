@@ -8,9 +8,16 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { NewProjectForm } from "@/components/projects/project-creation-form";
 import { ProjectList } from "@/components/projects/project-list";
+import { Doc } from "@/convex/_generated/dataModel";
 
 export default function ProjectListPage() {
-  const projects = useQuery(api.projects.list, {});
+  let projects: Array<Doc<"projects">> | undefined;
+
+  try {
+    projects = useQuery(api.projects.list, {});
+  } catch (e) {
+    throw e;
+  }
 
   const statusOptions = ["In Progress", "Next Up", "Consideration"];
 

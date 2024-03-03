@@ -9,10 +9,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { TaskList } from "@/components/tasks/task-list";
 
+import { Doc } from "@/convex/_generated/dataModel";
+
 export default function Component() {
   const { userId } = useAuth();
+  let tasks: Array<Doc<"tasks">> | undefined;
 
-  const tasks = useQuery(api.tasks.list, {});
+  try {
+    tasks = useQuery(api.tasks.list, {});
+  } catch (e) {
+    throw e;
+  }
 
   const userTasks = tasks?.filter((task) =>
     task.assignees?.find((assignee) => assignee == userId)

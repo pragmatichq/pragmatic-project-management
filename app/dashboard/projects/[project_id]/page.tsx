@@ -15,6 +15,7 @@ export default function SingleProjectPage({
   params: { project_id: Id<"projects"> };
 }) {
   let project: Doc<"projects"> | undefined;
+  let tasks: Array<Doc<"tasks">> | undefined;
 
   try {
     project = useQuery(api.projects.get, {
@@ -28,9 +29,13 @@ export default function SingleProjectPage({
     }
   }
 
-  const tasks = useQuery(api.tasks.list, {
-    project: params.project_id,
-  });
+  try {
+    tasks = useQuery(api.tasks.list, {
+      project: params.project_id,
+    });
+  } catch (e) {
+    throw e;
+  }
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">

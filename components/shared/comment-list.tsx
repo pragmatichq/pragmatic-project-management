@@ -1,4 +1,11 @@
-import React from "react";
+import React, { useMemo, useRef, useEffect } from "react";
+
+import { useForm } from "react-hook-form";
+
+import { formatDistance } from "date-fns";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -6,25 +13,11 @@ import { Form, FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { useQuery } from "convex/react";
-
+import { Id, Doc } from "@/convex/_generated/dataModel";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 import { useOrganization } from "@clerk/nextjs";
-
-import { useMemo, useRef, useEffect } from "react";
-
-import { formatDistance } from "date-fns";
-
-import { useMutation } from "convex/react";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useForm } from "react-hook-form";
-
-import { Id } from "@/convex/_generated/dataModel";
-
-import * as z from "zod";
 
 export function CommentList({
   parent,
@@ -32,11 +25,16 @@ export function CommentList({
   parent: Id<"tasks"> | Id<"discussions">;
 }) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
+  let comments: Array<Doc<"comments">> | undefined;
 
-  const comments = useQuery(
-    api.comments.list,
-    parent ? { parent: parent } : "skip"
-  );
+  try {
+    comments = useQuery(
+      api.comments.list,
+      parent ? { parent: parent } : "skip"
+    );
+  } catch (e) {
+    throw e;
+  }
 
   const commentsWithAuthor = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
@@ -52,6 +50,23 @@ export function CommentList({
       })
       .filter((comment) => comment.author !== null);
   }, [comments, memberships, isLoaded]);
+
+  const commentBox = useRef<HTMLDivElement>(null);
+  const scrollToBottom = () => {
+    if (commentBox.current) {
+      commentBox.current.scrollIntoView({
+        behavior: "instant",
+        block: "end",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (commentBox.current) {
+      scrollToBottom();
+    }
+    console.log("Fired");
+  }, [commentsWithAuthor]);
 
   const formSchema = z.object({
     message: z.string().min(2, {
@@ -75,23 +90,6 @@ export function CommentList({
     });
     form.reset();
   }
-
-  const commentBox = useRef<null | HTMLDivElement>(null);
-  const scrollToBottom = () => {
-    if (commentBox.current) {
-      commentBox.current.scrollIntoView({
-        behavior: "instant",
-        block: "end",
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (commentBox.current) {
-      scrollToBottom();
-    }
-    console.log("Fired");
-  }, [commentsWithAuthor]);
 
   return (
     <div>
