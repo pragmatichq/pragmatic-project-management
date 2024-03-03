@@ -21,7 +21,7 @@ import { Doc } from "@/convex/_generated/dataModel";
 
 import { Id } from "@/convex/_generated/dataModel";
 
-interface ActiveTask {
+export interface ActiveTask {
   _id: Id<"tasks">;
   title: string;
   projectDetails: {

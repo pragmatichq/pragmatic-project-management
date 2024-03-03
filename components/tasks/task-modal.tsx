@@ -14,19 +14,7 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { FlagSelector } from "@/components/shared/flag-selector";
 import { CommentList } from "@/components/shared/comment-list";
 
-import { Id } from "@/convex/_generated/dataModel";
-
-interface ActiveTask {
-  _id: Id<"tasks">;
-  title: string;
-  projectDetails: {
-    title: string;
-  };
-  status: string;
-  flags: string[];
-  assignees: string[];
-  dueDate: string;
-}
+import type { ActiveTask } from "./task-list";
 
 interface TaskModalProps {
   activeTask: ActiveTask | null;
