@@ -5,7 +5,7 @@ export default defineSchema({
   users: defineTable({
     clerkUser: v.any(),
     clerkId: v.optional(v.string()),
-  }).index("by_clerk_id", ["clerkUser.id"]),
+  }).index("by_clerk_id", ["clerkId"]),
   organizations: defineTable({
     clerkOrganization: v.any(),
     clerkId: v.optional(v.string()),
@@ -13,28 +13,22 @@ export default defineSchema({
   projects: defineTable({
     title: v.string(),
     organization: v.string(),
+    last_updated: v.string(),
     status: v.string(),
-  }).index("by_title", ["title"]),
-  tasks: defineTable({
-    title: v.string(),
-    project: v.string(),
-    organization: v.string(),
-    status: v.string(),
+    parent: v.optional(v.id("projects")),
+    description: v.optional(v.string()),
+    time_frame: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
-    assignees: v.optional(v.array(v.string())),
     dueDate: v.optional(v.string()),
-  }).index("by_organization_project", ["organization", "project"]),
-  discussions: defineTable({
-    title: v.string(),
-    date: v.string(),
+  }).index("by_organization", ["organization"]),
+  assignees: defineTable({
     organization: v.string(),
-    project: v.string(),
-    author: v.string(),
-  }).index("by_project", ["project"]),
-  comments: defineTable({
-    author: v.string(),
+    project: v.id("projects"),
+    user: v.id("users"),
+  }).index("by_organization", ["organization"]),
+  requesters: defineTable({
     organization: v.string(),
-    text: v.string(),
-    parent: v.union(v.id("tasks"), v.id("discussions")),
-  }).index("by_organization_parent", ["organization", "parent"]),
+    project: v.id("projects"),
+    user: v.id("users"),
+  }).index("by_organization", ["organization"]),
 });

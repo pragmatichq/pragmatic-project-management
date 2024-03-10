@@ -19,7 +19,7 @@ export default function ProjectListPage() {
     throw e;
   }
 
-  const statusOptions = ["In Progress", "On Hold", "Done"];
+  const statusOptions = ["Triage"];
 
   const filteredProjects = statusOptions.map((status) => ({
     status,
@@ -31,7 +31,7 @@ export default function ProjectListPage() {
       <section className="p-5">
         <Card>
           <CardHeader>
-            <CardTitle>Projects</CardTitle>
+            <CardTitle>Broadcasts</CardTitle>
           </CardHeader>
           <CardContent>
             {filteredProjects ? (

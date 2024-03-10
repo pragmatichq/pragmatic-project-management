@@ -85,7 +85,7 @@ export function ProjectList({ projects, headerName }: ProjectListProps) {
                     <StatusSelector
                       currentStatus={project.status}
                       projectID={project._id}
-                      statuses={["In Progress", "Next Up", "Consideration"]}
+                      statuses={["In Progress", "On Hold", "Done"]}
                     />
                   </TableCell>
                   <TableCell className="w-16">

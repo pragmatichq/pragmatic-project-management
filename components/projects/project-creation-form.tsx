@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { Plus } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export function NewProjectForm({}: {}) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -35,12 +36,14 @@ export function NewProjectForm({}: {}) {
     title: z.string().min(2, {
       message: "Project title must be at least 2 characters.",
     }),
+    description: z.string(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      description: "",
     },
   });
 
@@ -49,6 +52,7 @@ export function NewProjectForm({}: {}) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await createProject({
       title: values.title,
+      description: values.description,
     });
     form.reset();
     setIsOpen(false);
@@ -79,6 +83,22 @@ export function NewProjectForm({}: {}) {
                   <FormLabel>Project Title</FormLabel>
                   <FormControl>
                     <Input placeholder="Project title..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Project Title</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe your suggestion..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

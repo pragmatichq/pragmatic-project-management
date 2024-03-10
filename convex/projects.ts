@@ -51,6 +51,7 @@ export const get = query({
 export const create = mutation({
   args: {
     title: v.string(),
+    description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -59,13 +60,17 @@ export const create = mutation({
       throw new Error("Not authenticated");
     }
 
+    const userId = identity.subject;
+
     // This is hacked together because Convex only allows standard claims
     const organization = identity.language!;
 
     await ctx.db.insert("projects", {
       title: args.title,
+      description: args.description,
       organization: organization,
-      status: "In Progress",
+      requester: [userId],
+      status: "Triage",
     });
   },
 });
