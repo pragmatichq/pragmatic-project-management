@@ -47,7 +47,7 @@ export function NewProjectForm({}: {}) {
     },
   });
 
-  const createProject = useMutation(api.projects.create);
+  const createProject = useMutation(api.tasks.create);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await createProject({

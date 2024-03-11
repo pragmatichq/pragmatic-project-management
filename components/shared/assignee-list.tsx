@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
 import type { OrganizationMembershipResource } from "@clerk/types";
-import { GenericId } from "convex/values";
 import { api } from "@/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";

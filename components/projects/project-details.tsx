@@ -7,10 +7,9 @@ import { Doc } from "@/convex/_generated/dataModel";
 
 interface ProjectDetailsProps {
   project: Doc<"projects">;
-  tasks: Array<Doc<"tasks">>;
 }
 
-export function ProjectDetails({ project, tasks }: ProjectDetailsProps) {
+export function ProjectDetails({ project }: ProjectDetailsProps) {
   return (
     <div>
       <div className="flex items-center">
@@ -35,9 +34,7 @@ export function ProjectDetails({ project, tasks }: ProjectDetailsProps) {
             <CardHeader>
               <CardTitle>Tasks</CardTitle>
             </CardHeader>
-            <CardContent>
-              <TaskList tasks={tasks} />
-            </CardContent>
+            <CardContent></CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="discussions">

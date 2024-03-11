@@ -10,15 +10,14 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ProjectDetails } from "@/components/projects/project-details";
 
 interface SingleProjectPageProps {
-  params: { project_id: Id<"projects"> };
+  params: { project_id: Id<"tasks"> };
 }
 
 export default function SingleProjectPage({ params }: SingleProjectPageProps) {
-  let project: Doc<"projects"> | undefined;
-  let tasks: Array<Doc<"tasks">> | undefined;
+  let project: Doc<"tasks"> | undefined;
 
   try {
-    project = useQuery(api.projects.get, {
+    project = useQuery(api.tasks.get, {
       id: params.project_id,
     });
   } catch (e) {
@@ -29,21 +28,9 @@ export default function SingleProjectPage({ params }: SingleProjectPageProps) {
     }
   }
 
-  try {
-    tasks = useQuery(api.tasks.list, {
-      project: params.project_id,
-    });
-  } catch (e) {
-    throw e;
-  }
-
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-      {!project || !tasks ? (
-        <LoadingSpinner />
-      ) : (
-        <ProjectDetails project={project} tasks={tasks} />
-      )}
+      {!project ? <LoadingSpinner /> : <ProjectDetails project={project} />}
     </main>
   );
 }

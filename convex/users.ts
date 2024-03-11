@@ -85,7 +85,7 @@ export async function userQuery(
 ): Promise<(Omit<Doc<"users">, "clerkUser"> & { clerkUser: UserJSON }) | null> {
   return await ctx.db
     .query("users")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkUser.id", clerkUserId))
+    .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkUserId))
     .unique();
 }
 

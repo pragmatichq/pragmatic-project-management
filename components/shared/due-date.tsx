@@ -42,7 +42,7 @@ export function DueDate({ task, dueDate }: DueDateProps) {
     async function handleDueDateChange(date: Date | undefined) {
       await updateTaskDueDate({
         id: task,
-        dueDate: date ? date.toISOString() : "",
+        due_date: date ? date.toISOString() : "",
       });
     }
 

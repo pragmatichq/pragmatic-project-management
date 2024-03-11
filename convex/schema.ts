@@ -5,30 +5,40 @@ export default defineSchema({
   users: defineTable({
     clerkUser: v.any(),
     clerkId: v.optional(v.string()),
-  }).index("by_clerk_id", ["clerkId"]),
+  }).index("by_clerkId", ["clerkId"]),
   organizations: defineTable({
     clerkOrganization: v.any(),
     clerkId: v.optional(v.string()),
-  }).index("by_clerk_id", ["clerkId"]),
+  }).index("by_clerkId", ["clerkId"]),
   projects: defineTable({
     title: v.string(),
-    organization: v.string(),
+  }),
+  tasks: defineTable({
+    title: v.string(),
+    organization: v.id("organizations"),
     last_updated: v.string(),
     status: v.string(),
-    parent: v.optional(v.id("projects")),
+    project: v.optional(v.id("projects")),
     description: v.optional(v.string()),
     time_frame: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
-    dueDate: v.optional(v.string()),
+    due_date: v.optional(v.string()),
+    is_archived: v.boolean(),
   }).index("by_organization", ["organization"]),
-  assignees: defineTable({
-    organization: v.string(),
-    project: v.id("projects"),
+  comments: defineTable({
+    parent: v.id("tasks"),
+    organization: v.id("organizations"),
+    text: v.string(),
+    author: v.id("users"),
+  }).index("by_organization_parent", ["organization", "parent"]),
+  taskAssignees: defineTable({
+    organization: v.id("organizations"),
+    project: v.id("tasks"),
     user: v.id("users"),
   }).index("by_organization", ["organization"]),
-  requesters: defineTable({
-    organization: v.string(),
-    project: v.id("projects"),
+  taskRequesters: defineTable({
+    organization: v.id("organizations"),
+    project: v.id("tasks"),
     user: v.id("users"),
   }).index("by_organization", ["organization"]),
 });

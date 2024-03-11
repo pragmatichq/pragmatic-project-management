@@ -26,9 +26,9 @@ import {
 export default function Template({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const projects = useQuery(api.projects.list, {});
+  const tasks = useQuery(api.tasks.list, {});
 
-  const filteredProjects = projects?.filter(
+  const filteredtasks = tasks?.filter(
     (project) => project.status === "In Progress"
   );
 
@@ -62,12 +62,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
               >
                 <div className="flex">
                   <Link
-                    href="/dashboard/projects/"
+                    href="/dashboard/tasks/"
                     onClick={() => setIsOpen(true)}
                     className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full"
                   >
                     <FolderIcon className="w-5 h-5 mr-3" />
-                    Active Projects
+                    Active tasks
                   </Link>
                   <CollapsibleTrigger className="ml-auto">
                     <ChevronDownIcon className="h-5 w-5 rounded text-gray-600 hover:text-gray-900 hover:bg-gray-200 group-data-[state=closed]:-rotate-90 group-data-[state=open]:rotate-0" />
@@ -76,19 +76,19 @@ export default function Template({ children }: { children: React.ReactNode }) {
                 <CollapsibleContent>
                   <Link
                     className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full"
-                    href={"/dashboard/projects/"}
+                    href={"/dashboard/tasks/"}
                   >
-                    <span className="ml-6">All Active Projects</span>
+                    <span className="ml-6">All Active tasks</span>
                   </Link>
-                  {filteredProjects?.length == 0 ? (
+                  {filteredtasks?.length == 0 ? (
                     <div className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 ml-6">
-                      No Projects
+                      No tasks
                     </div>
                   ) : (
-                    filteredProjects?.map((project) => (
+                    filteredtasks?.map((project) => (
                       <Link
                         className="group flex items-center px-2 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-md dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700 w-full"
-                        href={"/dashboard/projects/" + project._id}
+                        href={"/dashboard/tasks/" + project._id}
                         key={project._id}
                       >
                         <span className="ml-6">{project.title}</span>

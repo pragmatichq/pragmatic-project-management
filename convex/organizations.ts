@@ -70,7 +70,7 @@ export async function organizationQuery(
 > {
   return await ctx.db
     .query("organizations")
-    .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkOrganizationId))
+    .withIndex("by_clerkId", (q) => q.eq("clerkId", clerkOrganizationId))
     .unique();
 }
 
