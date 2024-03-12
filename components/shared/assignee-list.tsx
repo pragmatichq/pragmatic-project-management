@@ -80,7 +80,7 @@ export function AssigneeList({ task, assignees }: AssigneeListProps) {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="p-1 h-auto rounded-sm">
+          <Button variant="ghost" className="p-1 h-auto rounded-sm w-full">
             <AvatarGroup limit={2}>
               <AvatarGroupList>
                 {assigneeDetails.length === 0 ? (

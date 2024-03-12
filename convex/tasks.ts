@@ -153,6 +153,7 @@ export const update = mutation({
     id: v.id("tasks"),
     status: v.optional(v.string()),
     due_date: v.optional(v.string()),
+    flags: v.optional(v.array(v.string())),
   },
 
   handler: async (ctx, args) => {

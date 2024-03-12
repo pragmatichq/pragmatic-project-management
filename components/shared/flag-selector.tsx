@@ -59,7 +59,7 @@ export function FlagSelector({ flags, task }: flagListProps) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="p-1 h-auto rounded-sm flex flex-col gap-1"
+            className="p-1 h-auto rounded-sm flex flex-col gap-1 w-full"
           >
             {!currentFlags || currentFlags?.length === 0 ? (
               <div className="h-8 w-8">-</div>
@@ -82,7 +82,7 @@ export function FlagSelector({ flags, task }: flagListProps) {
           {flagsList.map((flag, index) => (
             <DropdownMenuCheckboxItem
               key={flag.title ?? `currentFlags-placeholder-${index}`}
-              checked={currentFlags?.includes(flag.title!) ?? ""}
+              checked={currentFlags?.includes(flag.title) ?? ""}
               onCheckedChange={(checked) => {
                 if (flag.title) {
                   handleCheckedChange(checked, flag.title);

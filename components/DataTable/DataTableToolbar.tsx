@@ -5,35 +5,51 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 
 import {
-  ArrowRightIcon,
-  ArrowDownIcon,
-  CircleIcon,
-  QuestionMarkCircledIcon,
-} from "@radix-ui/react-icons";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "../ui/dropdown-menu";
+
+import { useOrganization } from "@clerk/nextjs";
+
+import { useMemo } from "react";
+
+import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 
 const statuses = [
   {
-    value: "Backlog",
-    label: "Backlog",
-    icon: QuestionMarkCircledIcon,
+    value: "Triage",
   },
   {
-    value: "Triage",
-    label: "Triage",
-    icon: CircleIcon,
+    value: "In Progress",
+  },
+  {
+    value: "Next Up",
+  },
+  {
+    value: "Consideration",
   },
 ];
 
-const priorities = [
+const time_frames = [
   {
-    label: "Today",
     value: "Today",
-    icon: ArrowDownIcon,
   },
   {
-    label: "Next Week",
-    value: "Next week",
-    icon: ArrowRightIcon,
+    value: "Next Week",
+  },
+];
+
+const flags = [
+  {
+    value: "Ready for Review",
+  },
+  {
+    value: "Need Information",
   },
 ];
 
@@ -46,7 +62,23 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
+  const { memberships, isLoaded } = useOrganization({ memberships: true });
+
+  const assignees = useMemo(() => {
+    if (!isLoaded || !memberships?.data) return [];
+    return memberships.data.map((member) => ({
+      value: member.publicUserData.userId,
+      name: `${member.publicUserData.firstName} ${member.publicUserData.lastName}`,
+    })) as { value: string }[];
+  }, [memberships, isLoaded]);
+
   const isFiltered = table.getState().columnFilters.length > 0;
+  const currentGrouping = table.getState().grouping[0] || "";
+
+  const handleGroupingChange = (value: string) => {
+    const newGrouping = value === "" ? [] : [value];
+    table.setGrouping(newGrouping);
+  };
 
   return (
     <div className="flex items-center justify-between py-4">
@@ -70,7 +102,23 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("time_frame")}
             title="Time Frames"
-            options={priorities}
+            options={time_frames}
+          />
+        )}
+
+        {table.getColumn("flags") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("flags")}
+            title="Flags"
+            options={flags}
+          />
+        )}
+
+        {table.getColumn("assignees") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("assignees")}
+            title="Assignees"
+            options={assignees}
           />
         )}
         {isFiltered && (
@@ -84,6 +132,32 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto hidden h-8 lg:flex"
+          >
+            <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+            Group By
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Group By</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup
+            value={currentGrouping}
+            onValueChange={handleGroupingChange}
+          >
+            <DropdownMenuRadioItem value="">None</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="status">Status</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="time_frame">
+              Time Frame
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
