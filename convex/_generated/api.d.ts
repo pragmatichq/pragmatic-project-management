@@ -17,6 +17,7 @@ import type {
 import type * as comments from "../comments.js";
 import type * as http from "../http.js";
 import type * as organizations from "../organizations.js";
+import type * as taskAssignees from "../taskAssignees.js";
 import type * as tasks from "../tasks.js";
 import type * as users from "../users.js";
 
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   comments: typeof comments;
   http: typeof http;
   organizations: typeof organizations;
+  taskAssignees: typeof taskAssignees;
   tasks: typeof tasks;
   users: typeof users;
 }>;

@@ -1,6 +1,11 @@
-import { query, mutation, QueryCtx } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { getOneFromOrThrow } from "convex-helpers/server/relationships.js";
+import {
+  getOneFromOrThrow,
+  getManyFrom,
+} from "convex-helpers/server/relationships.js";
+
+import { asyncMap } from "convex-helpers";
 
 export const list = query({
   args: {},
@@ -23,13 +28,35 @@ export const list = query({
       .query("tasks")
       .withIndex("by_organization")
       .filter((q) => q.eq(q.field("organization"), organization._id))
-      .take(100);
+      .collect();
+
+    for (let task of tasks) {
+      const taskAssignees = await ctx.db
+        .query("taskAssignees")
+        .filter((q) => q.eq(q.field("task"), task._id))
+        .collect();
+
+      const assignees = [];
+      for (let taskAssignee of taskAssignees) {
+        const user = await ctx.db
+          .query("users")
+          .filter((q) => q.eq(q.field("_id"), taskAssignee.user))
+          .unique(); // Assuming there's a Users collection with a userId field that matches taskAssignee's userId
+
+        if (user) {
+          assignees.push(user.clerkId); // Assuming the user object has a clerkID field
+        }
+      }
+
+      (task as any).assignees = assignees;
+    }
+
     return tasks;
   },
 });
 
 export const get = query({
-  args: { id: v.id("tasks") },
+  args: { taskId: v.id("tasks") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -45,7 +72,7 @@ export const get = query({
       identity.language
     );
 
-    const existingProject = await ctx.db.get(args.id);
+    const existingProject = await ctx.db.get(args.taskId);
 
     if (!existingProject) {
       throw new Error("Not found");
@@ -145,20 +172,21 @@ export const update = mutation({
 
     const { id, ...rest } = args;
 
-    const existingProject = await ctx.db.get(args.id);
+    const existingTask = await ctx.db.get(args.id);
 
-    if (!existingProject) {
+    if (!existingTask) {
       throw new Error("Not found");
     }
 
-    if (existingProject.organization !== organization._id) {
+    if (existingTask.organization !== organization._id) {
       throw new Error("Unauthorized");
     }
 
-    const project = await ctx.db.patch(args.id, {
+    const task = await ctx.db.patch(args.id, {
+      last_updated: new Date().toISOString(),
       ...rest,
     });
 
-    return project;
+    return task;
   },
 });

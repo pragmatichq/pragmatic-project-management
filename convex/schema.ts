@@ -33,12 +33,12 @@ export default defineSchema({
   }).index("by_organization_parent", ["organization", "parent"]),
   taskAssignees: defineTable({
     organization: v.id("organizations"),
-    project: v.id("tasks"),
+    task: v.id("tasks"),
     user: v.id("users"),
-  }).index("by_organization", ["organization"]),
+  }).index("by_task", ["task"]),
   taskRequesters: defineTable({
     organization: v.id("organizations"),
-    project: v.id("tasks"),
+    task: v.id("tasks"),
     user: v.id("users"),
-  }).index("by_organization", ["organization"]),
+  }).index("by_organization_task", ["organization", "task"]),
 });

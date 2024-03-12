@@ -24,14 +24,16 @@ import {
 import { Id } from "@/convex/_generated/dataModel";
 
 interface AssigneeListProps {
-  assignees: Array<string>;
   task: Id<"tasks">;
+  assignees: string[];
 }
 
-export function AssigneeList({ assignees, task }: AssigneeListProps) {
+export function AssigneeList({ task, assignees }: AssigneeListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
-
   const [checkedList, setChecked] = useState(assignees);
+
+  const createTaskAssignee = useMutation(api.taskAssignees.create);
+  const deleteTaskAssignee = useMutation(api.taskAssignees.remove);
 
   const assigneeDetails = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
@@ -45,19 +47,32 @@ export function AssigneeList({ assignees, task }: AssigneeListProps) {
         (member): member is OrganizationMembershipResource =>
           member !== undefined
       );
-  }, [assignees, memberships, isLoaded]);
+  }, [checkedList, memberships, isLoaded]);
 
   useEffect(() => {
-    setChecked(assignees);
+    // Only update checkedList if there's a difference
+    const assigneesSet = new Set(assignees);
+    const checkedListSet = new Set(checkedList);
+    const areSetsDifferent =
+      assigneesSet.size !== checkedListSet.size ||
+      [...assigneesSet].some((item) => !checkedListSet.has(item));
+
+    if (areSetsDifferent) {
+      setChecked(assignees);
+    }
   }, [assignees]);
 
-  const updateAssignees = useMutation(api.tasks.update);
-
   const handleCheckedChange = async (checked: boolean, member: string) => {
-    let updatedList = checked
+    if (checked) {
+      await createTaskAssignee({ taskId: task, userClerkId: member });
+    } else {
+      await deleteTaskAssignee({ taskId: task, userClerkId: member });
+    }
+
+    // Optimistically update the checkedList
+    const updatedList = checked
       ? [...checkedList, member]
       : checkedList.filter((item) => item !== member);
-    await updateAssignees({ id: task, assignees: updatedList });
     setChecked(updatedList);
   };
 
@@ -97,7 +112,8 @@ export function AssigneeList({ assignees, task }: AssigneeListProps) {
                 member.publicUserData.userId ?? `member-placeholder-${index}`
               }
               checked={
-                checkedList.includes(member.publicUserData.userId!) ?? ""
+                checkedList.includes(member.publicUserData.userId as string) ??
+                ""
               }
               onCheckedChange={(checked) => {
                 if (member.publicUserData.userId) {
