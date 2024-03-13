@@ -1,11 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import {
-  getOneFromOrThrow,
-  getManyFrom,
-} from "convex-helpers/server/relationships.js";
-
-import { asyncMap } from "convex-helpers";
+import { getOneFromOrThrow } from "convex-helpers/server/relationships.js";
 
 export const list = query({
   args: {},
@@ -41,10 +36,10 @@ export const list = query({
         const user = await ctx.db
           .query("users")
           .filter((q) => q.eq(q.field("_id"), taskAssignee.user))
-          .unique(); // Assuming there's a Users collection with a userId field that matches taskAssignee's userId
+          .unique();
 
         if (user) {
-          assignees.push(user.clerkId); // Assuming the user object has a clerkID field
+          assignees.push(user.clerkId);
         }
       }
 
@@ -72,17 +67,36 @@ export const get = query({
       identity.language
     );
 
-    const existingProject = await ctx.db.get(args.taskId);
+    const existingTask = await ctx.db.get(args.taskId);
 
-    if (!existingProject) {
+    if (!existingTask) {
       throw new Error("Not found");
     }
 
-    if (existingProject.organization !== organization._id) {
+    if (existingTask.organization !== organization._id) {
       throw new Error("Unauthorized");
     }
 
-    return existingProject;
+    const taskAssignees = await ctx.db
+      .query("taskAssignees")
+      .filter((q) => q.eq(q.field("task"), existingTask._id))
+      .collect();
+
+    const assignees = [];
+    for (let taskAssignee of taskAssignees) {
+      const user = await ctx.db
+        .query("users")
+        .filter((q) => q.eq(q.field("_id"), taskAssignee.user))
+        .unique();
+
+      if (user) {
+        assignees.push(user.clerkId);
+      }
+    }
+
+    (existingTask as any).assignees = assignees;
+
+    return existingTask;
   },
 });
 

@@ -24,11 +24,11 @@ import {
 import { Id } from "@/convex/_generated/dataModel";
 
 interface AssigneeListProps {
-  task: Id<"tasks">;
+  taskId: Id<"tasks">;
   assignees: string[];
 }
 
-export function AssigneeList({ task, assignees }: AssigneeListProps) {
+export function AssigneeList({ taskId, assignees }: AssigneeListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
   const [checkedList, setChecked] = useState(assignees);
 
@@ -64,9 +64,9 @@ export function AssigneeList({ task, assignees }: AssigneeListProps) {
 
   const handleCheckedChange = async (checked: boolean, member: string) => {
     if (checked) {
-      await createTaskAssignee({ taskId: task, userClerkId: member });
+      await createTaskAssignee({ taskId: taskId, userClerkId: member });
     } else {
-      await deleteTaskAssignee({ taskId: task, userClerkId: member });
+      await deleteTaskAssignee({ taskId: taskId, userClerkId: member });
     }
 
     // Optimistically update the checkedList

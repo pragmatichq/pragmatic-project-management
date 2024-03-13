@@ -8,8 +8,8 @@ import { formatDistanceToNow } from "date-fns";
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { DataTable } from "@/components/DataTable/DataTable";
-import { DataTableColumnHeader } from "@/components/DataTable/DataTableColumnHeader";
+import { DataTable } from "@/components/TaskTable/DataTable";
+import { DataTableColumnHeader } from "@/components/TaskTable/DataTableColumnHeader";
 
 import React, { useMemo } from "react";
 
@@ -32,6 +32,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FlagSelector } from "@/components/shared/flag-selector";
 import { StatusSelector } from "@/components/shared/status-selector";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default function taskListPage() {
   let tasks: Array<Doc<"tasks">> = useQuery(api.tasks.list, {}) || [];
@@ -43,10 +44,23 @@ export default function taskListPage() {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Title" />
         ),
+        cell: (info) => {
+          const value = info.getValue();
+          if (typeof value === "string") {
+            return (
+              <Link href={`/dashboard/task/${info.row.original._id}`}>
+                {value}
+              </Link>
+            );
+          }
+          return "N/A";
+        },
       },
       {
         accessorKey: "status",
-        header: "Status",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Status" />
+        ),
         cell: (info) => {
           const value = info.getValue();
           if (typeof value === "string") {
@@ -65,7 +79,10 @@ export default function taskListPage() {
       },
       {
         accessorKey: "time_frame",
-        header: "Time Frame",
+
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Time Frame" />
+        ),
         cell: (info) => {
           const value = info.getValue();
           if (typeof value === "string") {
@@ -128,7 +145,9 @@ export default function taskListPage() {
       },
       {
         accessorKey: "assignees",
-        header: "Assignees",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Assignees" />
+        ),
         cell: (info) => {
           const assigneesValue = info.getValue();
           const isArrayOfStrings =
@@ -138,7 +157,7 @@ export default function taskListPage() {
           if (isArrayOfStrings) {
             return (
               <AssigneeList
-                task={info.row.original._id}
+                taskId={info.row.original._id}
                 assignees={assigneesValue}
               />
             );

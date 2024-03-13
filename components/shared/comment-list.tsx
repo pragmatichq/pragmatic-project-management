@@ -20,7 +20,7 @@ import { api } from "@/convex/_generated/api";
 import { useOrganization } from "@clerk/nextjs";
 
 interface CommentListProps {
-  parent: Id<"tasks"> | Id<"discussions">;
+  parent: Id<"tasks">;
 }
 
 export function CommentList({ parent }: CommentListProps) {
@@ -41,7 +41,8 @@ export function CommentList({ parent }: CommentListProps) {
     return comments
       ?.map((comment) => {
         const author = memberships.data.find(
-          (member) => member.publicUserData.userId === comment.author
+          (member) =>
+            member.publicUserData.userId === (comment as any).authorClerkId
         );
         return {
           ...comment,
@@ -50,6 +51,8 @@ export function CommentList({ parent }: CommentListProps) {
       })
       .filter((comment) => comment.author !== null);
   }, [comments, memberships, isLoaded]);
+
+  console.log(commentsWithAuthor);
 
   const commentBox = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
