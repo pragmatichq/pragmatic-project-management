@@ -7,7 +7,7 @@ import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 import { TaskDetails } from "@/components/tasks/TaskDetails";
 
@@ -35,12 +35,15 @@ export default function SingleTaskPage({ params }: SingleTaskPageProps) {
   }
 
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-      {!task ? (
-        <LoadingSpinner />
-      ) : (
-        <TaskDetails task={task as TaskWithAssignees} />
-      )}
-    </main>
+    <Card className="mx-4">
+      <CardHeader>Task</CardHeader>
+      <CardContent>
+        {!task ? (
+          <LoadingSpinner />
+        ) : (
+          <TaskDetails task={task as TaskWithAssignees} />
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -1,9 +1,8 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+"use client";
 
 import { FileEditIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 import { DueDate } from "@/components/shared/due-date";
@@ -15,6 +14,7 @@ import { FlagSelector } from "@/components/shared/flag-selector";
 import { CommentList } from "@/components/shared/comment-list";
 
 import { Doc } from "@/convex/_generated/dataModel";
+import Tiptap from "../Editor";
 
 interface TaskWithAssignees extends Doc<"tasks"> {
   assignees: string[];
@@ -26,7 +26,7 @@ interface TaskModalProps {
 
 export function TaskDetails({ task }: TaskModalProps) {
   return (
-    <div>
+    <div className="flex gap-4">
       <div className="grow grid gap-4 auto-rows-min">
         <div>
           <div className="flex flex-row">
@@ -37,10 +37,7 @@ export function TaskDetails({ task }: TaskModalProps) {
             </Button>
           </div>
         </div>
-        <Textarea
-          className="min-h-[100px]"
-          placeholder="Add your description here."
-        />
+        <Tiptap />
         <Tabs defaultValue="comments">
           <TabsList>
             <TabsTrigger value="comments">Comments</TabsTrigger>

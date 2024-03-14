@@ -52,8 +52,6 @@ export function CommentList({ parent }: CommentListProps) {
       .filter((comment) => comment.author !== null);
   }, [comments, memberships, isLoaded]);
 
-  console.log(commentsWithAuthor);
-
   const commentBox = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     if (commentBox.current) {
@@ -68,7 +66,6 @@ export function CommentList({ parent }: CommentListProps) {
     if (commentBox.current) {
       scrollToBottom();
     }
-    console.log("Fired");
   }, [commentsWithAuthor]);
 
   const formSchema = z.object({
