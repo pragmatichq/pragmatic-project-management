@@ -1,0 +1,76 @@
+import { EditorProvider } from "@tiptap/react";
+import Placeholder from "@tiptap/extension-placeholder";
+import React from "react";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
+import { Id } from "@/convex/_generated/dataModel";
+import StarterKit from "@tiptap/starter-kit";
+import Document from "@tiptap/extension-document";
+
+const CustomDocument = Document.extend({
+  content: "heading",
+});
+
+const extensions = [
+  CustomDocument,
+  StarterKit.configure({
+    document: false,
+    hardBreak: false,
+  }),
+  Placeholder.configure({
+    emptyEditorClass:
+      "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
+    placeholder: () => {
+      return "Add a title...";
+    },
+  }),
+];
+
+const editorProps = {
+  attributes: {
+    class: "prose max-w-full focus-visible:outline-none",
+  },
+};
+
+export function TaskTitleEditor({
+  taskId,
+  taskTitle,
+}: {
+  taskId: Id<"tasks">;
+  taskTitle: string;
+}) {
+  function debounce(
+    func: (...args: any[]) => void,
+    delay: number
+  ): (...args: any[]) => void {
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    return function (...args: any[]) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func(...args), delay);
+    };
+  }
+
+  const updateTask = useMutation(api.tasks.update);
+
+  const updateContent = (editor: any): void => {
+    let newTitle = editor.getJSON()?.content?.[0]?.content?.[0]?.text;
+    if (newTitle && taskId) {
+      updateTask({ id: taskId, title: newTitle });
+    }
+  };
+
+  const debouncedUpdateContent = debounce(updateContent, 800);
+
+  return (
+    <EditorProvider
+      editorProps={editorProps}
+      content={taskTitle}
+      extensions={extensions}
+      onUpdate={({ editor }) => {
+        debouncedUpdateContent(editor);
+      }}
+    >
+      {""}
+    </EditorProvider>
+  );
+}

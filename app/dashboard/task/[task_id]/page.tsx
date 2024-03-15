@@ -6,10 +6,10 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/UI/loading-spinner";
 
-import { TaskDetails } from "@/components/tasks/TaskDetails";
+import { TaskDetails } from "@/components/Task/TaskDetails";
+import { TaskTitleEditor } from "@/components/Editor/TaskTitleEditor";
 
 interface SingleTaskPageProps {
   params: { task_id: Id<"tasks"> };
@@ -35,15 +35,15 @@ export default function SingleTaskPage({ params }: SingleTaskPageProps) {
   }
 
   return (
-    <Card className="mx-4">
-      <CardHeader>Task</CardHeader>
-      <CardContent>
-        {!task ? (
-          <LoadingSpinner />
-        ) : (
+    <>
+      {!task ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <TaskTitleEditor taskTitle={task.title} taskId={task?._id} />
           <TaskDetails task={task as TaskWithAssignees} />
-        )}
-      </CardContent>
-    </Card>
+        </>
+      )}
+    </>
   );
 }

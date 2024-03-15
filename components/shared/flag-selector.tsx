@@ -3,15 +3,15 @@ import { useMutation } from "convex/react";
 import { Id } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/UI/button";
 
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "../ui/badge";
+} from "@/components/UI/dropdown-menu";
+import { Badge } from "../UI/badge";
 
 interface flagListProps {
   flags: Array<string>;

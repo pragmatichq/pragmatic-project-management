@@ -1,20 +1,16 @@
 "use client";
-
-import { FileEditIcon } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/UI/label";
 
 import { DueDate } from "@/components/shared/due-date";
 import { AssigneeList } from "@/components/shared/assignee-list";
 import { StatusSelector } from "@/components/shared/status-selector";
 
-import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/UI/tabs";
 import { FlagSelector } from "@/components/shared/flag-selector";
 import { CommentList } from "@/components/shared/comment-list";
 
 import { Doc } from "@/convex/_generated/dataModel";
-import Tiptap from "../Editor";
+import { TaskDescriptionEditor } from "@/components/Editor/TaskDescriptionEditor";
 
 interface TaskWithAssignees extends Doc<"tasks"> {
   assignees: string[];
@@ -28,16 +24,10 @@ export function TaskDetails({ task }: TaskModalProps) {
   return (
     <div className="flex gap-4">
       <div className="grow grid gap-4 auto-rows-min">
-        <div>
-          <div className="flex flex-row">
-            <h2 className="text-2xl font-bold mr-2">{task?.title}</h2>
-            <Button className="w-8 h-8" size="icon" variant="outline">
-              <FileEditIcon className="w-4 h-4" />
-              <span className="sr-only">Edit task</span>
-            </Button>
-          </div>
-        </div>
-        <Tiptap />
+        <TaskDescriptionEditor
+          taskId={task._id}
+          content={task.description as string}
+        />
         <Tabs defaultValue="comments">
           <TabsList>
             <TabsTrigger value="comments">Comments</TabsTrigger>

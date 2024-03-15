@@ -7,11 +7,11 @@ import { formatDistance } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Form, FormField } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/UI/scroll-area";
+import { Avatar, AvatarImage } from "@/components/UI/avatar";
+import { Form, FormField } from "@/components/UI/form";
+import { Button } from "@/components/UI/button";
+import { Input } from "@/components/UI/input";
 
 import { Id, Doc } from "@/convex/_generated/dataModel";
 import { useQuery, useMutation } from "convex/react";

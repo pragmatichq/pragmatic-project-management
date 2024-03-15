@@ -165,9 +165,11 @@ export const remove = mutation({
 export const update = mutation({
   args: {
     id: v.id("tasks"),
+    title: v.optional(v.string()),
     status: v.optional(v.string()),
     due_date: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
+    description: v.optional(v.string()),
   },
 
   handler: async (ctx, args) => {

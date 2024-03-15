@@ -18,7 +18,7 @@ import { DueDate } from "@/components/shared/due-date";
 
 import { MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/UI/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,12 +26,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/UI/dropdown-menu";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/UI/card";
 import { FlagSelector } from "@/components/shared/flag-selector";
 import { StatusSelector } from "@/components/shared/status-selector";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/UI/badge";
 import Link from "next/link";
 
 export default function taskListPage() {
@@ -216,18 +216,16 @@ export default function taskListPage() {
   );
 
   return (
-    <Card className="m-2">
-      <CardContent className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-        <div className="flex items-center justify-between space-y-2">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">All Tasks</h2>
-            <p className="text-muted-foreground">
-              Here's a list of all current tasks.
-            </p>
-          </div>
+    <>
+      <div className="flex items-center justify-between space-y-2">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">All Tasks</h2>
+          <p className="text-muted-foreground">
+            Here's a list of all current tasks.
+          </p>
         </div>
-        <DataTable data={tasks} columns={columns} />
-      </CardContent>
-    </Card>
+      </div>
+      <DataTable data={tasks} columns={columns} />
+    </>
   );
 }
