@@ -1,8 +1,8 @@
 import React from "react";
-import { Button } from "@/components/UI/button";
-import { Input } from "@/components/UI/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-} from "../UI/dropdown-menu";
+} from "../ui/dropdown-menu";
 
 import { useOrganization } from "@clerk/nextjs";
 

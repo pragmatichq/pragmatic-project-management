@@ -8,8 +8,8 @@ import { formatDistanceToNow } from "date-fns";
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { DataTable } from "@/components/TaskTable/DataTable";
-import { DataTableColumnHeader } from "@/components/TaskTable/DataTableColumnHeader";
+import { DataTable } from "@/components/task-table/data-table";
+import { DataTableColumnHeader } from "@/components/task-table/data-table-column-header";
 
 import React, { useMemo } from "react";
 
@@ -18,7 +18,7 @@ import { DueDate } from "@/components/shared/due-date";
 
 import { MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,12 +26,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/UI/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
-import { Card, CardContent } from "@/components/UI/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { FlagSelector } from "@/components/shared/flag-selector";
 import { StatusSelector } from "@/components/shared/status-selector";
-import { Badge } from "@/components/UI/badge";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export default function taskListPage() {

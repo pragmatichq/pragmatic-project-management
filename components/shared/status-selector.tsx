@@ -11,9 +11,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-} from "@/components/UI/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
-import { Badge } from "@/components/UI/badge";
+import { Badge } from "@/components/ui/badge";
 
 interface StatusSelectorProps {
   currentStatus: string;

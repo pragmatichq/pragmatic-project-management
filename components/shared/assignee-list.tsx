@@ -4,7 +4,7 @@ import { useOrganization } from "@clerk/nextjs";
 import type { OrganizationMembershipResource } from "@clerk/types";
 import { api } from "@/convex/_generated/api";
 
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 
 import {
   Avatar,
@@ -12,14 +12,14 @@ import {
   AvatarGroupList,
   AvatarImage,
   AvatarOverflowIndicator,
-} from "@/components/UI/avatar";
+} from "@/components/ui/avatar";
 
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/UI/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 import { Id } from "@/convex/_generated/dataModel";
 

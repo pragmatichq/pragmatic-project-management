@@ -6,10 +6,10 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 
-import { LoadingSpinner } from "@/components/UI/loading-spinner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-import { TaskDetails } from "@/components/Task/TaskDetails";
-import { TaskTitleEditor } from "@/components/Editor/TaskTitleEditor";
+import { TaskDetails } from "@/components/task/task-details";
+import { TaskTitleEditor } from "@/components/editor/task-title-editor";
 
 interface SingleTaskPageProps {
   params: { task_id: Id<"tasks"> };

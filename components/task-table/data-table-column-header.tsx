@@ -1,14 +1,14 @@
 import React from "react";
 import { Column } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/UI/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import {
   ArrowDownIcon,
   ArrowUpIcon,

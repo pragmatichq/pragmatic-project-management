@@ -1,16 +1,16 @@
 "use client";
-import { Label } from "@/components/UI/label";
+import { Label } from "@/components/ui/label";
 
 import { DueDate } from "@/components/shared/due-date";
 import { AssigneeList } from "@/components/shared/assignee-list";
 import { StatusSelector } from "@/components/shared/status-selector";
 
-import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/UI/tabs";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { FlagSelector } from "@/components/shared/flag-selector";
 import { CommentList } from "@/components/shared/comment-list";
 
 import { Doc } from "@/convex/_generated/dataModel";
-import { TaskDescriptionEditor } from "@/components/Editor/TaskDescriptionEditor";
+import { TaskDescriptionEditor } from "@/components/editor/task-description-editor";
 
 interface TaskWithAssignees extends Doc<"tasks"> {
   assignees: string[];

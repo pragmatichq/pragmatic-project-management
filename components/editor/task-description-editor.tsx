@@ -2,7 +2,7 @@ import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import React from "react";
-import { Button } from "../UI/button";
+import { Button } from "../ui/button";
 import {
   BoldIcon,
   ItalicIcon,
