@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   ColumnDef,
@@ -20,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTableToolbar } from "@/components/task-table/task-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

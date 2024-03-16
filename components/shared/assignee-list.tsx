@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
@@ -50,7 +52,6 @@ export function AssigneeList({ taskId, assignees }: AssigneeListProps) {
   }, [checkedList, memberships, isLoaded]);
 
   useEffect(() => {
-    // Only update checkedList if there's a difference
     const assigneesSet = new Set(assignees);
     const checkedListSet = new Set(checkedList);
     const areSetsDifferent =
@@ -69,7 +70,6 @@ export function AssigneeList({ taskId, assignees }: AssigneeListProps) {
       await deleteTaskAssignee({ taskId: taskId, userClerkId: member });
     }
 
-    // Optimistically update the checkedList
     const updatedList = checked
       ? [...checkedList, member]
       : checkedList.filter((item) => item !== member);
