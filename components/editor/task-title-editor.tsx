@@ -66,6 +66,11 @@ export function TaskTitleEditor({
       editorProps={editorProps}
       content={taskTitle}
       extensions={extensions}
+      onCreate={({ editor }) => {
+        editor.view.dom.setAttribute("spellcheck", "false");
+        editor.view.dom.setAttribute("autocomplete", "off");
+        editor.view.dom.setAttribute("autocapitalize", "off");
+      }}
       onUpdate={({ editor }) => {
         debouncedUpdateContent(editor);
       }}

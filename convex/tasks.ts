@@ -1,6 +1,9 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { getOneFromOrThrow } from "convex-helpers/server/relationships.js";
+import {
+  getOneFromOrThrow,
+  getManyVia,
+} from "convex-helpers/server/relationships.js";
 
 export const list = query({
   args: {},
@@ -26,21 +29,17 @@ export const list = query({
       .collect();
 
     for (let task of tasks) {
-      const taskAssignees = await ctx.db
-        .query("taskAssignees")
-        .filter((q) => q.eq(q.field("task"), task._id))
-        .collect();
+      const taskAssignees = await getManyVia(
+        ctx.db,
+        "taskAssignees",
+        "user",
+        "by_task",
+        task._id
+      );
 
       const assignees = [];
       for (let taskAssignee of taskAssignees) {
-        const user = await ctx.db
-          .query("users")
-          .filter((q) => q.eq(q.field("_id"), taskAssignee.user))
-          .unique();
-
-        if (user) {
-          assignees.push(user.clerkId);
-        }
+        assignees.push(taskAssignee?.clerkId);
       }
 
       (task as any).assignees = assignees;
@@ -77,21 +76,17 @@ export const get = query({
       throw new Error("Unauthorized");
     }
 
-    const taskAssignees = await ctx.db
-      .query("taskAssignees")
-      .filter((q) => q.eq(q.field("task"), existingTask._id))
-      .collect();
+    const taskAssignees = await getManyVia(
+      ctx.db,
+      "taskAssignees",
+      "user",
+      "by_task",
+      existingTask._id
+    );
 
     const assignees = [];
     for (let taskAssignee of taskAssignees) {
-      const user = await ctx.db
-        .query("users")
-        .filter((q) => q.eq(q.field("_id"), taskAssignee.user))
-        .unique();
-
-      if (user) {
-        assignees.push(user.clerkId);
-      }
+      assignees.push(taskAssignee?.clerkId);
     }
 
     (existingTask as any).assignees = assignees;

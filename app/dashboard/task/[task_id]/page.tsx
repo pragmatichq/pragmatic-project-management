@@ -9,7 +9,6 @@ import { Id, Doc } from "@/convex/_generated/dataModel";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { TaskDetails } from "@/components/task/task-details";
-import { TaskTitleEditor } from "@/components/editor/task-title-editor";
 
 interface SingleTaskPageProps {
   params: { task_id: Id<"tasks"> };
@@ -40,7 +39,6 @@ export default function SingleTaskPage({ params }: SingleTaskPageProps) {
         <LoadingSpinner />
       ) : (
         <>
-          <TaskTitleEditor taskTitle={task.title} taskId={task?._id} />
           <TaskDetails task={task as TaskWithAssignees} />
         </>
       )}

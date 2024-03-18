@@ -41,4 +41,10 @@ export default defineSchema({
     task: v.id("tasks"),
     user: v.id("users"),
   }).index("by_organization_task", ["organization", "task"]),
+  files: defineTable({
+    organization: v.id("organizations"),
+    storageId: v.id("_storage"),
+    filename: v.string(),
+    task: v.id("tasks"),
+  }).index("by_organization_task", ["organization", "task"]),
 });

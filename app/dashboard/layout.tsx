@@ -6,19 +6,42 @@ import {
 } from "@/components/ui/resizable";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel defaultSize={15}>
-        <nav className="h-screen overflow-scroll p-4">
-          <div>Hello</div>
-        </nav>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel>
-        <section className="h-screen overflow-scroll p-4">{children}</section>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+    <>
+      <ResizablePanelGroup
+        autoSaveId="mainLayout"
+        direction="horizontal"
+        className="items-stretch z-0"
+      >
+        <ResizablePanel defaultSize={11} minSize={11} maxSize={14}>
+          <div className="flex flex-col h-screen">
+            <div className="flex-none p-3">
+              <OrganizationSwitcher />
+            </div>
+            <Separator className="flex-none" />
+            <ScrollArea className="grow p-3 flex">
+              <Link href="/dashboard">Dashboard</Link>
+              <br />
+              <Link href="/dashboard/project">Project</Link>
+            </ScrollArea>
+            <Separator className="flex-none" />
+            <div className="flex-none p-3">
+              <UserButton />
+            </div>
+          </div>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel>
+          <ScrollArea className="h-screen">
+            {children}
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </>
   );
 }

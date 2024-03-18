@@ -8,6 +8,7 @@ import { Doc } from "@/convex/_generated/dataModel";
 
 import { DataTable } from "@/components/task-table/task-table";
 import { getTaskTableColumns } from "@/components/task-table/task-table-columns";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useMemo } from "react";
 
 export default function taskListPage() {
@@ -16,15 +17,19 @@ export default function taskListPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">All Tasks</h2>
-          <p className="text-muted-foreground">
-            Here's a list of all current tasks.
-          </p>
-        </div>
-      </div>
-      <DataTable data={tasks} columns={columns} />
+      {!tasks ? (
+        <LoadingSpinner />
+      ) : (
+        <>
+          <div className="flex flex-col space-y-2 p-4">
+            <h2 className="text-4xl font-bold tracking-tight">All Tasks</h2>
+            <p className="text-muted-foreground">
+              Here's a list of all current tasks.
+            </p>
+            <DataTable data={tasks} columns={columns} />
+          </div>
+        </>
+      )}
     </>
   );
 }

@@ -52,13 +52,10 @@ export function CommentList({ parent }: CommentListProps) {
       .filter((comment) => comment.author !== null);
   }, [comments, memberships, isLoaded]);
 
-  const commentBox = useRef<HTMLDivElement>(null);
+  const commentBox = useRef<HTMLDivElement | null>(null);
   const scrollToBottom = () => {
     if (commentBox.current) {
-      commentBox.current.scrollIntoView({
-        behavior: "instant",
-        block: "end",
-      });
+      commentBox.current.scrollTop = commentBox.current.scrollHeight;
     }
   };
 
@@ -66,7 +63,7 @@ export function CommentList({ parent }: CommentListProps) {
     if (commentBox.current) {
       scrollToBottom();
     }
-  }, [commentsWithAuthor]);
+  }, [commentBox.current?.scrollHeight, commentsWithAuthor]);
 
   const formSchema = z.object({
     message: z.string().min(2, {
@@ -93,8 +90,8 @@ export function CommentList({ parent }: CommentListProps) {
 
   return (
     <div>
-      <ScrollArea className="h-[250px] rounded-md border my-5">
-        <div className="grid gap-6 p-4" ref={commentBox}>
+      <ScrollArea className="h-[250px] rounded-md border my-5" ref={commentBox}>
+        <div className="grid gap-6 p-4">
           {commentsWithAuthor?.length === 0 ? (
             <div className="text-gray-500 text-center">No comments yet</div>
           ) : (
