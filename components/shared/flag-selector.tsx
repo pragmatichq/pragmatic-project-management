@@ -17,10 +17,10 @@ import { Badge } from "../ui/badge";
 
 interface flagListProps {
   flags: Array<string>;
-  task: Id<"tasks">;
+  actionId: Id<"actions">;
 }
 
-export function FlagSelector({ flags, task }: flagListProps) {
+export function FlagSelector({ flags, actionId }: flagListProps) {
   const flagsList = [
     {
       title: "Need Information",
@@ -45,13 +45,13 @@ export function FlagSelector({ flags, task }: flagListProps) {
     setChecked(flags);
   }, [flags]);
 
-  const updateTaskFlags = useMutation(api.tasks.update);
+  const updateActionFlags = useMutation(api.actions.update);
 
   const handleCheckedChange = async (checked: boolean, flag: string) => {
     let updatedList = checked
       ? [...(currentFlags || []), flag]
       : (currentFlags || []).filter((item) => item !== flag);
-    await updateTaskFlags({ id: task, flags: updatedList });
+    await updateActionFlags({ actionId: actionId, flags: updatedList });
     setChecked(updatedList);
   };
 
@@ -61,7 +61,7 @@ export function FlagSelector({ flags, task }: flagListProps) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="p-1 h-auto rounded-sm flex flex-col gap-1 w-full"
+            className="p-1 h-auto rounded-sm flex flex-col gap-1 w-full items-start"
           >
             {!currentFlags || currentFlags?.length === 0 ? (
               <div className="h-8 w-8">-</div>

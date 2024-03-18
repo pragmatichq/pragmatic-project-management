@@ -20,7 +20,7 @@ import { api } from "@/convex/_generated/api";
 import { useOrganization } from "@clerk/nextjs";
 
 interface CommentListProps {
-  parent: Id<"tasks">;
+  parent: Id<"actions">;
 }
 
 export function CommentList({ parent }: CommentListProps) {
@@ -116,7 +116,7 @@ export function CommentList({ parent }: CommentListProps) {
                       })}
                     </div>
                   </div>
-                  <div>{comment.text}</div>
+                  <div>{comment.content}</div>
                 </div>
               </div>
             ))

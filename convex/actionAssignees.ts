@@ -7,7 +7,7 @@ import {
 import { asyncMap } from "convex-helpers";
 
 export const getByTask = query({
-  args: { taskId: v.id("tasks") },
+  args: { actionId: v.id("actions") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -23,18 +23,18 @@ export const getByTask = query({
       identity.language
     );
 
-    const task = await ctx.db.get(args.taskId);
+    const action = await ctx.db.get(args.actionId);
 
-    if (!task) {
+    if (!action) {
       throw new Error("Task not found");
     }
 
-    if (task?.organization !== organization._id) {
+    if (action?.organization !== organization._id) {
       throw new Error("Unauthorized");
     }
 
     const assignees = await asyncMap(
-      await getManyFrom(ctx.db, "taskAssignees", "by_task", task._id),
+      await getManyFrom(ctx.db, "actionAssignees", "by_action", action._id),
       async (assignee) => {
         const user = await ctx.db.get(assignee.user);
         return user?.clerkId; // Return only the clerkId from each user object
@@ -47,7 +47,7 @@ export const getByTask = query({
 
 export const create = mutation({
   args: {
-    taskId: v.id("tasks"),
+    actionId: v.id("actions"),
     userClerkId: v.string(),
   },
   handler: async (ctx, args) => {
@@ -67,13 +67,13 @@ export const create = mutation({
       identity.language
     );
 
-    const task = await ctx.db.get(args.taskId);
+    const action = await ctx.db.get(args.actionId);
 
-    if (!task) {
+    if (!action) {
       throw new Error("Task not found");
     }
 
-    if (task?.organization !== organization._id) {
+    if (action?.organization !== organization._id) {
       throw new Error("Unauthorized");
     }
 
@@ -86,20 +86,20 @@ export const create = mutation({
       throw new Error("User not found");
     }
 
-    await ctx.db.insert("taskAssignees", {
+    await ctx.db.insert("actionAssignees", {
       user: user._id,
       organization: organization._id,
-      task: task._id,
+      action: action._id,
     });
 
-    await ctx.db.patch(args.taskId, {
+    await ctx.db.patch(args.actionId, {
       last_updated: new Date().toISOString(),
     });
   },
 });
 
 export const remove = mutation({
-  args: { taskId: v.id("tasks"), userClerkId: v.string() },
+  args: { actionId: v.id("actions"), userClerkId: v.string() },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -121,11 +121,11 @@ export const remove = mutation({
       .unique();
 
     const existingAssignee = await ctx.db
-      .query("taskAssignees")
+      .query("actionAssignees")
       .filter((q) =>
         q.and(
           q.eq(q.field("user"), user?._id),
-          q.eq(q.field("task"), args.taskId)
+          q.eq(q.field("action"), args.actionId)
         )
       )
       .unique();
@@ -141,7 +141,7 @@ export const remove = mutation({
     }
 
     await ctx.db.delete(existingAssignee._id);
-    await ctx.db.patch(args.taskId, {
+    await ctx.db.patch(args.actionId, {
       last_updated: new Date().toISOString(),
     });
   },

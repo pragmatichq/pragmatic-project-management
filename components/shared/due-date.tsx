@@ -7,8 +7,6 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 
-import { Doc } from "@/convex/_generated/dataModel";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -20,18 +18,18 @@ import {
 import { Id } from "@/convex/_generated/dataModel";
 
 interface DueDateProps {
-  taskId: Id<"tasks">;
+  actionId: Id<"actions">;
   dueDate: string | undefined;
 }
 
-export function DueDate({ taskId, dueDate }: DueDateProps) {
+export function DueDate({ actionId, dueDate }: DueDateProps) {
   const [date, setDate] = useState<Date | undefined>(
     dueDate && dueDate !== "" ? parseDate(dueDate) : undefined
   );
 
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const updateTaskDueDate = useMutation(api.tasks.update);
+  const updateActionDueDate = useMutation(api.actions.update);
 
   useEffect(() => {
     // Handle the empty string as a valid due date value
@@ -42,8 +40,8 @@ export function DueDate({ taskId, dueDate }: DueDateProps) {
     async function handleDueDateChange() {
       const newDueDate = date ? date.toISOString() : "";
       if (newDueDate !== dueDate) {
-        await updateTaskDueDate({
-          id: taskId,
+        await updateActionDueDate({
+          actionId: actionId,
           due_date: newDueDate,
         });
       }
@@ -53,7 +51,7 @@ export function DueDate({ taskId, dueDate }: DueDateProps) {
     if (date || (!date && dueDate !== "")) {
       handleDueDateChange();
     }
-  }, [date, dueDate, taskId, updateTaskDueDate]);
+  }, [date, dueDate, actionId, updateActionDueDate]);
 
   function parseDate(dateString: string): Date | undefined {
     const parsedDate = parseISO(dateString);
@@ -68,7 +66,7 @@ export function DueDate({ taskId, dueDate }: DueDateProps) {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={cn("justify-start text-left font-normal", {
+          className={cn("justify-start text-left font-normal w-full", {
             "text-muted-foreground": !date,
             "border-yellow-200 text-yellow-500 border-2":
               date && date.getTime() === today.getTime(),

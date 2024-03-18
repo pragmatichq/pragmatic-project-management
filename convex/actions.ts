@@ -22,35 +22,35 @@ export const list = query({
       identity.language
     );
 
-    const tasks = await ctx.db
-      .query("tasks")
+    const actions = await ctx.db
+      .query("actions")
       .withIndex("by_organization")
       .filter((q) => q.eq(q.field("organization"), organization._id))
       .collect();
 
-    for (let task of tasks) {
-      const taskAssignees = await getManyVia(
+    for (let action of actions) {
+      const actionAssignees = await getManyVia(
         ctx.db,
-        "taskAssignees",
+        "actionAssignees",
         "user",
-        "by_task",
-        task._id
+        "by_action",
+        action._id
       );
 
       const assignees = [];
-      for (let taskAssignee of taskAssignees) {
-        assignees.push(taskAssignee?.clerkId);
+      for (let actionAssignee of actionAssignees) {
+        assignees.push(actionAssignee?.clerkId);
       }
 
-      (task as any).assignees = assignees;
+      (action as any).assignees = assignees;
     }
 
-    return tasks;
+    return actions;
   },
 });
 
 export const get = query({
-  args: { taskId: v.id("tasks") },
+  args: { actionId: v.id("actions") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -66,38 +66,38 @@ export const get = query({
       identity.language
     );
 
-    const existingTask = await ctx.db.get(args.taskId);
+    const existingAction = await ctx.db.get(args.actionId);
 
-    if (!existingTask) {
+    if (!existingAction) {
       throw new Error("Not found");
     }
 
-    if (existingTask.organization !== organization._id) {
+    if (existingAction.organization !== organization._id) {
       throw new Error("Unauthorized");
     }
 
-    const taskAssignees = await getManyVia(
+    const actionAssignees = await getManyVia(
       ctx.db,
-      "taskAssignees",
+      "actionAssignees",
       "user",
-      "by_task",
-      existingTask._id
+      "by_action",
+      existingAction._id
     );
 
     const assignees = [];
-    for (let taskAssignee of taskAssignees) {
-      assignees.push(taskAssignee?.clerkId);
+    for (let actionAssignee of actionAssignees) {
+      assignees.push(actionAssignee?.clerkId);
     }
 
-    (existingTask as any).assignees = assignees;
+    (existingAction as any).assignees = assignees;
 
-    return existingTask;
+    return existingAction;
   },
 });
 
 export const create = mutation({
   args: {
-    title: v.string(),
+    title: v.optional(v.string()),
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -117,7 +117,7 @@ export const create = mutation({
       identity.language
     );
 
-    await ctx.db.insert("tasks", {
+    await ctx.db.insert("actions", {
       title: args.title,
       organization: organization._id,
       last_updated: new Date().toISOString(),
@@ -128,7 +128,7 @@ export const create = mutation({
 });
 
 export const remove = mutation({
-  args: { id: v.id("tasks") },
+  args: { actionId: v.id("actions") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -144,7 +144,7 @@ export const remove = mutation({
       identity.language
     );
 
-    const existingProject = await ctx.db.get(args.id);
+    const existingProject = await ctx.db.get(args.actionId);
 
     if (!existingProject) {
       throw new Error("Not found");
@@ -153,13 +153,13 @@ export const remove = mutation({
     if (existingProject.organization !== organization._id) {
       throw new Error("Unauthorized");
     }
-    await ctx.db.delete(args.id);
+    await ctx.db.delete(args.actionId);
   },
 });
 
 export const update = mutation({
   args: {
-    id: v.id("tasks"),
+    actionId: v.id("actions"),
     title: v.optional(v.string()),
     status: v.optional(v.string()),
     due_date: v.optional(v.string()),
@@ -182,19 +182,19 @@ export const update = mutation({
       identity.language
     );
 
-    const { id, ...rest } = args;
+    const { actionId, ...rest } = args;
 
-    const existingTask = await ctx.db.get(args.id);
+    const existingAction = await ctx.db.get(args.actionId);
 
-    if (!existingTask) {
+    if (!existingAction) {
       throw new Error("Not found");
     }
 
-    if (existingTask.organization !== organization._id) {
+    if (existingAction.organization !== organization._id) {
       throw new Error("Unauthorized");
     }
 
-    const task = await ctx.db.patch(args.id, {
+    const task = await ctx.db.patch(args.actionId, {
       last_updated: new Date().toISOString(),
       ...rest,
     });

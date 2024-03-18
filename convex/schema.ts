@@ -10,41 +10,42 @@ export default defineSchema({
     clerkOrganization: v.any(),
     clerkId: v.optional(v.string()),
   }).index("by_clerkId", ["clerkId"]),
-  projects: defineTable({
-    title: v.string(),
-  }),
-  tasks: defineTable({
-    title: v.string(),
+  actions: defineTable({
     organization: v.id("organizations"),
     last_updated: v.string(),
     status: v.string(),
-    project: v.optional(v.id("projects")),
+    is_archived: v.boolean(),
+    title: v.optional(v.string()),
+    initiative: v.optional(v.id("initiatives")),
     description: v.optional(v.string()),
     time_frame: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
     due_date: v.optional(v.string()),
-    is_archived: v.boolean(),
   }).index("by_organization", ["organization"]),
-  comments: defineTable({
-    parent: v.id("tasks"),
+  initiatives: defineTable({
+    title: v.string(),
     organization: v.id("organizations"),
-    text: v.string(),
+  }),
+  comments: defineTable({
+    organization: v.id("organizations"),
+    parent: v.id("actions"),
+    content: v.string(),
     author: v.id("users"),
   }).index("by_organization_parent", ["organization", "parent"]),
-  taskAssignees: defineTable({
+  actionAssignees: defineTable({
     organization: v.id("organizations"),
-    task: v.id("tasks"),
+    action: v.id("actions"),
     user: v.id("users"),
-  }).index("by_task", ["task"]),
-  taskRequesters: defineTable({
+  }).index("by_action", ["action"]),
+  actionRequesters: defineTable({
     organization: v.id("organizations"),
-    task: v.id("tasks"),
+    action: v.id("actions"),
     user: v.id("users"),
-  }).index("by_organization_task", ["organization", "task"]),
+  }).index("by_action", ["action"]),
   files: defineTable({
     organization: v.id("organizations"),
     storageId: v.id("_storage"),
     filename: v.string(),
-    task: v.id("tasks"),
-  }).index("by_organization_task", ["organization", "task"]),
+    action: v.id("actions"),
+  }).index("by_action", ["action"]),
 });

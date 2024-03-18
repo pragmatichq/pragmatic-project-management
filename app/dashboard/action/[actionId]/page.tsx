@@ -8,22 +8,22 @@ import { Id, Doc } from "@/convex/_generated/dataModel";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-import { TaskDetails } from "@/components/task/task-details";
+import { ActionDetails } from "@/components/action/action-details";
 
-interface SingleTaskPageProps {
-  params: { task_id: Id<"tasks"> };
+interface SingleActionPageProps {
+  params: { actionId: Id<"actions"> };
 }
 
-interface TaskWithAssignees extends Doc<"tasks"> {
+interface ActionWithAssignees extends Doc<"actions"> {
   assignees: string[];
 }
 
-export default function SingleTaskPage({ params }: SingleTaskPageProps) {
-  let task: Doc<"tasks"> | undefined;
+export default function SingleActionPage({ params }: SingleActionPageProps) {
+  let action: Doc<"actions"> | undefined;
 
   try {
-    task = useQuery(api.tasks.get, {
-      taskId: params.task_id,
+    action = useQuery(api.actions.get, {
+      actionId: params.actionId,
     });
   } catch (e) {
     if (e instanceof Error && e.message.includes("ArgumentValidationError")) {
@@ -35,11 +35,11 @@ export default function SingleTaskPage({ params }: SingleTaskPageProps) {
 
   return (
     <>
-      {!task ? (
+      {!action ? (
         <LoadingSpinner />
       ) : (
         <>
-          <TaskDetails task={task as TaskWithAssignees} />
+          <ActionDetails action={action as ActionWithAssignees} />
         </>
       )}
     </>

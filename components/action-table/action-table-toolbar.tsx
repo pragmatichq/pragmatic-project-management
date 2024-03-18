@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { DataTableFacetedFilter } from "@/components/task-table/task-table-faceted-filter";
+import { DataTableFacetedFilter } from "@/components/action-table/action-table-faceted-filters";
 
 import {
   DropdownMenu,

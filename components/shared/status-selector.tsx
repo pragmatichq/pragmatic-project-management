@@ -19,22 +19,25 @@ import { Badge } from "@/components/ui/badge";
 
 interface StatusSelectorProps {
   currentStatus: string;
-  taskID: Id<"tasks">;
+  actionId: Id<"actions">;
 }
 
-export function StatusSelector({ currentStatus, taskID }: StatusSelectorProps) {
+export function StatusSelector({
+  currentStatus,
+  actionId,
+}: StatusSelectorProps) {
   const statuses = ["Triage", "In Progress", "Next Up", "Consideration"];
   const [status, setStatus] = useState(currentStatus);
-  const updateTaskStatus = useMutation(api.tasks.update);
+  const updateActionStatus = useMutation(api.actions.update);
 
   useEffect(() => {
     const updateStatus = async () => {
       if (status !== currentStatus) {
-        await updateTaskStatus({ id: taskID, status });
+        await updateActionStatus({ actionId: actionId, status });
       }
     };
     updateStatus();
-  }, [status, taskID, updateTaskStatus]);
+  }, [status, actionId, updateActionStatus]);
 
   useEffect(() => {
     if (status !== currentStatus) {

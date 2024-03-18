@@ -166,11 +166,11 @@ const editorProps = {
   },
 };
 
-export function TaskDescriptionEditor({
-  taskId,
+export function ActionDescriptionEditor({
+  actionId,
   content,
 }: {
-  taskId: Id<"tasks">;
+  actionId: Id<"actions">;
   content: string;
 }) {
   function debounce(
@@ -184,10 +184,10 @@ export function TaskDescriptionEditor({
     };
   }
 
-  const updateTask = useMutation(api.tasks.update);
+  const updateAction = useMutation(api.actions.update);
 
   const updateContent = (editor: any): void => {
-    updateTask({ id: taskId, description: editor.getHTML() });
+    updateAction({ actionId: actionId, description: editor.getHTML() });
   };
 
   const debouncedUpdateContent = debounce(updateContent, 800);

@@ -4,7 +4,7 @@ import { getOneFromOrThrow } from "convex-helpers/server/relationships";
 
 export const list = query({
   args: {
-    parent: v.id("tasks"),
+    parent: v.id("actions"),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -44,7 +44,7 @@ export const list = query({
 
 export const create = mutation({
   args: {
-    parent: v.id("tasks"),
+    parent: v.id("actions"),
     text: v.string(),
   },
   handler: async (ctx, args) => {
@@ -72,7 +72,7 @@ export const create = mutation({
     await ctx.db.insert("comments", {
       organization: organization._id,
       parent: args.parent,
-      text: args.text,
+      content: args.text,
       author: user._id,
     });
   },

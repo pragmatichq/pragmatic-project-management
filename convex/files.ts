@@ -9,7 +9,7 @@ import { asyncMap } from "convex-helpers";
 import { query } from "./_generated/server";
 
 export const list = query({
-  args: { taskId: v.id("tasks") },
+  args: { actionId: v.id("actions") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -27,11 +27,11 @@ export const list = query({
 
     const files = await ctx.db
       .query("files")
-      .withIndex("by_organization_task")
+      .withIndex("by_action")
       .filter((q) =>
         q.and(
           q.eq(q.field("organization"), organization._id),
-          q.eq(q.field("task"), args.taskId)
+          q.eq(q.field("action"), args.actionId)
         )
       )
       .collect();
@@ -45,8 +45,8 @@ export const list = query({
     return Promise.all(
       files.map(async (file) => ({
         url: await ctx.storage.getUrl(file.storageId),
-        filename: file.filename,
         metadata: metadata.find((m) => m?._id === file.storageId),
+        ...file,
       }))
     );
   },
@@ -77,7 +77,7 @@ export const saveStorageId = mutation({
   args: {
     storageId: v.id("_storage"),
     filename: v.string(),
-    taskId: v.id("tasks"),
+    actionId: v.id("actions"),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -98,7 +98,11 @@ export const saveStorageId = mutation({
       storageId: args.storageId,
       organization: organization._id,
       filename: args.filename,
-      task: args.taskId,
+      action: args.actionId,
+    });
+
+    await ctx.db.patch(args.actionId, {
+      last_updated: new Date().toISOString(),
     });
   },
 });

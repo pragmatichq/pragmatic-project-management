@@ -26,16 +26,16 @@ import {
 import { Id } from "@/convex/_generated/dataModel";
 
 interface AssigneeListProps {
-  taskId: Id<"tasks">;
+  actionId: Id<"actions">;
   assignees: string[];
 }
 
-export function AssigneeList({ taskId, assignees }: AssigneeListProps) {
+export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
   const [checkedList, setChecked] = useState(assignees);
 
-  const createTaskAssignee = useMutation(api.taskAssignees.create);
-  const deleteTaskAssignee = useMutation(api.taskAssignees.remove);
+  const createActionAssignee = useMutation(api.actionAssignees.create);
+  const deleteActionAssignee = useMutation(api.actionAssignees.remove);
 
   const assigneeDetails = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
@@ -65,9 +65,9 @@ export function AssigneeList({ taskId, assignees }: AssigneeListProps) {
 
   const handleCheckedChange = async (checked: boolean, member: string) => {
     if (checked) {
-      await createTaskAssignee({ taskId: taskId, userClerkId: member });
+      await createActionAssignee({ actionId: actionId, userClerkId: member });
     } else {
-      await deleteTaskAssignee({ taskId: taskId, userClerkId: member });
+      await deleteActionAssignee({ actionId: actionId, userClerkId: member });
     }
 
     const updatedList = checked
@@ -80,7 +80,10 @@ export function AssigneeList({ taskId, assignees }: AssigneeListProps) {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="p-1 h-auto rounded-sm w-full">
+          <Button
+            variant="ghost"
+            className="p-1 h-auto rounded-sm w-full justify-start"
+          >
             <AvatarGroup limit={2}>
               <AvatarGroupList>
                 {assigneeDetails.length === 0 ? (

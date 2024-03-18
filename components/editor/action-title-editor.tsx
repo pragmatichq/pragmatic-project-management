@@ -32,12 +32,12 @@ const editorProps = {
   },
 };
 
-export function TaskTitleEditor({
-  taskId,
-  taskTitle,
+export function ActionTitleEditor({
+  actionId,
+  actionTitle,
 }: {
-  taskId: Id<"tasks">;
-  taskTitle: string;
+  actionId: Id<"actions">;
+  actionTitle: string;
 }) {
   function debounce(
     func: (...args: any[]) => void,
@@ -50,12 +50,12 @@ export function TaskTitleEditor({
     };
   }
 
-  const updateTask = useMutation(api.tasks.update);
+  const updateAction = useMutation(api.actions.update);
 
   const updateContent = (editor: any): void => {
     let newTitle = editor.getJSON()?.content?.[0]?.content?.[0]?.text;
-    if (newTitle && taskId) {
-      updateTask({ id: taskId, title: newTitle });
+    if (newTitle && actionId) {
+      updateAction({ actionId: actionId, title: newTitle });
     }
   };
 
@@ -64,7 +64,7 @@ export function TaskTitleEditor({
   return (
     <EditorProvider
       editorProps={editorProps}
-      content={taskTitle}
+      content={actionTitle}
       extensions={extensions}
       onCreate={({ editor }) => {
         editor.view.dom.setAttribute("spellcheck", "false");

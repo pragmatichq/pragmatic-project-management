@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { DataTableColumnHeader } from "@/components/task-table/task-table-column-header";
+import { DataTableColumnHeader } from "@/components/action-table/action-table-column-header";
 
 import { AssigneeList } from "@/components/shared/assignee-list";
 import { DueDate } from "@/components/shared/due-date";
@@ -29,7 +29,7 @@ import { Doc } from "@/convex/_generated/dataModel";
 
 import Link from "next/link";
 
-export const getTaskTableColumns = (): ColumnDef<Doc<"tasks">>[] => [
+export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
   {
     accessorKey: "title",
     header: ({ column }) => (
@@ -39,7 +39,12 @@ export const getTaskTableColumns = (): ColumnDef<Doc<"tasks">>[] => [
       const value = info.getValue();
       if (typeof value === "string") {
         return (
-          <Link href={`/dashboard/task/${info.row.original._id}`}>{value}</Link>
+          <Link
+            href={`/dashboard/action/${info.row.original._id}`}
+            className="hover:underline"
+          >
+            {value}
+          </Link>
         );
       }
       return "N/A";
@@ -56,7 +61,7 @@ export const getTaskTableColumns = (): ColumnDef<Doc<"tasks">>[] => [
         return (
           <StatusSelector
             currentStatus={value}
-            taskID={info.row.original._id}
+            actionId={info.row.original._id}
           />
         );
       }
@@ -95,10 +100,15 @@ export const getTaskTableColumns = (): ColumnDef<Doc<"tasks">>[] => [
       ) {
         flagsValue = [];
         return (
-          <FlagSelector task={info.row.original._id} flags={flagsValue as []} />
+          <FlagSelector
+            actionId={info.row.original._id}
+            flags={flagsValue as []}
+          />
         );
       } else {
-        return <FlagSelector task={info.row.original._id} flags={flagsValue} />;
+        return (
+          <FlagSelector actionId={info.row.original._id} flags={flagsValue} />
+        );
       }
     },
     filterFn: (row, id, filterValues) => {
@@ -122,7 +132,7 @@ export const getTaskTableColumns = (): ColumnDef<Doc<"tasks">>[] => [
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
-        return <DueDate taskId={info.row.original._id} dueDate={value} />;
+        return <DueDate actionId={info.row.original._id} dueDate={value} />;
       }
       return "N/A";
     },
@@ -141,7 +151,7 @@ export const getTaskTableColumns = (): ColumnDef<Doc<"tasks">>[] => [
       if (isArrayOfStrings) {
         return (
           <AssigneeList
-            taskId={info.row.original._id}
+            actionId={info.row.original._id}
             assignees={assigneesValue}
           />
         );
