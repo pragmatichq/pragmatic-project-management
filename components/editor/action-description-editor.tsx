@@ -3,6 +3,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
+import Mention from "@tiptap/extension-mention";
+
 import { MenuBar } from "./editor-menubar";
 
 import React from "react";
@@ -11,6 +13,8 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 import { Id } from "@/convex/_generated/dataModel";
+
+import suggestion from "./suggestion";
 
 const extensions = [
   StarterKit.configure({
@@ -33,6 +37,12 @@ const extensions = [
   TaskList,
   TaskItem.configure({
     nested: false,
+  }),
+  Mention.configure({
+    HTMLAttributes: {
+      class: "mention",
+    },
+    suggestion,
   }),
 ];
 
