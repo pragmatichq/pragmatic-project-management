@@ -20,9 +20,7 @@ const config = {
     extend: {
       typography: {
         DEFAULT: {
-          css: {
-            lineHeight: "0.5rem",
-          },
+          css: {},
         },
       },
       colors: {

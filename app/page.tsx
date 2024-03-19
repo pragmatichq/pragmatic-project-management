@@ -1,3 +1,11 @@
+"use client";
+
+import React from "react";
+
 export default function Home() {
-  return <main>Main site</main>;
+  return (
+    <>
+      <h1>Hello</h1>
+    </>
+  );
 }

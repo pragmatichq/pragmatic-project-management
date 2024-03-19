@@ -46,6 +46,8 @@
         "@tanstack/react-table": "^8.11.7",
         "@tiptap/extension-heading": "^2.2.4",
         "@tiptap/extension-placeholder": "^2.2.4",
+        "@tiptap/extension-task-item": "^2.2.4",
+        "@tiptap/extension-task-list": "^2.2.4",
         "@tiptap/pm": "^2.2.4",
         "@tiptap/react": "^2.2.4",
         "@tiptap/starter-kit": "^2.2.4",

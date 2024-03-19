@@ -74,3 +74,57 @@
     @apply bg-background text-foreground;
   }
 }
+
+ul[data-type="taskList"] {
+    list-style: none;
+    padding-left: 0;
+  
+    li {
+      display: flex;
+  
+      > label {
+        flex: 0 0 auto;
+        margin: 0;
+        margin-right: 0.75rem;
+        user-select: none;
+      }
+    }
+
+    li[data-checked="false"] > div > p {
+        text-decoration: none;
+    }
+
+    li[data-checked="true"] > div > p {
+        text-decoration: line-through;
+    }
+  }
+  
+  .prose :where(.prose > ul > li):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .prose :where(.prose > ul > li > *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .prose :where(.prose > ul > li p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .prose :where(.prose > ol > li):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .prose :where(.prose > ol > li > *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .prose :where(.prose > ol > li p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
