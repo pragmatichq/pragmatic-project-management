@@ -24,9 +24,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
             </div>
             <Separator className="flex-none" />
             <ScrollArea className="grow p-3 flex">
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/dashboard">Inbox</Link>
               <br />
-              <Link href="/dashboard/project">Project</Link>
+              <Link href="/dashboard">Actions</Link>
+              <br />
+              <Link href="/dashboard">Initiatives</Link>
+              <br />
+              <Link href="/dashboard/roadmap">Roadmap</Link>
+              <br />
+              <Link href="/dashboard">Broadcasts</Link>
             </ScrollArea>
             <Separator className="flex-none" />
             <div className="flex-none p-3">
@@ -35,12 +41,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel>
-          <ScrollArea className="h-screen">
-            {children}
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </ResizablePanel>
+        <ResizablePanel>{children}</ResizablePanel>
       </ResizablePanelGroup>
     </>
   );

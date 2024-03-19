@@ -1,23 +1,15 @@
 import React, { useMemo, useRef, useEffect } from "react";
 
-import { useForm } from "react-hook-form";
-
 import { formatDistance } from "date-fns";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Form, FormField } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import { Id, Doc } from "@/convex/_generated/dataModel";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 import { useOrganization } from "@clerk/nextjs";
+import { CommentEditor } from "../editor/comment-editor";
 
 interface CommentListProps {
   parent: Id<"actions">;
@@ -65,29 +57,6 @@ export function CommentList({ parent }: CommentListProps) {
     }
   }, [commentBox.current?.scrollHeight, commentsWithAuthor]);
 
-  const formSchema = z.object({
-    message: z.string().min(2, {
-      message: "Message title must be at least 2 characters.",
-    }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      message: "",
-    },
-  });
-
-  const createComment = useMutation(api.comments.create);
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createComment({
-      text: values.message,
-      parent: parent,
-    });
-    form.reset();
-  }
-
   return (
     <div>
       <ScrollArea className="h-[250px] rounded-md border my-5" ref={commentBox}>
@@ -116,35 +85,17 @@ export function CommentList({ parent }: CommentListProps) {
                       })}
                     </div>
                   </div>
-                  <div>{comment.content}</div>
+                  <div
+                    className="prose"
+                    dangerouslySetInnerHTML={{ __html: comment.content }}
+                  ></div>
                 </div>
               </div>
             ))
           )}
         </div>
       </ScrollArea>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex items-center justify-between p-2 border rounded-md"
-        >
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <Input
-                className="flex-1 border-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:ring-offset-0"
-                placeholder="Write a comment..."
-                type="text"
-                {...field}
-              />
-            )}
-          />
-          <Button className="ml-2" type="submit">
-            Send
-          </Button>
-        </form>
-      </Form>
+      <CommentEditor parent={parent} />
     </div>
   );
 }

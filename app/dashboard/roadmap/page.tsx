@@ -10,6 +10,7 @@ import {
   DroppableProvided,
 } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface Item {
   id: string;
@@ -103,47 +104,52 @@ export default function QuoteApp() {
   }
 
   return (
-    <div className="m-4">
-      <div className="flex flex-row gap-4 items-start">
-        <DragDropContext onDragEnd={onDragEnd}>
-          {state.map((element, index) => (
-            <Droppable key={index.toString()} droppableId={`${index}`}>
-              {(provided: DroppableProvided) => (
-                <Card ref={provided.innerRef} className=" bg-slate-50">
-                  <CardHeader className="p-3">
-                    <CardTitle>{`List ${index + 1}`}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex flex-col p-3">
-                    {element.map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}
-                      >
-                        {(provided: DraggableProvided) => (
-                          <Card
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className="w-[300px] my-1"
-                          >
-                            <CardHeader>
-                              <CardTitle className=" text-base">
-                                {item.content}
-                              </CardTitle>
-                            </CardHeader>
-                          </Card>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </CardContent>
-                </Card>
-              )}
-            </Droppable>
-          ))}
-        </DragDropContext>
-      </div>
+    <div className="flex flex-col space-y-4 p-4">
+      <h2 className="text-4xl font-bold tracking-tight">Roadmap</h2>
+      <ScrollArea>
+        <div className="flex flex-row gap-4 items-start">
+          <DragDropContext onDragEnd={onDragEnd}>
+            {state.map((element, index) => (
+              <Droppable key={index.toString()} droppableId={`${index}`}>
+                {(provided: DroppableProvided) => (
+                  <Card ref={provided.innerRef} className=" bg-slate-50">
+                    <CardHeader className="p-3">
+                      <CardTitle>{`List ${index + 1}`}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col p-3">
+                      {element.map((item, index) => (
+                        <Draggable
+                          key={item.id}
+                          draggableId={item.id}
+                          index={index}
+                        >
+                          {(provided: DraggableProvided) => (
+                            <Card
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="w-[300px] my-1"
+                            >
+                              <CardHeader>
+                                <CardTitle className=" text-base">
+                                  {item.content}
+                                </CardTitle>
+                              </CardHeader>
+                            </Card>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </CardContent>
+                  </Card>
+                )}
+              </Droppable>
+            ))}
+          </DragDropContext>
+        </div>
+
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   );
 }

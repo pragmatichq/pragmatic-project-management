@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuCheckboxItem,
 } from "../ui/dropdown-menu";
 
 import { useOrganization } from "@clerk/nextjs";
@@ -54,6 +55,7 @@ const flags = [
 ];
 
 import type { Table } from "@tanstack/react-table";
+import { Rows3Icon } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -134,12 +136,8 @@ export function DataTableToolbar<TData>({
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto hidden h-8 lg:flex"
-          >
-            <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+          <Button variant="outline" size="sm" className="ml-auto h-8 lg:flex">
+            <Rows3Icon className="mr-2 h-4 w-4" />
             Group By
           </Button>
         </DropdownMenuTrigger>
@@ -156,6 +154,40 @@ export function DataTableToolbar<TData>({
               Time Frame
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-2 hidden h-8 lg:flex"
+          >
+            <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+            Columns
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {table
+            .getAllColumns()
+            .filter(
+              (column) =>
+                typeof column.accessorFn !== "undefined" && column.getCanHide()
+            )
+            .map((column) => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              );
+            })}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

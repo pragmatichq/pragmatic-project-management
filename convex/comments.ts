@@ -45,7 +45,7 @@ export const list = query({
 export const create = mutation({
   args: {
     parent: v.id("actions"),
-    text: v.string(),
+    content: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -72,7 +72,7 @@ export const create = mutation({
     await ctx.db.insert("comments", {
       organization: organization._id,
       parent: args.parent,
-      content: args.text,
+      content: args.content,
       author: user._id,
     });
   },
