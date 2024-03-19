@@ -84,12 +84,13 @@ export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
             variant="ghost"
             className="p-1 h-auto rounded-sm w-full justify-start"
           >
-            <AvatarGroup limit={2}>
-              <AvatarGroupList>
-                {assigneeDetails.length === 0 ? (
-                  <div className="h-8 w-8">-</div>
-                ) : (
-                  assigneeDetails.map((assignee, index) => (
+            {assigneeDetails.length === 0 ? (
+              <div className="h-8 w-8">-</div>
+            ) : (
+              // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes
+              <AvatarGroup limit={2} key={assigneeDetails.length}>
+                <AvatarGroupList>
+                  {assigneeDetails.map((assignee, index) => (
                     <Avatar
                       key={
                         assignee.publicUserData.userId || `placeholder-${index}`
@@ -101,11 +102,11 @@ export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
                         className="h-8 w-8 border-solid border-white border-[1px] object-cover"
                       />
                     </Avatar>
-                  ))
-                )}
-              </AvatarGroupList>
-              <AvatarOverflowIndicator className="w-8 h-8" />
-            </AvatarGroup>
+                  ))}
+                </AvatarGroupList>
+                <AvatarOverflowIndicator className="w-8 h-8" />
+              </AvatarGroup>
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
