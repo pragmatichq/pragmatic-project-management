@@ -1,48 +1,113 @@
+"use client";
+
 import React from "react";
+import { useState } from "react";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
-import Link from "next/link";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Sidebar } from "@/components/navigation/sidebar";
+import { cn } from "@/lib/utils";
+import {
+  Inbox,
+  CheckSquare,
+  FolderCheck,
+  Map,
+  PartyPopper,
+  Archive,
+} from "lucide-react";
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  console.log(isCollapsed);
+
   return (
-    <>
+    <TooltipProvider delayDuration={0}>
       <ResizablePanelGroup
-        autoSaveId="mainLayout"
+        autoSaveId="dashboard-layout"
         direction="horizontal"
-        className="items-stretch z-0"
+        onLayout={(sizes: number[]) => {
+          document.cookie = `react-resizable-panels:layout=${JSON.stringify(
+            sizes
+          )}`;
+        }}
+        className="h-fullmax-h-[800px] items-stretch"
       >
-        <ResizablePanel defaultSize={11} minSize={11} maxSize={14}>
-          <div className="flex flex-col h-screen">
-            <div className="flex-none p-3">
-              <OrganizationSwitcher />
-            </div>
-            <Separator className="flex-none" />
-            <ScrollArea className="grow p-3 flex">
-              <Link href="/dashboard">Inbox</Link>
-              <br />
-              <Link href="/dashboard">Actions</Link>
-              <br />
-              <Link href="/dashboard">Initiatives</Link>
-              <br />
-              <Link href="/dashboard/roadmap">Roadmap</Link>
-              <br />
-              <Link href="/dashboard">Broadcasts</Link>
-            </ScrollArea>
-            <Separator className="flex-none" />
-            <div className="flex-none p-3">
-              <UserButton />
-            </div>
+        <ResizablePanel
+          defaultSize={10}
+          collapsedSize={3}
+          collapsible={true}
+          minSize={10}
+          maxSize={12}
+          onCollapse={() => {
+            setIsCollapsed(true);
+          }}
+          onExpand={() => {
+            setIsCollapsed(false);
+          }}
+          className={cn(
+            isCollapsed &&
+              "min-w-[50px] transition-all duration-300 ease-in-out"
+          )}
+        >
+          <div
+            className={cn(
+              "flex h-[52px] items-center",
+              isCollapsed ? "ml-[10px] justify-start" : "px-2 justify-center"
+            )}
+          >
+            <OrganizationSwitcher hidePersonal />
           </div>
+          <Separator />
+          <Sidebar
+            isCollapsed={isCollapsed}
+            links={[
+              {
+                title: "Inbox",
+                label: "",
+                icon: Inbox,
+                url: "/dashboard",
+              },
+              {
+                title: "Actions",
+                label: "",
+                icon: CheckSquare,
+                url: "/dashboard/actions",
+              },
+              {
+                title: "Initiatives",
+                label: "",
+                icon: FolderCheck,
+                url: "/dashboard/initiatives",
+              },
+              {
+                title: "Roadmap",
+                label: "",
+                icon: Map,
+                url: "/dashboard/roadmap",
+              },
+              {
+                title: "Broadcasts",
+                label: "",
+                icon: PartyPopper,
+                url: "/dashboard/broadcasts",
+              },
+              {
+                title: "Files",
+                label: "",
+                icon: Archive,
+                url: "/dashboard/files",
+              },
+            ]}
+          />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel>{children}</ResizablePanel>
       </ResizablePanelGroup>
-    </>
+    </TooltipProvider>
   );
 }
