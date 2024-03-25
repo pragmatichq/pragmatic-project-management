@@ -130,8 +130,6 @@ export const remove = mutation({
       )
       .unique();
 
-    console.log(existingAssignee?.organization, organization._id);
-
     if (!existingAssignee) {
       throw new Error("Not found");
     }

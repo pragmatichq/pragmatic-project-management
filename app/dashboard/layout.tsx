@@ -14,16 +14,19 @@ import { Sidebar } from "@/components/navigation/sidebar";
 import { cn } from "@/lib/utils";
 import {
   Inbox,
-  CheckSquare,
-  FolderCheck,
+  ListChecks,
+  CopyCheck,
   Map,
   PartyPopper,
   Archive,
 } from "lucide-react";
 
-export default function Template({ children }: { children: React.ReactNode }) {
+export default function DashboardTemplate({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  console.log(isCollapsed);
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -35,14 +38,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
             sizes
           )}`;
         }}
-        className="h-fullmax-h-[800px] items-stretch"
+        className="h-full items-stretch"
       >
         <ResizablePanel
           defaultSize={10}
           collapsedSize={3}
           collapsible={true}
           minSize={10}
-          maxSize={12}
+          maxSize={14}
           onCollapse={() => {
             setIsCollapsed(true);
           }}
@@ -50,6 +53,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
             setIsCollapsed(false);
           }}
           className={cn(
+            "h-screen flex flex-col",
             isCollapsed &&
               "min-w-[50px] transition-all duration-300 ease-in-out"
           )}
@@ -60,7 +64,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
               isCollapsed ? "ml-[10px] justify-start" : "px-2 justify-center"
             )}
           >
-            <OrganizationSwitcher hidePersonal />
+            <OrganizationSwitcher hidePersonal afterSelectOrganizationUrl="/" />
           </div>
           <Separator />
           <Sidebar
@@ -75,13 +79,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
               {
                 title: "Actions",
                 label: "",
-                icon: CheckSquare,
+                icon: CopyCheck,
                 url: "/dashboard/actions",
               },
               {
                 title: "Initiatives",
                 label: "",
-                icon: FolderCheck,
+                icon: ListChecks,
                 url: "/dashboard/initiatives",
               },
               {
@@ -104,6 +108,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
               },
             ]}
           />
+          <Separator />
+          <div
+            className={cn(
+              "flex h-[52px] items-center",
+              isCollapsed ? "ml-[10px]" : "px-2"
+            )}
+          >
+            <UserButton />
+          </div>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel>{children}</ResizablePanel>

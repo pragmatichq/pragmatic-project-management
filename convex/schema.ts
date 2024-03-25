@@ -22,6 +22,17 @@ export default defineSchema({
     flags: v.optional(v.array(v.string())),
     due_date: v.optional(v.string()),
   }).index("by_organization", ["organization"]),
+  actionAssignees: defineTable({
+    organization: v.id("organizations"),
+    action: v.id("actions"),
+    user: v.id("users"),
+  }).index("by_action", ["action"]),
+  actionStakeholders: defineTable({
+    organization: v.id("organizations"),
+    action: v.id("actions"),
+    user: v.id("users"),
+    waiting_on: v.boolean(),
+  }).index("by_action", ["action"]),
   initiatives: defineTable({
     title: v.string(),
     organization: v.id("organizations"),
@@ -32,20 +43,16 @@ export default defineSchema({
     content: v.string(),
     author: v.id("users"),
   }).index("by_organization_parent", ["organization", "parent"]),
-  actionAssignees: defineTable({
-    organization: v.id("organizations"),
-    action: v.id("actions"),
-    user: v.id("users"),
-  }).index("by_action", ["action"]),
-  actionRequesters: defineTable({
-    organization: v.id("organizations"),
-    action: v.id("actions"),
-    user: v.id("users"),
-  }).index("by_action", ["action"]),
   files: defineTable({
     organization: v.id("organizations"),
     storageId: v.id("_storage"),
     filename: v.string(),
     action: v.id("actions"),
   }).index("by_action", ["action"]),
+  broadcasts: defineTable({
+    organization: v.id("organizations"),
+    title: v.string(),
+    content: v.string(),
+    publish_date: v.string(),
+  }),
 });

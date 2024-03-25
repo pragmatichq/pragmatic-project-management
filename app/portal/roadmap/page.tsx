@@ -58,7 +58,7 @@ const move = (
   return result;
 };
 
-export default function RoadmapDashboard() {
+export default function RoadmapPortal() {
   const [state, setState] = useState<Item[][]>([
     getItems(5),
     getItems(5, 5),
@@ -102,7 +102,7 @@ export default function RoadmapDashboard() {
   }
 
   return (
-    <div className="flex flex-col space-y-4 p-4">
+    <div className="flex flex-col space-y-4 my-8">
       <h2 className="text-4xl font-bold tracking-tight">Roadmap</h2>
       <ScrollArea>
         <div className="flex flex-row gap-4 items-start">

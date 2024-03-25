@@ -78,61 +78,59 @@
 ul[data-type="taskList"] {
     list-style: none;
     padding-left: 0;
-  
-    li {
-      display: flex;
-  
-      > label {
-        flex: 0 0 auto;
-        margin: 0;
-        margin-right: 0.75rem;
-        user-select: none;
-      }
-    }
-
-    li[data-checked="false"] > div > p {
-        text-decoration: none;
-    }
-
-    li[data-checked="true"] > div > p {
-        text-decoration: line-through;
-    }
   }
   
-  .prose :where(.prose > ul > li):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  ul[data-type="taskList"] li {
+    display: flex;
+  }
+  
+  ul[data-type="taskList"] li > label {
+    flex: 0 0 auto;
+    margin: 0;
+    margin-right: 0.75rem;
+    user-select: none;
+  }
+  
+  ul[data-type="taskList"] li[data-checked="false"] > div > p {
+    text-decoration: none;
+  }
+  
+  ul[data-type="taskList"] li[data-checked="true"] > div > p {
+    text-decoration: line-through;
+  }
+  
+  .prose :where(.prose > ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-bottom: 0;
     margin-top: 0;
   }
-
-  .prose :where(.prose > ul > li > *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  
+  .prose :where(.prose > ul > li > *):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-bottom: 0;
     margin-top: 0;
   }
-
-  .prose :where(.prose > ul > li p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  
+  .prose :where(.prose > ul > li p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-bottom: 0;
     margin-top: 0;
   }
-
-  .prose :where(.prose > ol > li):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  
+  .prose :where(.prose > ol > li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-bottom: 0;
     margin-top: 0;
   }
-
-  .prose :where(.prose > ol > li > *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  
+  .prose :where(.prose > ol > li > *):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-bottom: 0;
     margin-top: 0;
   }
-
-  .prose :where(.prose > ol > li p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  
+  .prose :where(.prose > ol > li p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
     margin-bottom: 0;
     margin-top: 0;
   }
-
-  .tiptap {
-    > * + * {
-      margin-top: 0.75em;
-    }
+  
+  .tiptap > * + * {
+    margin-top: 0.75em;
   }
   
   .mention {
@@ -141,31 +139,30 @@ ul[data-type="taskList"] {
     box-decoration-break: clone;
     padding: 0.1rem 0.3rem;
   }
-
-  .tippy-content {
-    .items {
-        background: #fff;
-        border-radius: 0.5rem;
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0px 10px 20px rgba(0, 0, 0, 0.1);
-        color: rgba(0, 0, 0, 0.8);
-        font-size: 0.9rem;
-        overflow: hidden;
-        padding: 0.2rem;
-        position: relative;
-      }
-      
-      .item {
-        background: transparent;
-        border: 1px solid transparent;
-        border-radius: 0.4rem;
-        display: block;
-        margin: 0;
-        padding: 0.2rem 0.4rem;
-        text-align: left;
-        width: 100%;
-      
-        &.is-selected {
-          border-color: #000;
-        }
-      }
+  
+  .tippy-content .items {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0px 10px 20px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 0.9rem;
+    overflow: hidden;
+    padding: 0.2rem;
+    position: relative;
   }
+  
+  .tippy-content .item {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.4rem;
+    display: block;
+    margin: 0;
+    padding: 0.2rem 0.4rem;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .tippy-content .item.is-selected {
+    border-color: #000;
+  }
+  

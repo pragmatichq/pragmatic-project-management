@@ -1,5 +1,4 @@
 import React from "react";
-import { useSearchParams } from "next/navigation";
 
 import { Column } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";

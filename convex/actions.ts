@@ -11,16 +11,20 @@ export const list = query({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
-      throw new Error("Not authenticated");
+      console.log(ctx);
+      return null;
     }
 
-    // This is hacked together because Convex only allows standard claims
     const organization = await getOneFromOrThrow(
       ctx.db,
       "organizations",
       "by_clerkId",
       identity.language
     );
+
+    if (identity.language !== organization.clerkId) {
+      throw new Error("Wrong organization");
+    }
 
     const actions = await ctx.db
       .query("actions")

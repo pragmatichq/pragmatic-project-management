@@ -2,6 +2,8 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { getOneFromOrThrow } from "convex-helpers/server/relationships";
 
+var sanitizeHtml = require("sanitize-html");
+
 export const list = query({
   args: {
     parent: v.id("actions"),
@@ -49,6 +51,7 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
+    const cleanedContent = sanitizeHtml(args.content);
 
     if (!identity) {
       throw new Error("Not authenticated");
@@ -72,7 +75,7 @@ export const create = mutation({
     await ctx.db.insert("comments", {
       organization: organization._id,
       parent: args.parent,
-      content: args.content,
+      content: cleanedContent,
       author: user._id,
     });
   },
