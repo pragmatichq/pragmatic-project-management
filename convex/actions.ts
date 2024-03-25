@@ -4,32 +4,15 @@ import {
   getOneFromOrThrow,
   getManyVia,
 } from "convex-helpers/server/relationships.js";
+import { queryWithOrganization } from "./custom-fuctions";
 
-export const list = query({
+export const list = queryWithOrganization({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      console.log(ctx);
-      return null;
-    }
-
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
-    if (identity.language !== organization.clerkId) {
-      throw new Error("Wrong organization");
-    }
-
     const actions = await ctx.db
       .query("actions")
       .withIndex("by_organization")
-      .filter((q) => q.eq(q.field("organization"), organization._id))
+      .filter((q) => q.eq(q.field("organization"), ctx.orgId))
       .collect();
 
     for (let action of actions) {
@@ -38,7 +21,8 @@ export const list = query({
         "actionAssignees",
         "user",
         "by_action",
-        action._id
+        action._id,
+        "action"
       );
 
       const assignees = [];

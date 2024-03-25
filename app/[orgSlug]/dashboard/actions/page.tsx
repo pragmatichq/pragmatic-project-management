@@ -2,21 +2,16 @@
 
 import React from "react";
 
-import { Authenticated, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Doc } from "@/convex/_generated/dataModel";
 
 import { DataTable } from "@/components/action-table/action-table";
 import { getActionTableColumns } from "@/components/action-table/action-table-columns";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useMemo } from "react";
-import { useOrganization } from "@clerk/nextjs";
-import { useConvexAuth } from "convex/react";
 
 export default function actionListPage() {
-  const { organization } = useOrganization();
-  let actions: Array<Doc<"actions">> = [];
-  actions = useQuery(api.actions.list, {}) || [];
+  const actions = useQuery(api.actions.list);
   const columns = useMemo(() => getActionTableColumns(), []);
 
   return (
