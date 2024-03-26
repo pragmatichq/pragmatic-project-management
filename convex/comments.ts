@@ -1,32 +1,20 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
-import { getOneFromOrThrow } from "convex-helpers/server/relationships";
+import { ConvexError, v } from "convex/values";
+import {
+  queryWithOrganization,
+  mutationWithOrganizationUser,
+} from "./customFunctions";
 
 var sanitizeHtml = require("sanitize-html");
 
-export const list = query({
+export const list = queryWithOrganization({
   args: {
     parent: v.id("actions"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
     const comments = await ctx.db
       .query("comments")
       .withIndex("by_organization_parent", (q) =>
-        q.eq("organization", organization._id).eq("parent", args.parent)
+        q.eq("organization", ctx.orgId).eq("parent", args.parent)
       )
       .take(100);
 
@@ -44,39 +32,19 @@ export const list = query({
   },
 });
 
-export const create = mutation({
+export const create = mutationWithOrganizationUser({
   args: {
     parent: v.id("actions"),
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
     const cleanedContent = sanitizeHtml(args.content);
 
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    const user = await getOneFromOrThrow(
-      ctx.db,
-      "users",
-      "by_clerkId",
-      identity.subject
-    );
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
     await ctx.db.insert("comments", {
-      organization: organization._id,
+      organization: ctx.orgId,
       parent: args.parent,
       content: cleanedContent,
-      author: user._id,
+      author: ctx.userId,
     });
   },
 });

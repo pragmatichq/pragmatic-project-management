@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Doc } from "@/convex/_generated/dataModel";
 
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
   {
@@ -37,10 +38,11 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     ),
     cell: (info) => {
       const value = info.getValue();
+      const { orgSlug } = useAuth();
       if (typeof value === "string") {
         return (
           <Link
-            href={`/dashboard/action/${info.row.original._id}`}
+            href={"/" + orgSlug + `/dashboard/action/${info.row.original._id}`}
             className="hover:underline"
           >
             {value}

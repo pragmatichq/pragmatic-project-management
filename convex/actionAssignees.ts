@@ -1,36 +1,23 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
 import {
-  getOneFromOrThrow,
-  getManyFrom,
-} from "convex-helpers/server/relationships.js";
+  mutationWithOrganization,
+  mutationWithOrganizationUser,
+  queryWithOrganization,
+} from "./customFunctions";
+import { ConvexError, v } from "convex/values";
+import { getManyFrom } from "convex-helpers/server/relationships.js";
 import { asyncMap } from "convex-helpers";
 
-export const getByTask = query({
+export const getByTask = queryWithOrganization({
   args: { actionId: v.id("actions") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
     const action = await ctx.db.get(args.actionId);
 
     if (!action) {
-      throw new Error("Task not found");
+      throw new ConvexError("Task not found");
     }
 
-    if (action?.organization !== organization._id) {
-      throw new Error("Unauthorized");
+    if (action?.organization !== ctx.orgId) {
+      throw new ConvexError("Unauthorized");
     }
 
     const assignees = await asyncMap(
@@ -45,36 +32,20 @@ export const getByTask = query({
   },
 });
 
-export const create = mutation({
+export const create = mutationWithOrganization({
   args: {
     actionId: v.id("actions"),
     userClerkId: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    const userId = identity.subject;
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
     const action = await ctx.db.get(args.actionId);
 
     if (!action) {
-      throw new Error("Task not found");
+      throw new ConvexError("Task not found");
     }
 
-    if (action?.organization !== organization._id) {
-      throw new Error("Unauthorized");
+    if (action?.organization !== ctx.orgId) {
+      throw new ConvexError("Unauthorized");
     }
 
     const user = await ctx.db
@@ -83,12 +54,12 @@ export const create = mutation({
       .unique();
 
     if (!user) {
-      throw new Error("User not found");
+      throw new ConvexError("User not found");
     }
 
     await ctx.db.insert("actionAssignees", {
       user: user._id,
-      organization: organization._id,
+      organization: ctx.orgId,
       action: action._id,
     });
 
@@ -98,44 +69,25 @@ export const create = mutation({
   },
 });
 
-export const remove = mutation({
+export const remove = mutationWithOrganizationUser({
   args: { actionId: v.id("actions"), userClerkId: v.string() },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Unauthenticated");
-    }
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
-    const user = await ctx.db
-      .query("users")
-      .filter((q) => q.eq(q.field("clerkId"), args.userClerkId))
-      .unique();
-
     const existingAssignee = await ctx.db
       .query("actionAssignees")
       .filter((q) =>
         q.and(
-          q.eq(q.field("user"), user?._id),
+          q.eq(q.field("user"), ctx.userId),
           q.eq(q.field("action"), args.actionId)
         )
       )
       .unique();
 
     if (!existingAssignee) {
-      throw new Error("Not found");
+      throw new ConvexError("Not found");
     }
 
-    if (existingAssignee.organization !== organization._id) {
-      throw new Error("Unauthorized");
+    if (existingAssignee.organization !== ctx.orgId) {
+      throw new ConvexError("Unauthorized");
     }
 
     await ctx.db.delete(existingAssignee._id);

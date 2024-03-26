@@ -1,36 +1,19 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
-import {
-  getOneFromOrThrow,
-  getAll,
-  getManyFrom,
-} from "convex-helpers/server/relationships";
 import { asyncMap } from "convex-helpers";
-import { query } from "./_generated/server";
+import {
+  mutationWithOrganization,
+  queryWithOrganization,
+} from "./customFunctions";
 
-export const list = query({
+export const list = queryWithOrganization({
   args: { actionId: v.id("actions") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Unauthenticated");
-    }
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
     const files = await ctx.db
       .query("files")
       .withIndex("by_action")
       .filter((q) =>
         q.and(
-          q.eq(q.field("organization"), organization._id),
+          q.eq(q.field("organization"), ctx.orgId),
           q.eq(q.field("action"), args.actionId)
         )
       )
@@ -52,51 +35,23 @@ export const list = query({
   },
 });
 
-export const generateUploadUrl = mutation({
+export const generateUploadUrl = mutationWithOrganization({
   args: {},
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Unauthenticated");
-    }
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
     return await ctx.storage.generateUploadUrl();
   },
 });
 
-export const saveStorageId = mutation({
+export const saveStorageId = mutationWithOrganization({
   args: {
     storageId: v.id("_storage"),
     filename: v.string(),
     actionId: v.id("actions"),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Unauthenticated");
-    }
-
-    // This is hacked together because Convex only allows standard claims
-    const organization = await getOneFromOrThrow(
-      ctx.db,
-      "organizations",
-      "by_clerkId",
-      identity.language
-    );
-
     ctx.db.insert("files", {
       storageId: args.storageId,
-      organization: organization._id,
+      organization: ctx.orgId,
       filename: args.filename,
       action: args.actionId,
     });
