@@ -35,7 +35,7 @@ export const getByTask = queryWithOrganization({
 export const create = mutationWithOrganization({
   args: {
     actionId: v.id("actions"),
-    userClerkId: v.string(),
+    assigneeClerkId: v.string(),
   },
   handler: async (ctx, args) => {
     const action = await ctx.db.get(args.actionId);
@@ -48,17 +48,17 @@ export const create = mutationWithOrganization({
       throw new ConvexError("Unauthorized");
     }
 
-    const user = await ctx.db
+    const assignee = await ctx.db
       .query("users")
-      .filter((q) => q.or(q.eq(q.field("clerkId"), args.userClerkId)))
+      .filter((q) => q.or(q.eq(q.field("clerkId"), args.assigneeClerkId)))
       .unique();
 
-    if (!user) {
+    if (!assignee) {
       throw new ConvexError("User not found");
     }
 
     await ctx.db.insert("actionAssignees", {
-      user: user._id,
+      user: assignee._id,
       organization: ctx.orgId,
       action: action._id,
     });
@@ -70,13 +70,18 @@ export const create = mutationWithOrganization({
 });
 
 export const remove = mutationWithOrganizationUser({
-  args: { actionId: v.id("actions"), userClerkId: v.string() },
+  args: { actionId: v.id("actions"), assigneeClerkId: v.string() },
   handler: async (ctx, args) => {
+    const assignee = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.assigneeClerkId))
+      .unique();
+
     const existingAssignee = await ctx.db
       .query("actionAssignees")
       .filter((q) =>
         q.and(
-          q.eq(q.field("user"), ctx.userId),
+          q.eq(q.field("user"), assignee?._id),
           q.eq(q.field("action"), args.actionId)
         )
       )

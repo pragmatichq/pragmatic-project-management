@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
-import type { OrganizationMembershipResource } from "@clerk/types";
 import { api } from "@/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";
@@ -45,10 +44,7 @@ export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
           (member) => member.publicUserData.userId === assignee
         )
       )
-      .filter(
-        (member): member is OrganizationMembershipResource =>
-          member !== undefined
-      );
+      .filter((member) => member !== undefined);
   }, [checkedList, memberships, isLoaded]);
 
   useEffect(() => {
@@ -65,9 +61,15 @@ export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
 
   const handleCheckedChange = async (checked: boolean, member: string) => {
     if (checked) {
-      await createActionAssignee({ actionId: actionId, userClerkId: member });
+      await createActionAssignee({
+        actionId: actionId,
+        assigneeClerkId: member,
+      });
     } else {
-      await deleteActionAssignee({ actionId: actionId, userClerkId: member });
+      await deleteActionAssignee({
+        actionId: actionId,
+        assigneeClerkId: member,
+      });
     }
 
     const updatedList = checked
@@ -93,12 +95,13 @@ export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
                   {assigneeDetails.map((assignee, index) => (
                     <Avatar
                       key={
-                        assignee.publicUserData.userId || `placeholder-${index}`
+                        assignee?.publicUserData.userId ||
+                        `placeholder-${index}`
                       }
                       className="h-8 w-8"
                     >
                       <AvatarImage
-                        src={assignee.publicUserData.imageUrl}
+                        src={assignee?.publicUserData.imageUrl}
                         className="h-8 w-8 border-solid border-white border-[1px] object-cover"
                       />
                     </Avatar>

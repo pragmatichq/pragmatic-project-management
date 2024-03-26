@@ -1,12 +1,8 @@
 "use client";
 
 import { OrganizationList } from "@clerk/nextjs";
-import { useSearchParams } from "next/navigation";
 
 export default function OrganizationSelection() {
-  const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get("redirectUrl") ?? "/";
-
   return (
     <section>
       <h1>Welcome to the Organization Selection page.</h1>
@@ -17,8 +13,8 @@ export default function OrganizationSelection() {
       </p>
       <OrganizationList
         hidePersonal={true}
-        afterCreateOrganizationUrl={redirectUrl}
-        afterSelectOrganizationUrl={redirectUrl}
+        afterCreateOrganizationUrl="/"
+        afterSelectOrganizationUrl="/"
       />
     </section>
   );
