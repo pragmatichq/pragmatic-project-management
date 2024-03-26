@@ -42,7 +42,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       if (typeof value === "string") {
         return (
           <Link
-            href={"/" + orgSlug + `/dashboard/action/${info.row.original._id}`}
+            href={`/dashboard/action/${info.row.original._id}`}
             className="hover:underline"
           >
             {value}
