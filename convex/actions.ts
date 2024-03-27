@@ -6,13 +6,26 @@ import {
 } from "./customFunctions";
 
 export const list = queryWithOrganization({
-  args: {},
-  handler: async (ctx) => {
-    const actions = await ctx.db
+  args: { statuses: v.array(v.string()), timeFrames: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    let filteredActions = await ctx.db
       .query("actions")
       .withIndex("by_organization")
-      .filter((q) => q.eq(q.field("organization"), ctx.orgId))
-      .collect();
+      .filter((q) => q.eq(q.field("organization"), ctx.orgId));
+
+    if (args.statuses && args.statuses.length > 0) {
+      filteredActions = filteredActions.filter((q) =>
+        q.or(...args.statuses!.map((c) => q.eq(q.field("status"), c)))
+      );
+    }
+
+    if (args.timeFrames && args.timeFrames.length > 0) {
+      filteredActions = filteredActions.filter((q) =>
+        q.or(...args.timeFrames!.map((c) => q.eq(q.field("time_frame"), c)))
+      );
+    }
+
+    const actions = await filteredActions.collect();
 
     for (let action of actions) {
       const actionAssignees = await getManyVia(

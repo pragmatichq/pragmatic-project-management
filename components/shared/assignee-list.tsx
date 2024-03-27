@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect, useMemo } from "react";
+import { useState } from "react";
 import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -22,52 +20,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 
-interface AssigneeListProps {
-  actionId: Id<"actions">;
+interface ActionWithAssignees extends Doc<"actions"> {
   assignees: string[];
 }
 
-export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
+interface AssigneeListProps {
+  action: ActionWithAssignees;
+}
+
+export function AssigneeList({ action }: AssigneeListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
-  const [checkedList, setChecked] = useState(assignees);
+  const [checkedList, setChecked] = useState(action.assignees || []);
 
   const createActionAssignee = useMutation(api.actionAssignees.create);
   const deleteActionAssignee = useMutation(api.actionAssignees.remove);
 
-  const assigneeDetails = useMemo(() => {
-    if (!isLoaded || !memberships?.data) return [];
-    return checkedList
-      .map((assignee) =>
-        memberships.data.find(
-          (member) => member.publicUserData.userId === assignee
-        )
-      )
-      .filter((member) => member !== undefined);
-  }, [checkedList, memberships, isLoaded]);
-
-  useEffect(() => {
-    const assigneesSet = new Set(assignees);
-    const checkedListSet = new Set(checkedList);
-    const areSetsDifferent =
-      assigneesSet.size !== checkedListSet.size ||
-      [...assigneesSet].some((item) => !checkedListSet.has(item));
-
-    if (areSetsDifferent) {
-      setChecked(assignees);
-    }
-  }, [assignees]);
+  const assigneeDetails = memberships?.data?.filter((member) =>
+    checkedList.includes(member.publicUserData.userId as string)
+  );
 
   const handleCheckedChange = async (checked: boolean, member: string) => {
     if (checked) {
       await createActionAssignee({
-        actionId: actionId,
+        actionId: action._id,
         assigneeClerkId: member,
       });
     } else {
       await deleteActionAssignee({
-        actionId: actionId,
+        actionId: action._id,
         assigneeClerkId: member,
       });
     }
@@ -86,13 +68,12 @@ export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
             variant="ghost"
             className="p-1 h-auto rounded-sm w-full justify-start"
           >
-            {assigneeDetails.length === 0 ? (
+            {assigneeDetails && assigneeDetails.length === 0 ? (
               <div className="h-8 w-8">-</div>
             ) : (
-              // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes
-              <AvatarGroup limit={2} key={assigneeDetails.length}>
+              <AvatarGroup limit={2} key={assigneeDetails?.length}>
                 <AvatarGroupList>
-                  {assigneeDetails.map((assignee, index) => (
+                  {assigneeDetails?.map((assignee, index) => (
                     <Avatar
                       key={
                         assignee?.publicUserData.userId ||
@@ -116,12 +97,11 @@ export function AssigneeList({ actionId, assignees }: AssigneeListProps) {
           {memberships?.data?.map((member, index) => (
             <DropdownMenuCheckboxItem
               key={
-                member.publicUserData.userId ?? `member-placeholder-${index}`
+                member.publicUserData.userId || `member-placeholder-${index}`
               }
-              checked={
-                checkedList.includes(member.publicUserData.userId as string) ??
-                ""
-              }
+              checked={checkedList.includes(
+                member.publicUserData.userId as string
+              )}
               onCheckedChange={(checked) => {
                 if (member.publicUserData.userId) {
                   handleCheckedChange(checked, member.publicUserData.userId);

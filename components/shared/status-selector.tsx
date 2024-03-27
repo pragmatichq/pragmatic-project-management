@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 
 import {
   DropdownMenu,
@@ -18,42 +18,27 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 interface StatusSelectorProps {
-  currentStatus: string;
-  actionId: Id<"actions">;
+  action: Doc<"actions">;
 }
 
-export function StatusSelector({
-  currentStatus,
-  actionId,
-}: StatusSelectorProps) {
+export function StatusSelector({ action }: StatusSelectorProps) {
   const statuses = ["Triage", "In Progress", "Next Up", "Consideration"];
-  const [status, setStatus] = useState(currentStatus);
   const updateActionStatus = useMutation(api.actions.update);
-
-  useEffect(() => {
-    const updateStatus = async () => {
-      if (status !== currentStatus) {
-        await updateActionStatus({ actionId: actionId, status });
-      }
-    };
-    updateStatus();
-  }, [status, actionId, updateActionStatus]);
-
-  useEffect(() => {
-    if (status !== currentStatus) {
-      setStatus(currentStatus);
-    }
-  }, [currentStatus]);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Badge>{status}</Badge>
+        <Badge>{action.status}</Badge>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Project Status</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={status} onValueChange={setStatus}>
+        <DropdownMenuRadioGroup
+          value={action.status}
+          onValueChange={(status) =>
+            updateActionStatus({ actionId: action._id, status })
+          }
+        >
           {statuses.map((statusOption) => (
             <DropdownMenuRadioItem key={statusOption} value={statusOption}>
               <Badge>{statusOption}</Badge>

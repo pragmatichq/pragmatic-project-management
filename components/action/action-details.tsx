@@ -63,22 +63,19 @@ export function ActionDetails({ action }: TaskModalProps) {
         <div className="grid gap-6 auto-rows-min justify-items-start border-l p-4">
           <div className="grid gap-2">
             <Label htmlFor="status">Status</Label>
-            <StatusSelector
-              actionId={action._id}
-              currentStatus={action.status}
-            />
+            <StatusSelector action={action} />
           </div>
           <div className="grid gap-2">
             <Label>Flags</Label>
-            <FlagSelector actionId={action._id} flags={action.flags as []} />
+            <FlagSelector action={action} />
           </div>
           <div className="grid gap-2">
             <Label>Assignees</Label>
-            <AssigneeList actionId={action._id} assignees={action.assignees} />
+            <AssigneeList action={action} />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="due-date">Due Date</Label>
-            <DueDate actionId={action._id} dueDate={action.due_date} />
+            <DueDate action={action} />
           </div>
         </div>
       </ResizablePanel>

@@ -60,12 +60,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
-        return (
-          <StatusSelector
-            currentStatus={value}
-            actionId={info.row.original._id}
-          />
-        );
+        return <StatusSelector action={info.row.original} />;
       }
       return "N/A";
     },
@@ -94,24 +89,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     accessorKey: "flags",
     header: "Flags",
     cell: (info) => {
-      let flagsValue = info.getValue();
-
-      if (
-        !Array.isArray(flagsValue) ||
-        !flagsValue.every((item) => typeof item === "string")
-      ) {
-        flagsValue = [];
-        return (
-          <FlagSelector
-            actionId={info.row.original._id}
-            flags={flagsValue as []}
-          />
-        );
-      } else {
-        return (
-          <FlagSelector actionId={info.row.original._id} flags={flagsValue} />
-        );
-      }
+      return <FlagSelector action={info.row.original} />;
     },
     filterFn: (row, id, filterValues) => {
       const filterValArray = Array.isArray(filterValues)
@@ -134,7 +112,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
-        return <DueDate actionId={info.row.original._id} dueDate={value} />;
+        return <DueDate action={info.row.original} />;
       }
       return "N/A";
     },
@@ -145,19 +123,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       <DataTableColumnHeader column={column} title="Assignees" />
     ),
     cell: (info) => {
-      const assigneesValue = info.getValue();
-      const isArrayOfStrings =
-        Array.isArray(assigneesValue) &&
-        assigneesValue.every((item) => typeof item === "string");
-
-      if (isArrayOfStrings) {
-        return (
-          <AssigneeList
-            actionId={info.row.original._id}
-            assignees={assigneesValue}
-          />
-        );
-      }
+      return <AssigneeList action={info.row.original as any} />;
     },
     filterFn: (row, id, filterValues) => {
       const filterValArray = Array.isArray(filterValues)

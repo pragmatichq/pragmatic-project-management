@@ -1,8 +1,5 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation } from "convex/react";
-import { Id } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";
@@ -14,13 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "../ui/badge";
+import { Doc } from "@/convex/_generated/dataModel";
 
-interface flagListProps {
-  flags: Array<string>;
-  actionId: Id<"actions">;
+interface FlagSelectorProps {
+  action: Doc<"actions">;
 }
 
-export function FlagSelector({ flags, actionId }: flagListProps) {
+export function FlagSelector({ action }: FlagSelectorProps) {
   const flagsList = [
     {
       title: "Need Information",
@@ -39,19 +36,15 @@ export function FlagSelector({ flags, actionId }: flagListProps) {
     },
   ];
 
-  const [currentFlags, setChecked] = useState(flags);
-
-  useEffect(() => {
-    setChecked(flags);
-  }, [flags]);
+  const [currentFlags, setChecked] = useState(action.flags || []);
 
   const updateActionFlags = useMutation(api.actions.update);
 
   const handleCheckedChange = async (checked: boolean, flag: string) => {
     let updatedList = checked
-      ? [...(currentFlags || []), flag]
-      : (currentFlags || []).filter((item) => item !== flag);
-    await updateActionFlags({ actionId: actionId, flags: updatedList });
+      ? [...currentFlags, flag]
+      : currentFlags.filter((item) => item !== flag);
+    await updateActionFlags({ actionId: action._id, flags: updatedList });
     setChecked(updatedList);
   };
 
@@ -63,10 +56,10 @@ export function FlagSelector({ flags, actionId }: flagListProps) {
             variant="ghost"
             className="p-1 h-auto rounded-sm flex flex-col gap-1 w-full items-start"
           >
-            {!currentFlags || currentFlags?.length === 0 ? (
+            {!currentFlags || currentFlags.length === 0 ? (
               <div className="h-8 w-8">-</div>
             ) : (
-              currentFlags?.map((flag, index) => (
+              currentFlags.map((flag, index) => (
                 <Badge
                   variant="outline"
                   key={flag || `selected-flags-placeholder-${index}`}
@@ -84,7 +77,7 @@ export function FlagSelector({ flags, actionId }: flagListProps) {
           {flagsList.map((flag, index) => (
             <DropdownMenuCheckboxItem
               key={flag.title ?? `currentFlags-placeholder-${index}`}
-              checked={currentFlags?.includes(flag.title) ?? ""}
+              checked={currentFlags.includes(flag.title)}
               onCheckedChange={(checked) => {
                 if (flag.title) {
                   handleCheckedChange(checked, flag.title);
