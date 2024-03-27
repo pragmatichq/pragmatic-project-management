@@ -74,6 +74,7 @@ export function DataTableToolbar<TData>({
     setFlags,
     assignees,
     setAssignees,
+    isFiltered,
   } = useContext(FilterContext);
   const { memberships, isLoaded } = useOrganization({ memberships: true });
 
@@ -85,7 +86,6 @@ export function DataTableToolbar<TData>({
     })) as { value: string }[];
   }, [memberships, isLoaded]);
 
-  const isFiltered = true;
   const currentGrouping = table.getState().grouping[0] || "";
 
   const handleGroupingChange = (value: string) => {
@@ -142,10 +142,7 @@ export function DataTableToolbar<TData>({
             filter={assignees}
           />
         )}
-        {assignees.length ||
-        statuses.length ||
-        flags.length ||
-        timeFrames.length ? (
+        {isFiltered ? (
           <Button
             variant="ghost"
             onClick={() => {

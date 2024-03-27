@@ -1,53 +1,40 @@
 "use client";
 
-import React from "react";
-
-import { FilterContext } from "./FilterContext";
+import React, { useMemo } from "react";
+import { useQueryState, parseAsArrayOf, parseAsString } from "nuqs";
 import { api } from "@/convex/_generated/api";
+import { useStableQuery } from "@/lib/useStableQuery";
 
 import { DataTable } from "@/components/action-table/action-table";
 import { getActionTableColumns } from "@/components/action-table/action-table-columns";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { useMemo } from "react";
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
-import { useStableQuery } from "@/lib/useStableQuery";
+import { FilterContext } from "./FilterContext";
 
-export default function actionListPage() {
+const useArrayQueryState = (name: string) =>
+  useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
+
+export default function ActionListPage() {
   const columns = useMemo(() => getActionTableColumns(), []);
 
-  const [statuses, setStatuses] = useQueryState(
-    "status",
-    parseAsArrayOf(parseAsString).withDefault([])
-  );
-  const [timeFrames, setTimeFrames] = useQueryState(
-    "timeframe",
-    parseAsArrayOf(parseAsString).withDefault([])
-  );
-  const [assignees, setAssignees] = useQueryState(
-    "assignee",
-    parseAsArrayOf(parseAsString).withDefault([])
-  );
-  const [flags, setFlags] = useQueryState(
-    "flags",
-    parseAsArrayOf(parseAsString).withDefault([])
+  const [statuses, setStatuses] = useArrayQueryState("status");
+  const [timeFrames, setTimeFrames] = useArrayQueryState("timeframe");
+  const [assignees, setAssignees] = useArrayQueryState("assignee");
+  const [flags, setFlags] = useArrayQueryState("flags");
+  const isFiltered = [assignees, statuses, flags, timeFrames].some(
+    (array) => array.length > 0
   );
 
-  const value = {
-    statuses,
-    setStatuses,
-    timeFrames,
-    setTimeFrames,
-    flags,
-    setFlags,
-    assignees,
-    setAssignees,
+  const createView = () => {
+    if (isFiltered) {
+      console.log(new URLSearchParams(window.location.search).toString());
+    }
   };
 
   const actions = useStableQuery(api.actions.list, {
-    statuses: statuses,
-    timeFrames: timeFrames,
-    assignees: assignees,
-    flags: flags,
+    statuses,
+    timeFrames,
+    assignees,
+    flags,
   });
 
   return (
@@ -55,17 +42,30 @@ export default function actionListPage() {
       {!actions ? (
         <LoadingSpinner />
       ) : (
-        <>
-          <div className="flex flex-col space-y-2 p-4">
-            <h2 className="text-4xl font-bold tracking-tight">Action Table</h2>
-            <p className="text-muted-foreground">
-              Here's a list of all your team's current actions.
-            </p>
-            <FilterContext.Provider value={value}>
-              <DataTable data={actions} columns={columns} />
-            </FilterContext.Provider>
-          </div>
-        </>
+        <div className="flex flex-col space-y-2 p-4">
+          <h2 className="text-4xl font-bold tracking-tight">Action Table</h2>
+          <p className="text-muted-foreground">
+            Here's a list of all your team's current actions.{" "}
+            <span className="cursor-pointer" onClick={createView}>
+              Save View
+            </span>
+          </p>
+          <FilterContext.Provider
+            value={{
+              statuses,
+              setStatuses,
+              timeFrames,
+              setTimeFrames,
+              flags,
+              setFlags,
+              assignees,
+              setAssignees,
+              isFiltered,
+            }}
+          >
+            <DataTable data={actions} columns={columns} />
+          </FilterContext.Provider>
+        </div>
       )}
     </>
   );
