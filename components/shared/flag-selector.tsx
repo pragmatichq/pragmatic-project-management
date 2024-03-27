@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";
-
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -36,16 +34,16 @@ export function FlagSelector({ action }: FlagSelectorProps) {
     },
   ];
 
-  const [currentFlags, setChecked] = useState(action.flags || []);
-
   const updateActionFlags = useMutation(api.actions.update);
 
   const handleCheckedChange = async (checked: boolean, flag: string) => {
+    const currentFlags = action.flags ?? [];
+
     let updatedList = checked
       ? [...currentFlags, flag]
       : currentFlags.filter((item) => item !== flag);
+
     await updateActionFlags({ actionId: action._id, flags: updatedList });
-    setChecked(updatedList);
   };
 
   return (
@@ -56,10 +54,10 @@ export function FlagSelector({ action }: FlagSelectorProps) {
             variant="ghost"
             className="p-1 h-auto rounded-sm flex flex-col gap-1 w-full items-start"
           >
-            {!currentFlags || currentFlags.length === 0 ? (
+            {!action.flags || action.flags.length === 0 ? (
               <div className="h-8 w-8">-</div>
             ) : (
-              currentFlags.map((flag, index) => (
+              action.flags.map((flag, index) => (
                 <Badge
                   variant="outline"
                   key={flag || `selected-flags-placeholder-${index}`}
@@ -76,8 +74,8 @@ export function FlagSelector({ action }: FlagSelectorProps) {
         <DropdownMenuContent>
           {flagsList.map((flag, index) => (
             <DropdownMenuCheckboxItem
-              key={flag.title ?? `currentFlags-placeholder-${index}`}
-              checked={currentFlags.includes(flag.title)}
+              key={flag.title ?? `action-flags-placeholder-${index}`}
+              checked={action.flags?.includes(flag.title)}
               onCheckedChange={(checked) => {
                 if (flag.title) {
                   handleCheckedChange(checked, flag.title);
