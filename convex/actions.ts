@@ -6,7 +6,11 @@ import {
 } from "./customFunctions";
 
 export const list = queryWithOrganization({
-  args: { statuses: v.array(v.string()), timeFrames: v.array(v.string()) },
+  args: {
+    statuses: v.optional(v.array(v.string())),
+    timeFrames: v.optional(v.array(v.string())),
+    assignees: v.optional(v.array(v.string())),
+  },
   handler: async (ctx, args) => {
     let filteredActions = await ctx.db
       .query("actions")
@@ -25,7 +29,7 @@ export const list = queryWithOrganization({
       );
     }
 
-    const actions = await filteredActions.collect();
+    let actions = await filteredActions.collect();
 
     for (let action of actions) {
       const actionAssignees = await getManyVia(
@@ -43,6 +47,15 @@ export const list = queryWithOrganization({
       }
 
       (action as any).assignees = assignees;
+    }
+
+    if (args.assignees && args.assignees.length > 0) {
+      // Filter actions where action.assignees array includes any of the strings in the args.assignees array
+      actions = actions.filter((action: any) =>
+        action.assignees.some((assignee: any) =>
+          args.assignees!.includes(assignee)
+        )
+      );
     }
 
     return actions;

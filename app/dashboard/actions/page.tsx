@@ -23,11 +23,19 @@ export default function actionListPage() {
     "timeframe",
     parseAsArrayOf(parseAsString).withDefault([])
   );
+  const [assignees, setAssignees] = useQueryState(
+    "assignee",
+    parseAsArrayOf(parseAsString).withDefault([])
+  );
 
   const actions = useStableQuery(api.actions.list, {
     statuses: statuses,
     timeFrames: timeFrames,
+    assignees: assignees,
   });
+
+  console.log(actions);
+  console.log(assignees);
 
   return (
     <>
@@ -36,13 +44,22 @@ export default function actionListPage() {
       ) : (
         <>
           <div className="flex flex-col space-y-2 p-4">
-            <span onClick={() => setStatuses(["In Progress"])}>
+            <span
+              onClick={() => setAssignees(["user_2dukJSlNS0LNb6lNEdof9v4eU5o"])}
+            >
               In Progress
             </span>
-            <span onClick={() => setStatuses(["In Progress", "Triage"])}>
+            <span
+              onClick={() =>
+                setAssignees([
+                  "user_2dukJSlNS0LNb6lNEdof9v4eU5o",
+                  "user_2ck6mnIbrGf8MDTLQ7ausqFmhH9",
+                ])
+              }
+            >
               In Progress / Triage
             </span>
-            <span onClick={() => setStatuses([])}>None</span>
+            <span onClick={() => setAssignees([])}>None</span>
             <h2 className="text-4xl font-bold tracking-tight">Action Table</h2>
             <p className="text-muted-foreground">
               Here's a list of all your team's current actions.

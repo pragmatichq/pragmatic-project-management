@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useState } from "react";
-import { useAuth } from "@clerk/nextjs";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Separator } from "@/components/ui/separator";

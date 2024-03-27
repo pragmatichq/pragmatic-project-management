@@ -21,7 +21,6 @@ export function DueDate({ action }: DueDateProps) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const updateActionDueDate = useMutation(api.actions.update);
   const parsedDate = parseDate(action.due_date);
-  console.log(parsedDate, action.due_date);
 
   function parseDate(dateString: string | undefined): Date | undefined {
     if (!dateString) return undefined;

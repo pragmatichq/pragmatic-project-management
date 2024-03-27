@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -20,26 +22,32 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 
-interface ActionWithAssignees extends Doc<"actions"> {
+interface ActionsWithAssignees extends Doc<"actions"> {
   assignees: string[];
 }
 
 interface AssigneeListProps {
-  action: ActionWithAssignees;
+  action: ActionsWithAssignees;
 }
 
 export function AssigneeList({ action }: AssigneeListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
-  const [checkedList, setChecked] = useState(action.assignees || []);
 
   const createActionAssignee = useMutation(api.actionAssignees.create);
   const deleteActionAssignee = useMutation(api.actionAssignees.remove);
 
-  const assigneeDetails = memberships?.data?.filter((member) =>
-    checkedList.includes(member.publicUserData.userId as string)
-  );
+  const assigneeDetails = useMemo(() => {
+    if (!isLoaded || !memberships?.data) return [];
+    return action.assignees
+      .map((assignee) =>
+        memberships.data.find(
+          (member) => member.publicUserData.userId === assignee
+        )
+      )
+      .filter((member) => member !== undefined);
+  }, [action, memberships, isLoaded]);
 
   const handleCheckedChange = async (checked: boolean, member: string) => {
     if (checked) {
@@ -53,11 +61,6 @@ export function AssigneeList({ action }: AssigneeListProps) {
         assigneeClerkId: member,
       });
     }
-
-    const updatedList = checked
-      ? [...checkedList, member]
-      : checkedList.filter((item) => item !== member);
-    setChecked(updatedList);
   };
 
   return (
@@ -68,12 +71,13 @@ export function AssigneeList({ action }: AssigneeListProps) {
             variant="ghost"
             className="p-1 h-auto rounded-sm w-full justify-start"
           >
-            {assigneeDetails && assigneeDetails.length === 0 ? (
+            {assigneeDetails.length === 0 ? (
               <div className="h-8 w-8">-</div>
             ) : (
-              <AvatarGroup limit={2} key={assigneeDetails?.length}>
+              // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes
+              <AvatarGroup limit={2} key={assigneeDetails.length}>
                 <AvatarGroupList>
-                  {assigneeDetails?.map((assignee, index) => (
+                  {assigneeDetails.map((assignee, index) => (
                     <Avatar
                       key={
                         assignee?.publicUserData.userId ||
@@ -97,11 +101,13 @@ export function AssigneeList({ action }: AssigneeListProps) {
           {memberships?.data?.map((member, index) => (
             <DropdownMenuCheckboxItem
               key={
-                member.publicUserData.userId || `member-placeholder-${index}`
+                member.publicUserData.userId ?? `member-placeholder-${index}`
               }
-              checked={checkedList.includes(
-                member.publicUserData.userId as string
-              )}
+              checked={
+                action.assignees.includes(
+                  member.publicUserData.userId as string
+                ) ?? ""
+              }
               onCheckedChange={(checked) => {
                 if (member.publicUserData.userId) {
                   handleCheckedChange(checked, member.publicUserData.userId);
