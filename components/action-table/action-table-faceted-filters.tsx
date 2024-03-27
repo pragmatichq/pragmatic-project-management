@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Column } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
@@ -29,15 +29,17 @@ interface DataTableFacetedFilterProps<TData, TValue> {
     value: string;
     name?: string;
   }[];
+  filter: any;
+  setter: any;
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
-  column,
   title,
   options,
+  filter,
+  setter,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  const selectedValues = new Set(filter as string[]);
 
   return (
     <Popover>
@@ -97,10 +99,10 @@ export function DataTableFacetedFilter<TData, TValue>({
                       } else {
                         selectedValues.add(option.value);
                       }
-                      column?.setFilterValue(
+                      setter(
                         Array.from(selectedValues).length
                           ? Array.from(selectedValues)
-                          : undefined
+                          : []
                       );
                     }}
                   >
@@ -115,11 +117,6 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <CheckIcon className={cn("h-4 w-4")} />
                     </div>
                     <span>{!option.name ? option.value : option.name}</span>
-                    {facets?.get(option.value) && (
-                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                        {facets.get(option.value)}
-                      </span>
-                    )}
                   </CommandItem>
                 );
               })}
@@ -129,7 +126,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => setter([])}
                     className="justify-center text-center"
                   >
                     Clear filters

@@ -10,6 +10,7 @@ export const list = queryWithOrganization({
     statuses: v.optional(v.array(v.string())),
     timeFrames: v.optional(v.array(v.string())),
     assignees: v.optional(v.array(v.string())),
+    flags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     let filteredActions = await ctx.db
@@ -49,8 +50,13 @@ export const list = queryWithOrganization({
       (action as any).assignees = assignees;
     }
 
+    if (args.flags && args.flags.length > 0) {
+      actions = actions.filter((action: any) =>
+        action.flags.some((flag: any) => args.flags!.includes(flag))
+      );
+    }
+
     if (args.assignees && args.assignees.length > 0) {
-      // Filter actions where action.assignees array includes any of the strings in the args.assignees array
       actions = actions.filter((action: any) =>
         action.assignees.some((assignee: any) =>
           args.assignees!.includes(assignee)

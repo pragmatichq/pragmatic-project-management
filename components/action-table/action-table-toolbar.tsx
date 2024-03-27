@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Cross2Icon } from "@radix-ui/react-icons";
@@ -21,7 +21,7 @@ import { useMemo } from "react";
 
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 
-const statuses = [
+const status = [
   {
     value: "Triage",
   },
@@ -36,7 +36,7 @@ const statuses = [
   },
 ];
 
-const time_frames = [
+const time_frame = [
   {
     value: "Today",
   },
@@ -45,7 +45,7 @@ const time_frames = [
   },
 ];
 
-const flags = [
+const flag = [
   {
     value: "Ready for Review",
   },
@@ -56,6 +56,7 @@ const flags = [
 
 import type { Table } from "@tanstack/react-table";
 import { Rows3Icon } from "lucide-react";
+import { FilterContext } from "@/app/dashboard/actions/FilterContext";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -64,9 +65,19 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
+  const {
+    statuses,
+    setStatuses,
+    timeFrames,
+    setTimeFrames,
+    flags,
+    setFlags,
+    assignees,
+    setAssignees,
+  } = useContext(FilterContext);
   const { memberships, isLoaded } = useOrganization({ memberships: true });
 
-  const assignees = useMemo(() => {
+  const assignee = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
     return memberships.data.map((member) => ({
       value: member.publicUserData.userId,
@@ -74,7 +85,7 @@ export function DataTableToolbar<TData>({
     })) as { value: string }[];
   }, [memberships, isLoaded]);
 
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const isFiltered = true;
   const currentGrouping = table.getState().grouping[0] || "";
 
   const handleGroupingChange = (value: string) => {
@@ -97,14 +108,18 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
-            options={statuses}
+            options={status}
+            setter={setStatuses}
+            filter={statuses}
           />
         )}
         {table.getColumn("time_frame") && (
           <DataTableFacetedFilter
             column={table.getColumn("time_frame")}
             title="Time Frames"
-            options={time_frames}
+            options={time_frame}
+            setter={setTimeFrames}
+            filter={timeFrames}
           />
         )}
 
@@ -112,7 +127,9 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("flags")}
             title="Flags"
-            options={flags}
+            options={flag}
+            setter={setFlags}
+            filter={flags}
           />
         )}
 
@@ -120,19 +137,29 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("assignees")}
             title="Assignees"
-            options={assignees}
+            options={assignee}
+            setter={setAssignees}
+            filter={assignees}
           />
         )}
-        {isFiltered && (
+        {assignees.length ||
+        statuses.length ||
+        flags.length ||
+        timeFrames.length ? (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              setAssignees([]);
+              setFlags([]);
+              setStatuses([]);
+              setTimeFrames([]);
+            }}
             className="h-8 px-2 lg:px-3"
           >
             Reset
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
-        )}
+        ) : null}
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

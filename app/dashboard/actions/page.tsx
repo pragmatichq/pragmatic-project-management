@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { useQuery } from "convex/react";
+import { FilterContext } from "./FilterContext";
 import { api } from "@/convex/_generated/api";
 
 import { DataTable } from "@/components/action-table/action-table";
@@ -27,15 +27,28 @@ export default function actionListPage() {
     "assignee",
     parseAsArrayOf(parseAsString).withDefault([])
   );
+  const [flags, setFlags] = useQueryState(
+    "flags",
+    parseAsArrayOf(parseAsString).withDefault([])
+  );
+
+  const value = {
+    statuses,
+    setStatuses,
+    timeFrames,
+    setTimeFrames,
+    flags,
+    setFlags,
+    assignees,
+    setAssignees,
+  };
 
   const actions = useStableQuery(api.actions.list, {
     statuses: statuses,
     timeFrames: timeFrames,
     assignees: assignees,
+    flags: flags,
   });
-
-  console.log(actions);
-  console.log(assignees);
 
   return (
     <>
@@ -44,27 +57,13 @@ export default function actionListPage() {
       ) : (
         <>
           <div className="flex flex-col space-y-2 p-4">
-            <span
-              onClick={() => setAssignees(["user_2dukJSlNS0LNb6lNEdof9v4eU5o"])}
-            >
-              In Progress
-            </span>
-            <span
-              onClick={() =>
-                setAssignees([
-                  "user_2dukJSlNS0LNb6lNEdof9v4eU5o",
-                  "user_2ck6mnIbrGf8MDTLQ7ausqFmhH9",
-                ])
-              }
-            >
-              In Progress / Triage
-            </span>
-            <span onClick={() => setAssignees([])}>None</span>
             <h2 className="text-4xl font-bold tracking-tight">Action Table</h2>
             <p className="text-muted-foreground">
               Here's a list of all your team's current actions.
             </p>
-            <DataTable data={actions} columns={columns} />
+            <FilterContext.Provider value={value}>
+              <DataTable data={actions} columns={columns} />
+            </FilterContext.Provider>
           </div>
         </>
       )}
