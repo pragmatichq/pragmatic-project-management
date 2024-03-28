@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -27,16 +27,27 @@ import { Doc } from "@/convex/_generated/dataModel";
 interface ActionsWithAssignees extends Doc<"actions"> {
   assignees: string[];
 }
-
 interface AssigneeListProps {
   action: ActionsWithAssignees;
+  purpose: "assignees" | "stakeholders";
 }
 
-export function AssigneeList({ action }: AssigneeListProps) {
+export function AssigneeList({ action, purpose }: AssigneeListProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
 
-  const createActionAssignee = useMutation(api.actionAssignees.create);
-  const deleteActionAssignee = useMutation(api.actionAssignees.remove);
+  const apiEndpoints = {
+    assignees: {
+      create: api.actionAssignees.create,
+      remove: api.actionAssignees.remove,
+    },
+    stakeholders: {
+      create: api.actionStakeholders.create,
+      remove: api.actionStakeholders.remove,
+    },
+  };
+
+  const createActionItem = useMutation(apiEndpoints[purpose].create);
+  const deleteActionItem = useMutation(apiEndpoints[purpose].remove);
 
   const assigneeDetails = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
@@ -51,12 +62,12 @@ export function AssigneeList({ action }: AssigneeListProps) {
 
   const handleCheckedChange = async (checked: boolean, member: string) => {
     if (checked) {
-      await createActionAssignee({
+      await createActionItem({
         actionId: action._id,
         assigneeClerkId: member,
       });
     } else {
-      await deleteActionAssignee({
+      await deleteActionItem({
         actionId: action._id,
         assigneeClerkId: member,
       });
@@ -74,7 +85,7 @@ export function AssigneeList({ action }: AssigneeListProps) {
             {assigneeDetails.length === 0 ? (
               <div className="h-8 w-8">-</div>
             ) : (
-              // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes
+              // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes, causes flashing
               <AvatarGroup limit={2} key={assigneeDetails.length}>
                 <AvatarGroupList>
                   {assigneeDetails.map((assignee, index) => (

@@ -42,7 +42,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       if (typeof value === "string") {
         return (
           <Link
-            href={`/dashboard/action/${info.row.original._id}`}
+            href={`/dashboard/actions/${info.row.original._id}`}
             className="hover:underline"
           >
             {value}
@@ -123,7 +123,9 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       <DataTableColumnHeader column={column} title="Assignees" />
     ),
     cell: (info) => {
-      return <AssigneeList action={info.row.original as any} />;
+      return (
+        <AssigneeList action={info.row.original as any} purpose="assignees" />
+      );
     },
     filterFn: (row, id, filterValues) => {
       const filterValArray = Array.isArray(filterValues)

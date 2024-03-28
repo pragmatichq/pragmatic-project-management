@@ -74,6 +74,7 @@ export function DataTableToolbar<TData>({
     setFlags,
     assignees,
     setAssignees,
+    setGroupBy,
     isFiltered,
   } = useContext(FilterContext);
   const { memberships, isLoaded } = useOrganization({ memberships: true });
@@ -90,7 +91,7 @@ export function DataTableToolbar<TData>({
 
   const handleGroupingChange = (value: string) => {
     const newGrouping = value === "" ? [] : [value];
-    table.setGrouping(newGrouping);
+    setGroupBy(newGrouping);
   };
 
   return (

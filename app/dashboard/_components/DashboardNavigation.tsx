@@ -28,7 +28,7 @@ export function DashboardNavigation({
       collapsedSize={3}
       collapsible={true}
       minSize={10}
-      maxSize={14}
+      maxSize={13}
       onCollapse={() => {
         setIsCollapsed(true);
       }}
@@ -42,11 +42,10 @@ export function DashboardNavigation({
     >
       <div
         className={cn(
-          "flex h-[52px] items-center",
-          isCollapsed ? "ml-[10px] justify-start" : "px-2 justify-center"
+          "flex-none flex h-[44px] items-center font-bold justify-start px-5"
         )}
       >
-        <OrganizationSwitcher hidePersonal afterSelectOrganizationUrl={"/"} />
+        {isCollapsed ? "P" : "Pragmatic"}
       </div>
       <Separator />
       <Sidebar
@@ -93,11 +92,11 @@ export function DashboardNavigation({
       <Separator />
       <div
         className={cn(
-          "flex h-[52px] items-center",
-          isCollapsed ? "ml-[10px]" : "px-2"
+          "flex h-[54px] items-center justify-start px-2",
+          isCollapsed && "w-[36px] overflow-hidden"
         )}
       >
-        <UserButton />
+        <OrganizationSwitcher hidePersonal afterSelectOrganizationUrl={"/"} />
       </div>
     </ResizablePanel>
   );

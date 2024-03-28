@@ -31,8 +31,8 @@ interface TaskModalProps {
 
 export function ActionDetails({ action }: TaskModalProps) {
   return (
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel>
+    <ResizablePanelGroup direction="horizontal" autoSaveId="action-details">
+      <ResizablePanel defaultSize={80} minSize={50}>
         <ScrollArea className="h-screen">
           <div className="grow grid gap-4 auto-rows-min p-4">
             <ActionTitleEditor
@@ -59,7 +59,7 @@ export function ActionDetails({ action }: TaskModalProps) {
         </ScrollArea>
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel defaultSize={15}>
+      <ResizablePanel defaultSize={20} minSize={16}>
         <div className="grid gap-6 auto-rows-min justify-items-start border-l p-4">
           <div className="grid gap-2">
             <Label htmlFor="status">Status</Label>
@@ -71,7 +71,7 @@ export function ActionDetails({ action }: TaskModalProps) {
           </div>
           <div className="grid gap-2">
             <Label>Assignees</Label>
-            <AssigneeList action={action} />
+            <AssigneeList action={action} purpose="assignees" />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="due-date">Due Date</Label>

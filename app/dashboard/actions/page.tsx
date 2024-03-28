@@ -9,6 +9,8 @@ import { DataTable } from "@/components/action-table/action-table";
 import { getActionTableColumns } from "@/components/action-table/action-table-columns";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./FilterContext";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
@@ -20,15 +22,23 @@ export default function ActionListPage() {
   const [timeFrames, setTimeFrames] = useArrayQueryState("timeframe");
   const [assignees, setAssignees] = useArrayQueryState("assignee");
   const [flags, setFlags] = useArrayQueryState("flags");
+  const [groupBy, setGroupBy] = useQueryState(
+    "groupBy",
+    parseAsArrayOf(parseAsString).withDefault([])
+  );
   const isFiltered = [assignees, statuses, flags, timeFrames].some(
     (array) => array.length > 0
   );
 
-  const createView = () => {
+  const createView = (savedView: string) => {
     if (isFiltered) {
-      console.log(new URLSearchParams(window.location.search).toString());
+      savedView = new URLSearchParams(window.location.search).toString();
     }
+    return savedView;
   };
+
+  let savedView = "";
+  savedView = createView(savedView);
 
   const actions = useStableQuery(api.actions.list, {
     statuses,
@@ -45,10 +55,7 @@ export default function ActionListPage() {
         <div className="flex flex-col space-y-2 p-4">
           <h2 className="text-4xl font-bold tracking-tight">Action Table</h2>
           <p className="text-muted-foreground">
-            Here's a list of all your team's current actions.{" "}
-            <span className="cursor-pointer" onClick={createView}>
-              Save View
-            </span>
+            Here's a list of all your team's current actions.
           </p>
           <FilterContext.Provider
             value={{
@@ -60,6 +67,8 @@ export default function ActionListPage() {
               setFlags,
               assignees,
               setAssignees,
+              groupBy,
+              setGroupBy,
               isFiltered,
             }}
           >

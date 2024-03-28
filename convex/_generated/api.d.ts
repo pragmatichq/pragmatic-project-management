@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as actionAssignees from "../actionAssignees.js";
+import type * as actionStakeholders from "../actionStakeholders.js";
 import type * as actions from "../actions.js";
 import type * as comments from "../comments.js";
 import type * as customFunctions from "../customFunctions.js";
@@ -33,6 +34,7 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   actionAssignees: typeof actionAssignees;
+  actionStakeholders: typeof actionStakeholders;
   actions: typeof actions;
   comments: typeof comments;
   customFunctions: typeof customFunctions;

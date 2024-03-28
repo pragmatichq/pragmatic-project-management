@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ColumnDef,
   SortingState,
   useReactTable,
-  ColumnFiltersState,
   VisibilityState,
   getCoreRowModel,
   getSortedRowModel,
@@ -23,6 +22,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DataTableToolbar } from "@/components/action-table/action-table-toolbar";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
+import { FilterContext } from "@/app/dashboard/actions/FilterContext";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,9 +34,15 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const { groupBy } = useContext(FilterContext);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [grouping, setGrouping] = useState<GroupingState>([]);
+  const [grouping, setGrouping] = useState<GroupingState>(groupBy);
+
+  // effect that sets grouping to urlGroup if urlGroup changes
+  useEffect(() => {
+    setGrouping(groupBy);
+  }, [groupBy]);
 
   const table = useReactTable({
     data,

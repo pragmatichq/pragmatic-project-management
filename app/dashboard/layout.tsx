@@ -10,6 +10,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthLoading, Authenticated } from "convex/react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DashboardNavigation } from "./_components/DashboardNavigation";
+import { Separator } from "@/components/ui/separator";
+import { UserButton } from "@clerk/nextjs";
 
 export default function DashboardTemplate({
   children,

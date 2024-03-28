@@ -9,6 +9,8 @@ export type FilterContextType = {
   setFlags: React.Dispatch<React.SetStateAction<string[]>>;
   assignees: string[];
   setAssignees: React.Dispatch<React.SetStateAction<string[]>>;
+  groupBy: string[];
+  setGroupBy: React.Dispatch<React.SetStateAction<string[]>>;
   isFiltered: boolean;
 };
 
@@ -21,5 +23,7 @@ export const FilterContext = createContext<FilterContextType>({
   setFlags: () => {},
   assignees: [],
   setAssignees: () => {},
+  groupBy: [],
+  setGroupBy: () => {},
   isFiltered: false,
 });
