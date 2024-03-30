@@ -6,10 +6,10 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/action-table/action-table-column-header";
 
-import { AssigneeList } from "@/components/shared/assignee-list";
-import { DueDate } from "@/components/shared/due-date";
-import { FlagSelector } from "@/components/shared/flag-selector";
-import { StatusSelector } from "@/components/shared/status-selector";
+import { AssigneeList } from "@/components/shared/MemberSelector";
+import { DueDate } from "@/components/shared/DateSelector";
+import { FlagSelector } from "@/components/shared/FlagSelector";
+import { StatusSelector } from "@/components/shared/StatusSelector";
 import { Badge } from "@/components/ui/badge";
 
 import { Doc } from "@/convex/_generated/dataModel";

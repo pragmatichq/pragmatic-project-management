@@ -1,9 +1,9 @@
 "use client";
 
-import { DueDate } from "@/components/shared/due-date";
-import { AssigneeList } from "@/components/shared/assignee-list";
-import { StatusSelector } from "@/components/shared/status-selector";
-import { FlagSelector } from "@/components/shared/flag-selector";
+import { DueDate } from "@/components/shared/DateSelector";
+import { AssigneeList } from "@/components/shared/MemberSelector";
+import { StatusSelector } from "@/components/shared/StatusSelector";
+import { FlagSelector } from "@/components/shared/FlagSelector";
 import { CommentList } from "@/components/shared/comment-list";
 import { ActionDescriptionEditor } from "@/components/editor/action-description-editor";
 import { ActionTitleEditor } from "@/components/editor/action-title-editor";
