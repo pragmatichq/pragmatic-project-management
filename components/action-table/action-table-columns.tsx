@@ -8,19 +8,6 @@ import { DataTableColumnHeader } from "@/components/action-table/action-table-co
 
 import { AssigneeList } from "@/components/shared/assignee-list";
 import { DueDate } from "@/components/shared/due-date";
-
-import { MoreHorizontal } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
 import { FlagSelector } from "@/components/shared/flag-selector";
 import { StatusSelector } from "@/components/shared/status-selector";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +16,7 @@ import { Doc } from "@/convex/_generated/dataModel";
 
 import Link from "next/link";
 import ContextMenu from "@/app/dashboard/actions/_components/ContextMenu";
+import useRelativeDate from "@/lib/hooks/useRelativeDate";
 
 export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
   {
@@ -118,9 +106,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
-        return formatDistanceToNowStrict(value, {
-          addSuffix: true,
-        });
+        return useRelativeDate(value);
       }
       return "N/A";
     },

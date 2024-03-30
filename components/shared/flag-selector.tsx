@@ -1,7 +1,6 @@
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "../ui/badge";
 import { Doc } from "@/convex/_generated/dataModel";
+import AddItemPlaceholder from "./AddItemPlaceholder";
 
 interface FlagSelectorProps {
   action: Doc<"actions">;
@@ -49,27 +49,22 @@ export function FlagSelector({ action }: FlagSelectorProps) {
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="p-1 h-auto rounded-sm flex flex-col gap-1 w-full items-start"
-          >
-            {!action.flags || action.flags.length === 0 ? (
-              <div className="h-8 w-8">-</div>
-            ) : (
-              action.flags.map((flag, index) => (
-                <Badge
-                  variant="outline"
-                  key={flag || `selected-flags-placeholder-${index}`}
-                  className={
-                    flagsList.find((flagItem) => flagItem.title == flag)?.color
-                  }
-                >
-                  {flag}
-                </Badge>
-              ))
-            )}
-          </Button>
+        <DropdownMenuTrigger className="flex justify-start items-center w-full h-10 hover:bg-gray-100">
+          {!action.flags || action.flags.length === 0 ? (
+            <AddItemPlaceholder />
+          ) : (
+            action.flags.map((flag, index) => (
+              <Badge
+                variant="outline"
+                key={flag || `selected-flags-placeholder-${index}`}
+                className={
+                  flagsList.find((flagItem) => flagItem.title == flag)?.color
+                }
+              >
+                {flag}
+              </Badge>
+            ))
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {flagsList.map((flag, index) => (

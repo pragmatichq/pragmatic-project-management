@@ -5,8 +5,6 @@ import { useMutation } from "convex/react";
 import { useOrganization } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";
 
-import { Button } from "@/components/ui/button";
-
 import {
   Avatar,
   AvatarGroup,
@@ -23,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Doc } from "@/convex/_generated/dataModel";
+import AddItemPlaceholder from "./AddItemPlaceholder";
 
 interface ActionsWithAssignees extends Doc<"actions"> {
   assignees: string[];
@@ -77,36 +76,30 @@ export function AssigneeList({ action, purpose }: AssigneeListProps) {
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="p-1 h-auto rounded-sm w-full justify-start"
-          >
-            {assigneeDetails.length === 0 ? (
-              <div className="h-8 w-8">-</div>
-            ) : (
-              // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes, causes flashing
-              <AvatarGroup limit={2} key={assigneeDetails.length}>
-                <AvatarGroupList>
-                  {assigneeDetails.map((assignee, index) => (
-                    <Avatar
-                      key={
-                        assignee?.publicUserData.userId ||
-                        `placeholder-${index}`
-                      }
-                      className="h-8 w-8"
-                    >
-                      <AvatarImage
-                        src={assignee?.publicUserData.imageUrl}
-                        className="h-8 w-8 border-solid border-white border-[1px] object-cover"
-                      />
-                    </Avatar>
-                  ))}
-                </AvatarGroupList>
-                <AvatarOverflowIndicator className="w-8 h-8" />
-              </AvatarGroup>
-            )}
-          </Button>
+        <DropdownMenuTrigger className="flex justify-start items-center text-left font-normal text-[14px] w-full h-10 hover:bg-gray-100">
+          {assigneeDetails.length === 0 ? (
+            <AddItemPlaceholder />
+          ) : (
+            // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes, causes flashing
+            <AvatarGroup limit={2} key={assigneeDetails.length}>
+              <AvatarGroupList>
+                {assigneeDetails.map((assignee, index) => (
+                  <Avatar
+                    key={
+                      assignee?.publicUserData.userId || `placeholder-${index}`
+                    }
+                    className="h-7 w-7"
+                  >
+                    <AvatarImage
+                      src={assignee?.publicUserData.imageUrl}
+                      className="h-7 w-7 border-solid border-white border-[1px] object-cover"
+                    />
+                  </Avatar>
+                ))}
+              </AvatarGroupList>
+              <AvatarOverflowIndicator className="w-7 h-7" />
+            </AvatarGroup>
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {memberships?.data?.map((member, index) => (

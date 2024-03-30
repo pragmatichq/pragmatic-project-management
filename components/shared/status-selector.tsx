@@ -27,7 +27,7 @@ export function StatusSelector({ action }: StatusSelectorProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="flex justify-start items-center text-left font-normal text-[14px] w-full h-10 hover:bg-gray-100">
         <Badge>{action.status}</Badge>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

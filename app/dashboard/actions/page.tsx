@@ -3,15 +3,12 @@
 import React, { useMemo } from "react";
 import { useQueryState, parseAsArrayOf, parseAsString } from "nuqs";
 import { api } from "@/convex/_generated/api";
-import { useStableQuery } from "@/lib/useStableQuery";
+import { useStableQuery } from "@/lib/hooks/useStableQuery";
 
 import { DataTable } from "@/components/action-table/action-table";
 import { getActionTableColumns } from "@/components/action-table/action-table-columns";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./FilterContext";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
 import NewAction from "./_components/NewAction";
 
 const useArrayQueryState = (name: string) =>

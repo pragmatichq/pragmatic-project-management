@@ -1,21 +1,18 @@
 import { useState } from "react";
 import { format, isValid, parseISO } from "date-fns";
-import {
-  Calendar as CalendarIcon,
-  CalendarPlus,
-  CalendarSearch,
-} from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+import AddItemPlaceholder from "./AddItemPlaceholder";
 
 interface DueDateProps {
   action: any;
@@ -44,32 +41,31 @@ export function DueDate({ action }: DueDateProps) {
 
   return (
     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className={cn("justify-start text-left font-normal w-full p-0", {
+      <PopoverTrigger
+        className={cn(
+          "flex justify-start items-center text-left font-normal align-middle text-[14px] w-full h-10 hover:bg-gray-100 ",
+          {
             "text-muted-foreground": !parsedDate,
             " text-yellow-500 hover:text-yellow-400":
               parsedDate && parsedDate.getTime() === today.getTime(),
             " text-red-500 hover:text-red-400":
               parsedDate && parsedDate.getTime() < today.getTime(),
-          })}
-        >
-          {parsedDate ? (
-            <CalendarIcon
-              className={cn("mr-2 h-4 w-4", {
-                "text-muted-foreground": !parsedDate,
-                "text-yellow-500":
-                  parsedDate && parsedDate.getTime() === today.getTime(),
-                "text-red-500":
-                  parsedDate && parsedDate.getTime() < today.getTime(),
-              })}
-            />
-          ) : (
-            <CalendarPlus className="mr-2 h-4 w-4" />
-          )}
-          {parsedDate ? format(parsedDate, "MM/dd") : ""}
-        </Button>
+          }
+        )}
+      >
+        {parsedDate ? (
+          <CalendarIcon
+            className={cn("mr-2 h-4 w-4", {
+              "text-yellow-500":
+                parsedDate && parsedDate.getTime() === today.getTime(),
+              "text-red-500":
+                parsedDate && parsedDate.getTime() < today.getTime(),
+            })}
+          />
+        ) : (
+          <AddItemPlaceholder />
+        )}
+        {parsedDate ? format(parsedDate, "MM/dd") : null}
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar

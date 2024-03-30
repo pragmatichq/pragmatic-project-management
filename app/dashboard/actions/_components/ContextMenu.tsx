@@ -12,6 +12,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function ContextMenu({ action }: { action: any }) {
   const removeAction = useMutation(api.actions.remove);
@@ -28,10 +29,21 @@ export default function ContextMenu({ action }: { action: any }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link href={`/dashboard/actions/${action._id}`}>Edit</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            navigator.clipboard.writeText(`/dashboard/actions/${action._id}`)
+          }
+        >
+          Copy Link
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleArchive(action._id)}>
           Archive
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleArchive(action._id)}>
+          Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

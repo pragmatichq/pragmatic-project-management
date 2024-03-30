@@ -39,44 +39,46 @@ export function ActionDetails({ action }: TaskModalProps) {
               actionTitle={action.title as string}
               actionId={action?._id}
             />
-            <ActionDescriptionEditor
-              actionId={action._id}
-              content={action.description as string}
-            />
-            <Tabs defaultValue="comments">
-              <TabsList>
-                <TabsTrigger value="comments">Comments</TabsTrigger>
-                <TabsTrigger value="files">Files</TabsTrigger>
-              </TabsList>
-              <TabsContent value="comments">
-                <CommentList parent={action._id} />
-              </TabsContent>
-              <TabsContent value="files">
-                <FileUpload actionId={action._id} />
-              </TabsContent>
-            </Tabs>
+            <div className="flex gap-6 flex-rows">
+              <div className="flex flex-col gap-1">
+                <Label className="text-xs">Status</Label>
+                <StatusSelector action={action} />
+              </div>
+              <div className="flex flex-col gap-1">
+                <Label className="text-xs">Flags</Label>
+                <FlagSelector action={action} />
+              </div>
+              <div className="flex flex-col gap-1">
+                <Label className="text-xs">Assignees</Label>
+                <AssigneeList action={action} purpose="assignees" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <Label className="text-xs">Due Date</Label>
+                <DueDate action={action} />
+              </div>
+            </div>
+            <div>
+              <ActionDescriptionEditor
+                actionId={action._id}
+                content={action.description as string}
+              />
+            </div>
+            <FileUpload actionId={action._id} />
           </div>
         </ScrollArea>
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={20} minSize={16}>
-        <div className="grid gap-6 auto-rows-min justify-items-start border-l p-4">
-          <div className="grid gap-2">
-            <Label htmlFor="status">Status</Label>
-            <StatusSelector action={action} />
-          </div>
-          <div className="grid gap-2">
-            <Label>Flags</Label>
-            <FlagSelector action={action} />
-          </div>
-          <div className="grid gap-2">
-            <Label>Assignees</Label>
-            <AssigneeList action={action} purpose="assignees" />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="due-date">Due Date</Label>
-            <DueDate action={action} />
-          </div>
+        <div className="p-4">
+          <Tabs defaultValue="comments">
+            <TabsList>
+              <TabsTrigger value="comments">Comments</TabsTrigger>
+              <TabsTrigger value="files">Files</TabsTrigger>
+            </TabsList>
+            <TabsContent value="comments">
+              <CommentList parent={action._id} />
+            </TabsContent>
+          </Tabs>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

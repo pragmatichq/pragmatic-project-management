@@ -56,7 +56,7 @@ export default function NewAction() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New Action</DialogTitle>
+          <DialogTitle>Create a New Action</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -72,8 +72,9 @@ export default function NewAction() {
                 </FormItem>
               )}
             />
-            <Button type="submit">
-              {form.formState.isSubmitted ? (
+            <Button type="submit" className="float-end">
+              {form.formState.isSubmitting ||
+              form.formState.isSubmitSuccessful ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={24}
@@ -89,7 +90,7 @@ export default function NewAction() {
                   <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                 </svg>
               ) : (
-                "New"
+                "Submit"
               )}
             </Button>
           </form>
