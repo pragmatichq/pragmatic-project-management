@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -28,7 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Doc } from "@/convex/_generated/dataModel";
 
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
+import ContextMenu from "@/app/dashboard/actions/_components/ContextMenu";
 
 export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
   {
@@ -38,12 +38,11 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     ),
     cell: (info) => {
       const value = info.getValue();
-      const { orgSlug } = useAuth();
       if (typeof value === "string") {
         return (
           <Link
             href={`/dashboard/actions/${info.row.original._id}`}
-            className="hover:underline"
+            className="hover:underline min-w-[200px]"
           >
             {value}
           </Link>
@@ -64,9 +63,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       }
       return "N/A";
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
+    meta: { size: "100px" },
   },
   {
     accessorKey: "time_frame",
@@ -81,27 +78,12 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       }
       return "N/A";
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
   },
   {
     accessorKey: "flags",
     header: "Flags",
     cell: (info) => {
       return <FlagSelector action={info.row.original} />;
-    },
-    filterFn: (row, id, filterValues) => {
-      const filterValArray = Array.isArray(filterValues)
-        ? filterValues
-        : [filterValues];
-      const rowValue = row.getValue(id);
-
-      if (Array.isArray(rowValue)) {
-        return rowValue.some((val) => filterValArray.includes(val));
-      }
-
-      return filterValArray.includes(rowValue);
     },
   },
   {
@@ -127,18 +109,6 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
         <AssigneeList action={info.row.original as any} purpose="assignees" />
       );
     },
-    filterFn: (row, id, filterValues) => {
-      const filterValArray = Array.isArray(filterValues)
-        ? filterValues
-        : [filterValues];
-      const rowValue = row.getValue(id);
-
-      if (Array.isArray(rowValue)) {
-        return rowValue.some((val) => filterValArray.includes(val));
-      }
-
-      return filterValArray.includes(rowValue);
-    },
   },
   {
     accessorKey: "last_updated",
@@ -148,7 +118,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
-        return formatDistanceToNow(value, {
+        return formatDistanceToNowStrict(value, {
           addSuffix: true,
         });
       }
@@ -157,22 +127,8 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
   },
   {
     id: "actions",
-    cell: () => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Archive</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    cell: (info) => {
+      return <ContextMenu action={info.row.original} />;
     },
   },
 ];

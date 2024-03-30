@@ -30,7 +30,7 @@ export function StatusSelector({ action }: StatusSelectorProps) {
       <DropdownMenuTrigger>
         <Badge>{action.status}</Badge>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent>
         <DropdownMenuLabel>Project Status</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup

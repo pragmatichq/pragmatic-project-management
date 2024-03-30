@@ -106,13 +106,16 @@ export const create = mutationWithOrganization({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("actions", {
+    const action = await ctx.db.insert("actions", {
       title: args.title,
       organization: ctx.orgId,
       last_updated: new Date().toISOString(),
+      due_date: "",
+      time_frame: "",
       status: "Triage",
       is_archived: false,
     });
+    return action;
   },
 });
 

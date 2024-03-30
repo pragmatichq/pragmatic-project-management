@@ -10,7 +10,9 @@ import { getActionTableColumns } from "@/components/action-table/action-table-co
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./FilterContext";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import NewAction from "./_components/NewAction";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
@@ -73,6 +75,9 @@ export default function ActionListPage() {
             }}
           >
             <DataTable data={actions} columns={columns} />
+            <div className="flex justify-end">
+              <NewAction />
+            </div>
           </FilterContext.Provider>
         </div>
       )}

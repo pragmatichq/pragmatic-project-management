@@ -39,7 +39,6 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [grouping, setGrouping] = useState<GroupingState>(groupBy);
 
-  // effect that sets grouping to urlGroup if urlGroup changes
   useEffect(() => {
     setGrouping(groupBy);
   }, [groupBy]);
@@ -59,6 +58,7 @@ export function DataTable<TData, TValue>({
       grouping,
       columnVisibility,
     },
+    defaultColumn: { minSize: 150, maxSize: 400 },
   });
 
   return (
@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => {
                 if (row.getIsGrouped()) {
-                  const groupingColumnId = grouping[0]; // Assuming single-column grouping for simplicity
+                  const groupingColumnId = grouping[0];
                   const groupedValue: string | string[] = row.getValue(
                     groupingColumnId
                   ) as string | string[];
@@ -98,7 +98,7 @@ export function DataTable<TData, TValue>({
                     <React.Fragment key={row.id}>
                       <TableRow>
                         <TableCell
-                          className="bg-gray-800 text-white"
+                          className="bg-gray-700 text-white"
                           colSpan={columns.length}
                         >
                           <span className="font-bold">
@@ -113,7 +113,10 @@ export function DataTable<TData, TValue>({
                       {row.subRows.map((subRow) => (
                         <TableRow key={subRow.id}>
                           {subRow.getVisibleCells().map((cell) => (
-                            <TableCell key={cell.id}>
+                            <TableCell
+                              key={cell.id}
+                              className="max-w-[300px] truncate"
+                            >
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
@@ -128,7 +131,10 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableRow key={row.id}>
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell
+                          key={cell.id}
+                          className="max-w-[300px] truncate"
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

@@ -61,7 +61,7 @@ export function DashboardNavigation({
             title: "Actions",
             label: "",
             icon: CopyCheck,
-            url: "/dashboard/actions",
+            url: "/dashboard/actions/",
           },
           {
             title: "Initiatives",

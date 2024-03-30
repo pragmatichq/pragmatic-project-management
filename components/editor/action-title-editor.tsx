@@ -4,6 +4,7 @@ import React from "react";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { Id } from "@/convex/_generated/dataModel";
+import { toast } from "sonner";
 import StarterKit from "@tiptap/starter-kit";
 import Document from "@tiptap/extension-document";
 
@@ -52,10 +53,14 @@ export function ActionTitleEditor({
 
   const updateAction = useMutation(api.actions.update);
 
-  const updateContent = (editor: any): void => {
+  const updateContent = async (editor: any): Promise<void> => {
     let newTitle = editor.getJSON()?.content?.[0]?.content?.[0]?.text;
     if (newTitle && actionId) {
-      updateAction({ actionId: actionId, title: newTitle });
+      const response = await updateAction({
+        actionId: actionId,
+        title: newTitle,
+      });
+      toast.success("Action title updated");
     }
   };
 

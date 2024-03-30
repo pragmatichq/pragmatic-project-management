@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { format, isValid, parseISO } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  CalendarPlus,
+  CalendarSearch,
+} from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
@@ -42,29 +46,29 @@ export function DueDate({ action }: DueDateProps) {
     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
-          className={cn("justify-start text-left font-normal w-full", {
+          variant="ghost"
+          className={cn("justify-start text-left font-normal w-full p-0", {
             "text-muted-foreground": !parsedDate,
-            "border-yellow-200 text-yellow-500 border-2":
+            " text-yellow-500 hover:text-yellow-400":
               parsedDate && parsedDate.getTime() === today.getTime(),
-            "border-red-200 text-red-500 border-2 border-dashed":
+            " text-red-500 hover:text-red-400":
               parsedDate && parsedDate.getTime() < today.getTime(),
           })}
         >
-          <CalendarIcon
-            className={cn("mr-2 h-4 w-4", {
-              "text-muted-foreground": !parsedDate,
-              "text-yellow-500":
-                parsedDate && parsedDate.getTime() === today.getTime(),
-              "text-red-500":
-                parsedDate && parsedDate.getTime() < today.getTime(),
-            })}
-          />
           {parsedDate ? (
-            format(parsedDate, "MM/dd/yyyy")
+            <CalendarIcon
+              className={cn("mr-2 h-4 w-4", {
+                "text-muted-foreground": !parsedDate,
+                "text-yellow-500":
+                  parsedDate && parsedDate.getTime() === today.getTime(),
+                "text-red-500":
+                  parsedDate && parsedDate.getTime() < today.getTime(),
+              })}
+            />
           ) : (
-            <span>No Due Date</span>
+            <CalendarPlus className="mr-2 h-4 w-4" />
           )}
+          {parsedDate ? format(parsedDate, "MM/dd") : ""}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
