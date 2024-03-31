@@ -67,12 +67,13 @@ export function CommentEditor({ parent }: { parent: Id<"actions"> }) {
 
   const editorProps = {
     attributes: {
-      class: "prose max-w-full focus-visible:outline-none w-full flex-grow",
+      class:
+        "prose max-w-full focus-visible:outline-none w-full flex-grow bg-muted",
     },
   };
 
   return (
-    <div className="flex items-center justify-between p-2 border rounded-md [&>div]:flex-grow">
+    <div className="flex items-center justify-between p-2 border rounded-md [&>div]:flex-grow bg-muted">
       <EditorProvider
         editorProps={editorProps}
         extensions={extensions}

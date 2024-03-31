@@ -10,6 +10,7 @@ import { api } from "@/convex/_generated/api";
 
 import { useOrganization } from "@clerk/nextjs";
 import { CommentEditor } from "../editor/comment-editor";
+import { MessageSquareDashed } from "lucide-react";
 
 interface CommentListProps {
   parent: Id<"actions">;
@@ -58,45 +59,48 @@ export function CommentList({ parent }: CommentListProps) {
   }, [commentBox.current?.scrollHeight, commentsWithAuthor]);
 
   return (
-    <div>
-      <ScrollArea className="h-[250px] rounded-md border my-5" ref={commentBox}>
-        <div className="grid gap-6 p-4">
-          {commentsWithAuthor?.length === 0 ? (
-            <div className="text-gray-500 text-center">No comments yet</div>
-          ) : (
-            commentsWithAuthor?.map((comment) => (
-              <div key={comment._id} className="text-sm flex items-start gap-4">
-                <div className="flex items-center">
-                  <Avatar className="w-10 h-10 border">
-                    <AvatarImage
-                      src={comment.author?.imageUrl}
-                      className="object-cover"
-                    />
-                  </Avatar>
-                </div>
-                <div className="grid gap-1.5">
-                  <div className="flex items-center gap-2">
-                    <div className="font-semibold">
-                      {comment.author?.firstName} {comment.author?.lastName}
-                    </div>
-                    <div className="text-gray-500 text-xs dark:text-gray-400">
-                      {formatDistance(comment._creationTime, new Date(), {
-                        addSuffix: true,
-                      })}
-                    </div>
-                  </div>
-                  <div
-                    className="prose"
-                    dangerouslySetInnerHTML={{ __html: comment.content }}
-                  ></div>
-                </div>
+    <ScrollArea className="rounded-md border h-full bg-muted" ref={commentBox}>
+      <div className="grid gap-3 p-3">
+        {commentsWithAuthor?.length === 0 ? (
+          <div className=" text-muted-foreground text-center font-medium flex flex-col gap-4 p-4 items-center">
+            <MessageSquareDashed className="size-8" />
+            No discussion yet
+          </div>
+        ) : (
+          commentsWithAuthor?.map((comment) => (
+            <div
+              key={comment._id}
+              className="text-sm flex items-start gap-4 rounded bg-white border p-4"
+            >
+              <div className="flex items-center">
+                <Avatar className="w-10 h-10 border">
+                  <AvatarImage
+                    src={comment.author?.imageUrl}
+                    className="object-cover"
+                  />
+                </Avatar>
               </div>
-            ))
-          )}
-        </div>
-      </ScrollArea>
-      <CommentEditor parent={parent} />
-    </div>
+              <div className="grid gap-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="font-semibold">
+                    {comment.author?.firstName} {comment.author?.lastName}
+                  </div>
+                  <div className="text-gray-500 text-xs dark:text-gray-400">
+                    {formatDistance(comment._creationTime, new Date(), {
+                      addSuffix: true,
+                    })}
+                  </div>
+                </div>
+                <div
+                  className="prose"
+                  dangerouslySetInnerHTML={{ __html: comment.content }}
+                ></div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </ScrollArea>
   );
 }
 

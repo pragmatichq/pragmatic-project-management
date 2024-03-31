@@ -15,6 +15,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
 import suggestion from "./suggestion";
+import { toast } from "sonner";
 
 const extensions = [
   StarterKit.configure({
@@ -48,7 +49,7 @@ const extensions = [
 
 const editorProps = {
   attributes: {
-    class: "prose max-w-full focus-visible:outline-none min-h-[200px]",
+    class: "prose max-w-full focus-visible:outline-none min-h-[300px] p-2",
   },
 };
 
@@ -72,23 +73,29 @@ export function ActionDescriptionEditor({
 
   const updateAction = useMutation(api.actions.update);
 
-  const updateContent = (editor: any): void => {
-    updateAction({ actionId: actionId, description: editor.getHTML() });
+  const updateContent = async (editor: any): Promise<void> => {
+    const response = await updateAction({
+      actionId: actionId,
+      description: editor.getHTML(),
+    });
+    toast.success("Action description updated");
   };
 
   const debouncedUpdateContent = debounce(updateContent, 800);
 
   return (
-    <EditorProvider
-      editorProps={editorProps}
-      slotBefore={<MenuBar />}
-      content={content}
-      extensions={extensions}
-      onUpdate={({ editor }) => {
-        debouncedUpdateContent(editor);
-      }}
-    >
-      {""}
-    </EditorProvider>
+    <div className="bg-muted p-2 rounded-sm border-solid border">
+      <EditorProvider
+        editorProps={editorProps}
+        slotBefore={<MenuBar />}
+        content={content}
+        extensions={extensions}
+        onUpdate={({ editor }) => {
+          debouncedUpdateContent(editor);
+        }}
+      >
+        {""}
+      </EditorProvider>
+    </div>
   );
 }

@@ -193,7 +193,7 @@ export const MenuBar = () => {
             .run()
         }
         variant="ghost"
-        className="p-2 h-auto"
+        className="p-2 h-auto font-medium"
       >
         Template
       </Button>

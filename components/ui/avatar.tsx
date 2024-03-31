@@ -123,7 +123,7 @@ const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
         <div
           ref={ref}
           className={cn(
-            "flex items-center justify-end -space-x-4 relative",
+            "flex items-center justify-end -space-x-3 relative",
             className
           )}
           {...props}
