@@ -36,7 +36,7 @@ export function ActionDetails({ action }: TaskModalProps) {
       <ResizablePanel defaultSize={80} minSize={50}>
         <ScrollArea className="h-screen">
           <div className="grow grid gap-4 auto-rows-min p-4">
-            <div className="sticky top-0 bg-white py-2 -my-2">
+            <div className="sticky top-0 bg-white py-2 -my-2 z-50">
               <ActionTitleEditor
                 actionTitle={action.title as string}
                 actionId={action?._id}
@@ -81,12 +81,12 @@ export function ActionDetails({ action }: TaskModalProps) {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={20} minSize={16}>
-        <div className="p-4 flex flex-col gap-4 h-screen">
+        <div className="p-4 flex flex-col h-screen">
           <div className="flex-none">
             <h3 className="text-2xl font-bold my-2">Discussions</h3>
           </div>
           <CommentList parent={action._id} />
-          <div className="flex-none">
+          <div className="flex-none mt-4">
             <CommentEditor parent={action._id} />
           </div>
         </div>
