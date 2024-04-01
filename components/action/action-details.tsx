@@ -69,7 +69,7 @@ export function ActionDetails({ action }: ActionDetailProps) {
               <h3 className="text-2xl font-bold my-2">Details</h3>
               <ActionDescriptionEditor
                 actionId={action._id}
-                content={action.description as string}
+                content={action.description}
               />
             </div>
             <div>

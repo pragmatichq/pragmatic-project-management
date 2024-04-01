@@ -135,7 +135,6 @@ export const get = queryWithOrganization({
 export const create = mutationWithOrganization({
   args: {
     title: v.optional(v.string()),
-    description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const action = await ctx.db.insert("actions", {
@@ -175,7 +174,9 @@ export const update = mutationWithOrganization({
     status: v.optional(v.string()),
     due_date: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
-    description: v.optional(v.string()),
+    description: v.optional(
+      v.object({ type: v.string(), content: v.array(v.any()) })
+    ),
   },
 
   handler: async (ctx, args) => {
@@ -195,7 +196,6 @@ export const update = mutationWithOrganization({
       last_updated: new Date().toISOString(),
       ...rest,
     });
-
     return task;
   },
 });

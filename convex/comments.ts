@@ -38,7 +38,11 @@ export const create = mutationWithOrganizationUser({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    const cleanedContent = sanitizeHtml(args.content);
+    const cleanedContent = sanitizeHtml(args.content, {
+      allowedAttributes: {
+        span: ["class", "contenteditable"],
+      },
+    });
 
     await ctx.db.insert("comments", {
       organization: ctx.orgId,

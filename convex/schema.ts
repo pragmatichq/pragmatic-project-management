@@ -17,7 +17,9 @@ export default defineSchema({
     is_archived: v.boolean(),
     title: v.optional(v.string()),
     initiative: v.optional(v.id("initiatives")),
-    description: v.optional(v.string()),
+    description: v.optional(
+      v.object({ type: v.string(), content: v.array(v.any()) })
+    ),
     time_frame: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
     due_date: v.optional(v.string()),

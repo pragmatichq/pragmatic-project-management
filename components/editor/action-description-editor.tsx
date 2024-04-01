@@ -1,9 +1,10 @@
-import { EditorProvider } from "@tiptap/react";
+import { EditorProvider, Mark } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Mention from "@tiptap/extension-mention";
+import TextStyle from "@tiptap/extension-text-style";
 
 import { MenuBar } from "./editor-menubar";
 
@@ -28,22 +29,22 @@ const extensions = [
       keepAttributes: false,
     },
   }),
+  Mention.configure({
+    HTMLAttributes: {
+      class: "mention",
+    },
+    suggestion,
+  }),
+  TaskList,
+  TaskItem.configure({
+    nested: false,
+  }),
   Placeholder.configure({
     emptyEditorClass:
       "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
     placeholder: () => {
       return "Add a description or choose a template above...";
     },
-  }),
-  TaskList,
-  TaskItem.configure({
-    nested: false,
-  }),
-  Mention.configure({
-    HTMLAttributes: {
-      class: "mention",
-    },
-    suggestion,
   }),
 ];
 
@@ -58,7 +59,7 @@ export function ActionDescriptionEditor({
   content,
 }: {
   actionId: Id<"actions">;
-  content: string;
+  content: any;
 }) {
   function debounce(
     func: (...args: any[]) => void,
@@ -76,7 +77,7 @@ export function ActionDescriptionEditor({
   const updateContent = async (editor: any): Promise<void> => {
     const response = await updateAction({
       actionId: actionId,
-      description: editor.getHTML(),
+      description: editor.getJSON(),
     });
     toast.success("Action description updated");
   };
