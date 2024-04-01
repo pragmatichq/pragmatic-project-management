@@ -15,6 +15,7 @@ export const CommentSubmit = ({ parent }: { parent: Id<"actions"> }) => {
   const createComment = useMutation(api.comments.create);
 
   async function onSubmit() {
+    if (editor?.isEmpty) return;
     await createComment({
       content: editor?.getHTML() as string,
       parent: parent,

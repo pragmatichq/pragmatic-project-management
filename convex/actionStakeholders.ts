@@ -20,22 +20,22 @@ export const getByTask = queryWithOrganization({
       throw new ConvexError("Unauthorized");
     }
 
-    const assignees = await asyncMap(
-      await getManyFrom(ctx.db, "actionAssignees", "by_action", action._id),
-      async (assignee) => {
-        const user = await ctx.db.get(assignee.user);
+    const stakeholders = await asyncMap(
+      await getManyFrom(ctx.db, "actionStakeholders", "by_action", action._id),
+      async (stakeholder) => {
+        const user = await ctx.db.get(stakeholder.user);
         return user?.clerkId; // Return only the clerkId from each user object
       }
     );
 
-    return assignees;
+    return stakeholders;
   },
 });
 
 export const create = mutationWithOrganization({
   args: {
     actionId: v.id("actions"),
-    assigneeClerkId: v.string(),
+    memberClerkId: v.string(),
   },
   handler: async (ctx, args) => {
     const action = await ctx.db.get(args.actionId);
@@ -48,19 +48,20 @@ export const create = mutationWithOrganization({
       throw new ConvexError("Unauthorized");
     }
 
-    const assignee = await ctx.db
+    const stakeholder = await ctx.db
       .query("users")
-      .filter((q) => q.or(q.eq(q.field("clerkId"), args.assigneeClerkId)))
+      .filter((q) => q.or(q.eq(q.field("clerkId"), args.memberClerkId)))
       .unique();
 
-    if (!assignee) {
+    if (!stakeholder) {
       throw new ConvexError("User not found");
     }
 
-    await ctx.db.insert("actionAssignees", {
-      user: assignee._id,
+    await ctx.db.insert("actionStakeholders", {
+      user: stakeholder._id,
       organization: ctx.orgId,
       action: action._id,
+      waiting_on: false,
     });
 
     await ctx.db.patch(args.actionId, {
@@ -70,32 +71,32 @@ export const create = mutationWithOrganization({
 });
 
 export const remove = mutationWithOrganizationUser({
-  args: { actionId: v.id("actions"), assigneeClerkId: v.string() },
+  args: { actionId: v.id("actions"), memberClerkId: v.string() },
   handler: async (ctx, args) => {
-    const assignee = await ctx.db
+    const stakeholder = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("clerkId"), args.assigneeClerkId))
+      .filter((q) => q.eq(q.field("clerkId"), args.memberClerkId))
       .unique();
 
-    const existingAssignee = await ctx.db
-      .query("actionAssignees")
+    const existingStakeholder = await ctx.db
+      .query("actionStakeholders")
       .filter((q) =>
         q.and(
-          q.eq(q.field("user"), assignee?._id),
+          q.eq(q.field("user"), stakeholder?._id),
           q.eq(q.field("action"), args.actionId)
         )
       )
       .unique();
 
-    if (!existingAssignee) {
+    if (!existingStakeholder) {
       throw new ConvexError("Not found");
     }
 
-    if (existingAssignee.organization !== ctx.orgId) {
+    if (existingStakeholder.organization !== ctx.orgId) {
       throw new ConvexError("Unauthorized");
     }
 
-    await ctx.db.delete(existingAssignee._id);
+    await ctx.db.delete(existingStakeholder._id);
     await ctx.db.patch(args.actionId, {
       last_updated: new Date().toISOString(),
     });

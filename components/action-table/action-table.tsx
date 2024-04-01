@@ -113,10 +113,7 @@ export function DataTable<TData, TValue>({
                       {row.subRows.map((subRow) => (
                         <TableRow key={subRow.id}>
                           {subRow.getVisibleCells().map((cell) => (
-                            <TableCell
-                              key={cell.id}
-                              className="max-w-[300px] truncate"
-                            >
+                            <TableCell key={cell.id} className="truncate">
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()

@@ -48,6 +48,22 @@ export const list = queryWithOrganization({
       }
 
       (action as any).assignees = assignees;
+
+      const actionStakeholders = await getManyVia(
+        ctx.db,
+        "actionStakeholders",
+        "user",
+        "by_action",
+        action._id,
+        "action"
+      );
+
+      const stakeholders = [];
+      for (let actionStakeholder of actionStakeholders) {
+        stakeholders.push(actionStakeholder?.clerkId);
+      }
+
+      (action as any).stakeholders = stakeholders;
     }
 
     if (args.flags && args.flags.length > 0) {
@@ -95,6 +111,22 @@ export const get = queryWithOrganization({
     }
 
     (existingAction as any).assignees = assignees;
+
+    const actionStakeholders = await getManyVia(
+      ctx.db,
+      "actionStakeholders",
+      "user",
+      "by_action",
+      existingAction._id,
+      "action"
+    );
+
+    const stakeholders = [];
+    for (let actionStakeholder of actionStakeholders) {
+      stakeholders.push(actionStakeholder?.clerkId);
+    }
+
+    (existingAction as any).stakeholders = stakeholders;
 
     return existingAction;
   },

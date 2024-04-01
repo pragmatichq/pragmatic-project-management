@@ -46,5 +46,9 @@ export const create = mutationWithOrganizationUser({
       content: cleanedContent,
       author: ctx.userId,
     });
+
+    await ctx.db.patch(args.parent, {
+      last_updated: new Date().toISOString(),
+    });
   },
 });

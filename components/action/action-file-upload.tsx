@@ -50,7 +50,6 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
     });
     toast.success("File uploaded");
   };
-  console.log(isUploading);
 
   return (
     <>
@@ -58,7 +57,7 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
         onDrop={(acceptedFiles) => startUpload(acceptedFiles)}
         multiple={false}
         noClick={files && files?.length > 0}
-        onDragEnter={() => setIsDragging(true)}
+        onDragOver={() => setIsDragging(true)}
         onDragLeave={() => setIsDragging(false)}
       >
         {({ getRootProps, getInputProps }) => (
@@ -75,17 +74,27 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
               {isUploading && <LoadingSpinner className="size-12" />}
               {isDragging && (
                 <div className="flex items-center justify-center w-full h-full">
-                  <div className="flex gap-2 flex-col items-center justify-center">
+                  <div className="flex gap-4 flex-col items-center justify-center">
                     <UploadIcon className="size-16" />
-                    <span className="font-bold">Drop here to upload file.</span>
+                    <span className="font-medium">
+                      Drop here to upload file.
+                    </span>
                   </div>
                 </div>
               )}
             </div>
             <input {...getInputProps()} />
             {files?.length === 0 || !files ? (
-              <div className="flex items-center justify-center w-full min-h-[250px]">
-                Drag and drop or click to upload.
+              <div className="flex items-center justify-center w-full min-h-[250px] text-muted-foreground">
+                {!isUploading && !isDragging && (
+                  <div className="flex flex-col gap-4 items-center justify-center">
+                    <UploadIcon className="size-8" />
+                    <span className="font-medium">
+                      Drag and drop files here or click to select files to
+                      upload
+                    </span>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="grid gap-10 grid-cols-5 p-4">

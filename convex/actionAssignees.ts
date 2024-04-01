@@ -35,7 +35,7 @@ export const getByTask = queryWithOrganization({
 export const create = mutationWithOrganization({
   args: {
     actionId: v.id("actions"),
-    assigneeClerkId: v.string(),
+    memberClerkId: v.string(),
   },
   handler: async (ctx, args) => {
     const action = await ctx.db.get(args.actionId);
@@ -50,7 +50,7 @@ export const create = mutationWithOrganization({
 
     const assignee = await ctx.db
       .query("users")
-      .filter((q) => q.or(q.eq(q.field("clerkId"), args.assigneeClerkId)))
+      .filter((q) => q.or(q.eq(q.field("clerkId"), args.memberClerkId)))
       .unique();
 
     if (!assignee) {
@@ -70,11 +70,11 @@ export const create = mutationWithOrganization({
 });
 
 export const remove = mutationWithOrganizationUser({
-  args: { actionId: v.id("actions"), assigneeClerkId: v.string() },
+  args: { actionId: v.id("actions"), memberClerkId: v.string() },
   handler: async (ctx, args) => {
     const assignee = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("clerkId"), args.assigneeClerkId))
+      .filter((q) => q.eq(q.field("clerkId"), args.memberClerkId))
       .unique();
 
     const existingAssignee = await ctx.db

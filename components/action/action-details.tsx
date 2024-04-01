@@ -1,7 +1,7 @@
 "use client";
 
 import { DueDate } from "@/components/shared/DateSelector";
-import { AssigneeList } from "@/components/shared/MemberSelector";
+import { MemberSelector } from "@/components/shared/MemberSelector";
 import { StatusSelector } from "@/components/shared/StatusSelector";
 import { FlagSelector } from "@/components/shared/FlagSelector";
 import { CommentList } from "@/components/shared/CommentList";
@@ -20,17 +20,17 @@ import FileUpload from "./action-file-upload";
 import { Doc } from "@/convex/_generated/dataModel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CommentEditor } from "../editor/comment-editor";
-import Dropzone from "react-dropzone";
 
-interface ActionsWithAssignees extends Doc<"actions"> {
+interface ActionsWithMembers extends Doc<"actions"> {
   assignees: string[];
+  stakeholders: string[];
 }
 
-interface TaskModalProps {
-  action: ActionsWithAssignees;
+interface ActionDetailProps {
+  action: ActionsWithMembers;
 }
 
-export function ActionDetails({ action }: TaskModalProps) {
+export function ActionDetails({ action }: ActionDetailProps) {
   return (
     <ResizablePanelGroup direction="horizontal" autoSaveId="action-details">
       <ResizablePanel defaultSize={80} minSize={50}>
@@ -49,12 +49,12 @@ export function ActionDetails({ action }: TaskModalProps) {
               </div>
               <div className="flex flex-col gap-1">
                 <Label className="text-xs">Assignees</Label>
-                <AssigneeList action={action} purpose="assignees" />
+                <MemberSelector action={action} purpose="assignees" />
               </div>
 
               <div className="flex flex-col gap-1">
                 <Label className="text-xs">Stakeholders</Label>
-                <AssigneeList action={action} purpose="assignees" />
+                <MemberSelector action={action} purpose="stakeholders" />
               </div>
               <div className="flex flex-col gap-1">
                 <Label className="text-xs">Due Date</Label>

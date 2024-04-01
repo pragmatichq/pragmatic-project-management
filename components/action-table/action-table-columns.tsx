@@ -1,12 +1,9 @@
 "use client";
-
-import { formatDistanceToNowStrict } from "date-fns";
-
 import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/action-table/action-table-column-header";
 
-import { AssigneeList } from "@/components/shared/MemberSelector";
+import { MemberSelector } from "@/components/shared/MemberSelector";
 import { DueDate } from "@/components/shared/DateSelector";
 import { FlagSelector } from "@/components/shared/FlagSelector";
 import { StatusSelector } from "@/components/shared/StatusSelector";
@@ -30,7 +27,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
         return (
           <Link
             href={`/dashboard/actions/${info.row.original._id}`}
-            className="hover:underline min-w-[200px]"
+            className="hover:underline block min-w-[250px] max-w-[450px] truncate"
           >
             {value}
           </Link>
@@ -94,7 +91,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     ),
     cell: (info) => {
       return (
-        <AssigneeList action={info.row.original as any} purpose="assignees" />
+        <MemberSelector action={info.row.original as any} purpose="assignees" />
       );
     },
   },

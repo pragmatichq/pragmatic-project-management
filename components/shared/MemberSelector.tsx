@@ -23,15 +23,16 @@ import {
 import { Doc } from "@/convex/_generated/dataModel";
 import AddItemPlaceholder from "./AddItemPlaceholder";
 
-interface ActionsWithAssignees extends Doc<"actions"> {
+interface ActionsWithMembers extends Doc<"actions"> {
   assignees: string[];
+  stakeholders: string[];
 }
-interface AssigneeListProps {
-  action: ActionsWithAssignees;
+interface MemberSelectorProps {
+  action: ActionsWithMembers;
   purpose: "assignees" | "stakeholders";
 }
 
-export function AssigneeList({ action, purpose }: AssigneeListProps) {
+export function MemberSelector({ action, purpose }: MemberSelectorProps) {
   const { memberships, isLoaded } = useOrganization({ memberships: true });
 
   const apiEndpoints = {
@@ -48,12 +49,12 @@ export function AssigneeList({ action, purpose }: AssigneeListProps) {
   const createActionItem = useMutation(apiEndpoints[purpose].create);
   const deleteActionItem = useMutation(apiEndpoints[purpose].remove);
 
-  const assigneeDetails = useMemo(() => {
+  const memberDetails = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
-    return action.assignees
-      .map((assignee) =>
+    return action[purpose]
+      .map((listedMember) =>
         memberships.data.find(
-          (member) => member.publicUserData.userId === assignee
+          (member) => member.publicUserData.userId === listedMember
         )
       )
       .filter((member) => member !== undefined);
@@ -63,12 +64,12 @@ export function AssigneeList({ action, purpose }: AssigneeListProps) {
     if (checked) {
       await createActionItem({
         actionId: action._id,
-        assigneeClerkId: member,
+        memberClerkId: member,
       });
     } else {
       await deleteActionItem({
         actionId: action._id,
-        assigneeClerkId: member,
+        memberClerkId: member,
       });
     }
   };
@@ -77,13 +78,13 @@ export function AssigneeList({ action, purpose }: AssigneeListProps) {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger className="flex justify-start items-center text-left font-normal text-[14px] w-full h-10 hover:bg-gray-100">
-          {assigneeDetails.length === 0 ? (
+          {memberDetails.length === 0 ? (
             <AddItemPlaceholder />
           ) : (
-            // TODO: Using assigneeDetails.length as a workaround for AvatarGroup not rerendering when the assigneeDetails changes, causes flashing
-            <AvatarGroup limit={2} key={assigneeDetails.length}>
+            // TODO: Using memberDetails.length as a workaround for AvatarGroup not rerendering when the memberDetails changes, causes flashing
+            <AvatarGroup limit={2} key={memberDetails.length}>
               <AvatarGroupList>
-                {assigneeDetails.map((assignee, index) => (
+                {memberDetails.map((assignee, index) => (
                   <Avatar
                     key={
                       assignee?.publicUserData.userId || `placeholder-${index}`
@@ -108,7 +109,7 @@ export function AssigneeList({ action, purpose }: AssigneeListProps) {
                 member.publicUserData.userId ?? `member-placeholder-${index}`
               }
               checked={
-                action.assignees.includes(
+                action[purpose].includes(
                   member.publicUserData.userId as string
                 ) ?? ""
               }

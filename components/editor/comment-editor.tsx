@@ -38,7 +38,9 @@ export function CommentEditor({ parent }: { parent: Id<"actions"> }) {
           if (state.mention$.active) {
             return false;
           }
-          saveMessage(editor.getHTML());
+          if (!editor.isEmpty) {
+            saveMessage(editor.getHTML());
+          }
 
           editor.commands.clearContent();
 
