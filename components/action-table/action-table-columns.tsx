@@ -1,5 +1,5 @@
 "use client";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row, SortingFn, Table } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/action-table/action-table-column-header";
 
@@ -76,6 +76,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Due Date" />
     ),
+    sortUndefined: 1,
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
@@ -96,12 +97,27 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     },
   },
   {
+    accessorKey: "stakeholders",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Stakeholders" />
+    ),
+    cell: (info) => {
+      return (
+        <MemberSelector
+          action={info.row.original as any}
+          purpose="stakeholders"
+        />
+      );
+    },
+  },
+  {
     accessorKey: "last_updated",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Last Updated" />
     ),
     cell: (info) => {
       const value = info.getValue();
+      if (value === "") return "N/A";
       if (typeof value === "string") {
         return useRelativeDate(value);
       }

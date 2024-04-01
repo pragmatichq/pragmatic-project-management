@@ -14,8 +14,9 @@ interface SingleActionPageProps {
   params: { actionId: Id<"actions"> };
 }
 
-interface ActionWithAssignees extends Doc<"actions"> {
+interface ActionWithMembers extends Doc<"actions"> {
   assignees: string[];
+  stakeholders: string[];
 }
 
 export default function SingleActionPage({ params }: SingleActionPageProps) {
@@ -39,7 +40,7 @@ export default function SingleActionPage({ params }: SingleActionPageProps) {
         <LoadingSpinner />
       ) : (
         <>
-          <ActionDetails action={action as ActionWithAssignees} />
+          <ActionDetails action={action as ActionWithMembers} />
         </>
       )}
     </>

@@ -10,6 +10,7 @@ import { getActionTableColumns } from "@/components/action-table/action-table-co
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./FilterContext";
 import NewAction from "./_components/NewAction";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
@@ -51,11 +52,8 @@ export default function ActionListPage() {
       {!actions ? (
         <LoadingSpinner />
       ) : (
-        <div className="flex flex-col space-y-2 p-4">
+        <div className="flex flex-col space-y-2 p-4 max-h-screen overflow-scroll">
           <h2 className="text-4xl font-bold tracking-tight">Action Table</h2>
-          <p className="text-muted-foreground">
-            Here's a list of all your team's current actions.
-          </p>
           <FilterContext.Provider
             value={{
               statuses,
