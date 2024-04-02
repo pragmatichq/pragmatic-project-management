@@ -17,6 +17,7 @@ import type {
 import type * as actionAssignees from "../actionAssignees.js";
 import type * as actionStakeholders from "../actionStakeholders.js";
 import type * as actions from "../actions.js";
+import type * as broadcasts from "../broadcasts.js";
 import type * as comments from "../comments.js";
 import type * as customFunctions from "../customFunctions.js";
 import type * as files from "../files.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   actionAssignees: typeof actionAssignees;
   actionStakeholders: typeof actionStakeholders;
   actions: typeof actions;
+  broadcasts: typeof broadcasts;
   comments: typeof comments;
   customFunctions: typeof customFunctions;
   files: typeof files;

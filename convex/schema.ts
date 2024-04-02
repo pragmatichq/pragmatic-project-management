@@ -23,6 +23,7 @@ export default defineSchema({
     time_frame: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
     due_date: v.optional(v.string()),
+    created_by: v.optional(v.id("users")),
   }).index("by_organization", ["organization"]),
   actionAssignees: defineTable({
     organization: v.id("organizations"),
@@ -38,6 +39,7 @@ export default defineSchema({
   initiatives: defineTable({
     title: v.string(),
     organization: v.id("organizations"),
+    created_by: v.optional(v.id("users")),
   }),
   comments: defineTable({
     organization: v.id("organizations"),
@@ -50,11 +52,18 @@ export default defineSchema({
     storageId: v.id("_storage"),
     filename: v.string(),
     action: v.id("actions"),
-  }).index("by_action", ["action"]),
+    created_by: v.optional(v.id("users")),
+  })
+    .index("by_action", ["action"])
+    .index("by_organization", ["organization"]),
   broadcasts: defineTable({
     organization: v.id("organizations"),
-    title: v.string(),
-    content: v.string(),
-    publish_date: v.string(),
-  }),
+    title: v.optional(v.string()),
+    content: v.optional(
+      v.object({ type: v.string(), content: v.array(v.any()) })
+    ),
+    publish_date: v.optional(v.string()),
+    status: v.string(),
+    created_by: v.optional(v.id("users")),
+  }).index("by_organization_publish_date", ["organization", "publish_date"]),
 });

@@ -20,13 +20,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Doc } from "@/convex/_generated/dataModel";
 import AddItemPlaceholder from "./AddItemPlaceholder";
+import { ActionsWithMembers } from "@/lib/types";
 
-interface ActionsWithMembers extends Doc<"actions"> {
-  assignees: string[];
-  stakeholders: string[];
-}
 interface MemberSelectorProps {
   action: ActionsWithMembers;
   purpose: "assignees" | "stakeholders";

@@ -7,13 +7,15 @@ import { Id } from "@/convex/_generated/dataModel";
 import { toast } from "sonner";
 import StarterKit from "@tiptap/starter-kit";
 import Document from "@tiptap/extension-document";
+import { ActionWithMembers } from "@/lib/types";
+import { debounce } from "@/lib/utils";
 
-const CustomDocument = Document.extend({
+const TitleDocument = Document.extend({
   content: "heading",
 });
 
 const extensions = [
-  CustomDocument,
+  TitleDocument,
   StarterKit.configure({
     document: false,
     hardBreak: false,
@@ -33,31 +35,14 @@ const editorProps = {
   },
 };
 
-export function ActionTitleEditor({
-  actionId,
-  actionTitle,
-}: {
-  actionId: Id<"actions">;
-  actionTitle: string;
-}) {
-  function debounce(
-    func: (...args: any[]) => void,
-    delay: number
-  ): (...args: any[]) => void {
-    let debounceTimer: ReturnType<typeof setTimeout>;
-    return function (...args: any[]) {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => func(...args), delay);
-    };
-  }
-
+export function ActionTitleEditor({ action }: { action: ActionWithMembers }) {
   const updateAction = useMutation(api.actions.update);
 
   const updateContent = async (editor: any): Promise<void> => {
     let newTitle = editor.getJSON()?.content?.[0]?.content?.[0]?.text;
-    if (newTitle && actionId) {
+    if (newTitle && action) {
       const response = await updateAction({
-        actionId: actionId,
+        actionId: action._id,
         title: newTitle,
       });
       toast.success("Action title updated");
@@ -69,7 +54,7 @@ export function ActionTitleEditor({
   return (
     <EditorProvider
       editorProps={editorProps}
-      content={actionTitle}
+      content={action.title}
       extensions={extensions}
       onCreate={({ editor }) => {
         editor.view.dom.setAttribute("spellcheck", "false");

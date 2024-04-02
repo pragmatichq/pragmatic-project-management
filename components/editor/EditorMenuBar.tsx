@@ -63,7 +63,7 @@ const dropdownMapping: DropdownMapping = {
   "Heading 3": (editor: any) => editor?.isActive("heading", { level: 3 }),
 };
 
-export const MenuBar = () => {
+export const EditorMenuBar = () => {
   const [selectedDropdown, setSelectedDropdown] = useState<string>(
     dropdown[0].label
   );

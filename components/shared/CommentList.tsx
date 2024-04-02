@@ -9,7 +9,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 import { useOrganization } from "@clerk/nextjs";
-import { CommentEditor } from "../editor/comment-editor";
+import { CommentEditor } from "../editor/CommentEditor";
 import { MessageSquareDashed } from "lucide-react";
 
 interface CommentListProps {

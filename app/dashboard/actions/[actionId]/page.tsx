@@ -9,23 +9,19 @@ import { Id, Doc } from "@/convex/_generated/dataModel";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { ActionDetails } from "@/components/action/action-details";
+import { ActionWithMembers } from "@/lib/types";
 
 interface SingleActionPageProps {
   params: { actionId: Id<"actions"> };
 }
 
-interface ActionWithMembers extends Doc<"actions"> {
-  assignees: string[];
-  stakeholders: string[];
-}
-
 export default function SingleActionPage({ params }: SingleActionPageProps) {
-  let action: Doc<"actions"> | undefined;
+  let action: ActionWithMembers | undefined;
 
   try {
     action = useQuery(api.actions.get, {
       actionId: params.actionId,
-    });
+    }) as ActionWithMembers;
   } catch (e) {
     if (e instanceof Error && e.message.includes("ArgumentValidationError")) {
       notFound();
@@ -40,7 +36,7 @@ export default function SingleActionPage({ params }: SingleActionPageProps) {
         <LoadingSpinner />
       ) : (
         <>
-          <ActionDetails action={action as ActionWithMembers} />
+          <ActionDetails {...action} />
         </>
       )}
     </>

@@ -14,7 +14,7 @@ import { api } from "@/convex/_generated/api";
 
 import { Id } from "@/convex/_generated/dataModel";
 import { Extension } from "@tiptap/react";
-import { CommentSubmit } from "./comment-submit";
+import { CommentSubmit } from "./CommentSubmit";
 
 export function CommentEditor({ parent }: { parent: Id<"actions"> }) {
   const createComment = useMutation(api.comments.create);

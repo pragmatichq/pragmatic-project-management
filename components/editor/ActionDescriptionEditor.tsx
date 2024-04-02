@@ -1,12 +1,11 @@
-import { EditorProvider, Mark } from "@tiptap/react";
+import { EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Mention from "@tiptap/extension-mention";
-import TextStyle from "@tiptap/extension-text-style";
 
-import { MenuBar } from "./editor-menubar";
+import { EditorMenuBar } from "./EditorMenuBar";
 
 import React from "react";
 
@@ -17,6 +16,8 @@ import { Id } from "@/convex/_generated/dataModel";
 
 import suggestion from "./suggestion";
 import { toast } from "sonner";
+import { debounce } from "@/lib/utils";
+import { ActionWithMembers } from "@/lib/types";
 
 const extensions = [
   StarterKit.configure({
@@ -55,28 +56,15 @@ const editorProps = {
 };
 
 export function ActionDescriptionEditor({
-  actionId,
-  content,
+  action,
 }: {
-  actionId: Id<"actions">;
-  content: any;
+  action: ActionWithMembers;
 }) {
-  function debounce(
-    func: (...args: any[]) => void,
-    delay: number
-  ): (...args: any[]) => void {
-    let debounceTimer: ReturnType<typeof setTimeout>;
-    return function (...args: any[]) {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => func(...args), delay);
-    };
-  }
-
   const updateAction = useMutation(api.actions.update);
 
   const updateContent = async (editor: any): Promise<void> => {
     const response = await updateAction({
-      actionId: actionId,
+      actionId: action._id,
       description: editor.getJSON(),
     });
     toast.success("Action description updated");
@@ -88,8 +76,8 @@ export function ActionDescriptionEditor({
     <div className="bg-muted p-2 rounded-sm border-solid border">
       <EditorProvider
         editorProps={editorProps}
-        slotBefore={<MenuBar />}
-        content={content}
+        slotBefore={<EditorMenuBar />}
+        content={action.description}
         extensions={extensions}
         onUpdate={({ editor }) => {
           debouncedUpdateContent(editor);

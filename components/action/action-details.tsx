@@ -5,8 +5,7 @@ import { MemberSelector } from "@/components/shared/MemberSelector";
 import { StatusSelector } from "@/components/shared/StatusSelector";
 import { FlagSelector } from "@/components/shared/FlagSelector";
 import { CommentList } from "@/components/shared/CommentList";
-import { ActionDescriptionEditor } from "@/components/editor/action-description-editor";
-import { ActionTitleEditor } from "@/components/editor/action-title-editor";
+import { ActionDescriptionEditor } from "@/components/editor/ActionDescriptionEditor";
 
 import {
   ResizableHandle,
@@ -17,30 +16,19 @@ import { Label } from "@/components/ui/label";
 
 import FileUpload from "./action-file-upload";
 
-import { Doc } from "@/convex/_generated/dataModel";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CommentEditor } from "../editor/comment-editor";
+import { CommentEditor } from "../editor/CommentEditor";
+import { ActionWithMembers } from "@/lib/types";
+import { ActionTitleEditor } from "../editor/ActionTitleEditor";
 
-interface ActionsWithMembers extends Doc<"actions"> {
-  assignees: string[];
-  stakeholders: string[];
-}
-
-interface ActionDetailProps {
-  action: ActionsWithMembers;
-}
-
-export function ActionDetails({ action }: ActionDetailProps) {
+export function ActionDetails(action: ActionWithMembers) {
   return (
     <ResizablePanelGroup direction="horizontal" autoSaveId="action-details">
       <ResizablePanel defaultSize={80} minSize={50}>
         <ScrollArea className="h-screen">
           <div className="grow grid gap-4 auto-rows-min p-4">
             <div className="sticky top-0 bg-white py-2 -my-2 z-50">
-              <ActionTitleEditor
-                actionTitle={action.title as string}
-                actionId={action?._id}
-              />
+              <ActionTitleEditor action={action} />
             </div>
             <div className="flex gap-6 flex-rows -mb-2">
               <div className="flex flex-col gap-1">
@@ -67,10 +55,7 @@ export function ActionDetails({ action }: ActionDetailProps) {
             </div>
             <div>
               <h3 className="text-2xl font-bold my-2">Details</h3>
-              <ActionDescriptionEditor
-                actionId={action._id}
-                content={action.description}
-              />
+              <ActionDescriptionEditor action={action} />
             </div>
             <div>
               <h3 className="text-2xl font-bold my-2">Files</h3>
