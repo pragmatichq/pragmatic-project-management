@@ -32,6 +32,16 @@ export const list = queryWithOrganization({
 
     let actions = await filteredActions.collect();
 
+    if (args.flags && args.flags.length > 0) {
+      actions = actions.filter((action: any) => {
+        if (action.flags) {
+          console.log("Triggered", args.flags, action.flags);
+          return action.flags.some((flag: any) => args.flags!.includes(flag));
+        }
+        return false;
+      });
+    }
+
     for (let action of actions) {
       const actionAssignees = await getManyVia(
         ctx.db,
@@ -64,12 +74,6 @@ export const list = queryWithOrganization({
       }
 
       (action as any).stakeholders = stakeholders;
-    }
-
-    if (args.flags && args.flags.length > 0) {
-      actions = actions.filter((action: any) =>
-        action.flags.some((flag: any) => args.flags!.includes(flag))
-      );
     }
 
     if (args.assignees && args.assignees.length > 0) {

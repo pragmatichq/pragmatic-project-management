@@ -46,6 +46,7 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    groupedColumnMode: false,
     onGroupingChange: setGrouping,
     getGroupedRowModel: getGroupedRowModel(),
     getCoreRowModel: getCoreRowModel(),
@@ -103,7 +104,7 @@ export function DataTable<TData, TValue>({
                         >
                           <span className="font-bold">
                             {!isUngrouped ? (
-                              groupedValue
+                              groupedValue + " (" + row.subRows.length + ")"
                             ) : (
                               <span>Ungrouped</span>
                             )}
@@ -113,7 +114,10 @@ export function DataTable<TData, TValue>({
                       {row.subRows.map((subRow) => (
                         <TableRow key={subRow.id}>
                           {subRow.getVisibleCells().map((cell) => (
-                            <TableCell key={cell.id} className="truncate">
+                            <TableCell
+                              key={cell.id}
+                              className="max-w-[300px] truncate"
+                            >
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
