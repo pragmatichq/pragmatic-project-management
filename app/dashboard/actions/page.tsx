@@ -10,7 +10,6 @@ import { getActionTableColumns } from "@/components/action-table/action-table-co
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./FilterContext";
 import NewAction from "./_components/NewAction";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
@@ -24,8 +23,9 @@ export default function ActionListPage() {
   const [flags, setFlags] = useArrayQueryState("flags");
   const [groupBy, setGroupBy] = useQueryState(
     "groupBy",
-    parseAsArrayOf(parseAsString).withDefault([])
+    parseAsArrayOf(parseAsString).withDefault(["status"])
   );
+  console.log(groupBy);
   const isFiltered = [assignees, statuses, flags, timeFrames].some(
     (array) => array.length > 0
   );
