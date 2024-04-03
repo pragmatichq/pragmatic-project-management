@@ -5,12 +5,12 @@ import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Document from "@tiptap/extension-document";
-import { EditorMenuBar } from "../shared/EditorMenuBar";
+import { EditorMenuBar } from "../../../../../components/shared/EditorMenuBar";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { Id } from "@/convex/_generated/dataModel";
-import { Button } from "../ui/button";
+import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Button } from "../../../../../components/ui/button";
 import { debounce, safeJSONParse } from "@/lib/utils";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";
 import {
@@ -21,18 +21,11 @@ import {
 } from "@/lib/editor-settings";
 
 export function BroadcastEditor({
-  broadcastId,
+  broadcast,
 }: {
-  broadcastId: Id<"broadcasts"> | undefined;
+  broadcast: Doc<"broadcasts"> | undefined;
 }) {
-  if (!broadcastId) {
-    return <div>Choose a broadcast to edit, or create a new one</div>;
-  }
-
   const updateBroadcast = useMutation(api.broadcasts.update);
-  const broadcast = broadcastId
-    ? useStableQuery(api.broadcasts.get, { broadcastId })
-    : null;
 
   const updateContent = async (): Promise<void> => {
     if (!broadcast) return; // Ensure broadcast is defined
