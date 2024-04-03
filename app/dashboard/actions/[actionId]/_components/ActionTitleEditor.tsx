@@ -1,39 +1,11 @@
-import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
-import Placeholder from "@tiptap/extension-placeholder";
+import { EditorContent, useEditor } from "@tiptap/react";
 import React, { useCallback } from "react";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import { Id } from "@/convex/_generated/dataModel";
 import { toast } from "sonner";
-import StarterKit from "@tiptap/starter-kit";
-import Document from "@tiptap/extension-document";
 import { ActionWithMembers } from "@/lib/types";
 import { debounce } from "@/lib/utils";
-
-const TitleDocument = Document.extend({
-  content: "heading",
-});
-
-const extensions = [
-  TitleDocument,
-  StarterKit.configure({
-    document: false,
-    hardBreak: false,
-  }),
-  Placeholder.configure({
-    emptyEditorClass:
-      "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
-    placeholder: () => {
-      return "Add a title...";
-    },
-  }),
-];
-
-const editorProps = {
-  attributes: {
-    class: "prose max-w-full focus-visible:outline-none",
-  },
-};
+import { titleEditorProps, titleExtensions } from "@/lib/editor-settings";
 
 export function ActionTitleEditor({ action }: { action: ActionWithMembers }) {
   const updateAction = useMutation(api.actions.update);
@@ -50,8 +22,8 @@ export function ActionTitleEditor({ action }: { action: ActionWithMembers }) {
   };
 
   const editor = useEditor({
-    extensions,
-    editorProps,
+    extensions: titleExtensions,
+    editorProps: titleEditorProps,
     content: action.title,
     onCreate: ({ editor }) => {
       editor.view.dom.setAttribute("spellcheck", "false");

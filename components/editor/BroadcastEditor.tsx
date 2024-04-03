@@ -5,57 +5,20 @@ import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Document from "@tiptap/extension-document";
-import { EditorMenuBar } from "./EditorMenuBar";
+import { EditorMenuBar } from "../shared/EditorMenuBar";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "../ui/button";
-import { debounce } from "@/lib/utils";
+import { debounce, safeJSONParse } from "@/lib/utils";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";
-
-const TitleDocument = Document.extend({ content: "heading" });
-
-const titleExtensions = [
-  TitleDocument,
-  StarterKit.configure({ document: false, hardBreak: false }),
-  Placeholder.configure({
-    emptyEditorClass:
-      "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
-    placeholder: () => "Add a title...",
-  }),
-];
-
-const contentExtensions = [
-  StarterKit.configure({
-    bulletList: { keepMarks: true, keepAttributes: false },
-    orderedList: { keepMarks: true, keepAttributes: false },
-  }),
-  TaskList,
-  TaskItem.configure({ nested: false }),
-  Placeholder.configure({
-    emptyEditorClass:
-      "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
-    placeholder: () => "Add a description or choose a template above...",
-  }),
-];
-
-const titleEditorProps = {
-  attributes: { class: "prose max-w-full focus-visible:outline-none" },
-};
-const contentEditorProps = {
-  attributes: {
-    class: "prose max-w-full focus-visible:outline-none min-h-[300px] p-2",
-  },
-};
-
-function safeJSONParse(item: string) {
-  try {
-    return JSON.parse(item);
-  } catch (error) {
-    return null;
-  }
-}
+import {
+  titleExtensions,
+  titleEditorProps,
+  textareaEditorProps,
+  textareaExtensions,
+} from "@/lib/editor-settings";
 
 export function BroadcastEditor({
   broadcastId,
@@ -107,13 +70,13 @@ export function BroadcastEditor({
   });
 
   const contentEditor = useEditor({
-    extensions: contentExtensions,
+    extensions: textareaExtensions,
     content: localStorage.getItem("broadcast-content-" + broadcast?._id)
       ? safeJSONParse(
           localStorage.getItem("broadcast-content-" + broadcast?._id) as string
         )
       : broadcast?.content,
-    editorProps: contentEditorProps,
+    editorProps: textareaEditorProps,
     onUpdate: ({ editor }) => {
       if (broadcast?.status !== "published") {
         debouncedUpdateContent(editor);

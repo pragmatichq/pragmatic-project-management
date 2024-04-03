@@ -6,7 +6,7 @@ import Bold from "@tiptap/extension-bold";
 import History from "@tiptap/extension-history";
 import Italic from "@tiptap/extension-italic";
 import Mention from "@tiptap/extension-mention";
-import suggestion from "./suggestion";
+import suggestion from "../../lib/suggestion";
 import HardBreak from "@tiptap/extension-hard-break";
 
 import { useMutation } from "convex/react";

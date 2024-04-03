@@ -5,7 +5,7 @@ import { MemberSelector } from "@/components/shared/MemberSelector";
 import { StatusSelector } from "@/components/shared/StatusSelector";
 import { FlagSelector } from "@/components/shared/FlagSelector";
 import { CommentList } from "@/components/shared/CommentList";
-import { ActionDescriptionEditor } from "@/components/editor/ActionDescriptionEditor";
+import { ActionDescriptionEditor } from "@/app/dashboard/actions/[actionId]/_components/ActionDescriptionEditor";
 
 import {
   ResizableHandle,
@@ -19,7 +19,7 @@ import FileUpload from "./action-file-upload";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CommentEditor } from "../editor/CommentEditor";
 import { ActionWithMembers } from "@/lib/types";
-import { ActionTitleEditor } from "../editor/ActionTitleEditor";
+import { ActionTitleEditor } from "../../app/dashboard/actions/[actionId]/_components/ActionTitleEditor";
 
 export function ActionDetails(action: ActionWithMembers) {
   return (

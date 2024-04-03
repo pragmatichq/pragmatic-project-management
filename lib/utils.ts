@@ -15,3 +15,11 @@ export function debounce(
     debounceTimer = setTimeout(() => func(...args), delay);
   };
 }
+
+export function safeJSONParse(item: string) {
+  try {
+    return JSON.parse(item);
+  } catch (error) {
+    return null;
+  }
+}
