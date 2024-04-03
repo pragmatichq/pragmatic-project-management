@@ -30,7 +30,7 @@ export const textareaExtensions = [
   Placeholder.configure({
     emptyEditorClass:
       "cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-mauve-11 before:opacity-50 before-pointer-events-none",
-    placeholder: () => "Add a description or choose a template above...",
+    placeholder: () => "Start writing...",
   }),
 ];
 

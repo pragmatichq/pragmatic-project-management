@@ -21,10 +21,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import AddItemPlaceholder from "./AddItemPlaceholder";
-import { ActionsWithMembers } from "@/lib/types";
+import { ActionWithMembers } from "@/lib/types";
 
 interface MemberSelectorProps {
-  action: ActionsWithMembers;
+  action: ActionWithMembers;
   purpose: "assignees" | "stakeholders";
 }
 

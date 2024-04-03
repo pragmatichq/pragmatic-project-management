@@ -10,6 +10,7 @@ import { getActionTableColumns } from "@/components/action-table/action-table-co
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./_contexts/FilterContext";
 import NewAction from "./_components/NewAction";
+import LayoutTitle from "@/components/shared/LayoutTitle";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
@@ -51,29 +52,31 @@ export default function ActionListPage() {
       {!actions ? (
         <LoadingSpinner />
       ) : (
-        <div className="flex flex-col space-y-2 p-4 max-h-screen overflow-scroll">
-          <h2 className="text-4xl font-bold tracking-tight">Action Table</h2>
-          <FilterContext.Provider
-            value={{
-              statuses,
-              setStatuses,
-              timeFrames,
-              setTimeFrames,
-              flags,
-              setFlags,
-              assignees,
-              setAssignees,
-              groupBy,
-              setGroupBy,
-              isFiltered,
-            }}
-          >
-            <DataTable data={actions} columns={columns} />
-            <div className="flex justify-end">
-              <NewAction />
-            </div>
-          </FilterContext.Provider>
-        </div>
+        <>
+          <LayoutTitle title="Action Table" />
+          <div className="flex flex-col space-y-2 p-4 max-h-screen overflow-scroll">
+            <FilterContext.Provider
+              value={{
+                statuses,
+                setStatuses,
+                timeFrames,
+                setTimeFrames,
+                flags,
+                setFlags,
+                assignees,
+                setAssignees,
+                groupBy,
+                setGroupBy,
+                isFiltered,
+              }}
+            >
+              <DataTable data={actions} columns={columns} />
+              <div className="flex justify-end">
+                <NewAction />
+              </div>
+            </FilterContext.Provider>
+          </div>
+        </>
       )}
     </>
   );

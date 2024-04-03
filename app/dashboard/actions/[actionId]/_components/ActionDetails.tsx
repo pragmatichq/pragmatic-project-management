@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/resizable";
 import { Label } from "@/components/ui/label";
 
-import FileUpload from "./action-file-upload";
+import FileUpload from "@/components/action/action-file-upload";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CommentEditor } from "../editor/CommentEditor";
+import { CommentEditor } from "@/components/editor/CommentEditor";
 import { ActionWithMembers } from "@/lib/types";
-import { ActionTitleEditor } from "../../app/dashboard/actions/[actionId]/_components/ActionTitleEditor";
+import { ActionTitleEditor } from "./ActionTitleEditor";
 
 export function ActionDetails(action: ActionWithMembers) {
   return (

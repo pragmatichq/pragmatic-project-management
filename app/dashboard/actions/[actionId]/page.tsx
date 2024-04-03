@@ -8,8 +8,9 @@ import { Id, Doc } from "@/convex/_generated/dataModel";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-import { ActionDetails } from "@/components/action/action-details";
+import { ActionDetails } from "./_components/ActionDetails";
 import { ActionWithMembers } from "@/lib/types";
+import LayoutTitle from "@/components/shared/LayoutTitle";
 
 interface SingleActionPageProps {
   params: { actionId: Id<"actions"> };
@@ -36,6 +37,7 @@ export default function SingleActionPage({ params }: SingleActionPageProps) {
         <LoadingSpinner />
       ) : (
         <>
+          <LayoutTitle title={action.title as string} />
           <ActionDetails {...action} />
         </>
       )}

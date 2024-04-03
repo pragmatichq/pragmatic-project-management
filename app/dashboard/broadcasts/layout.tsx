@@ -4,6 +4,8 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import BroadcastSidebar from "./_components/BroadcastSidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import LayoutTitle from "@/components/shared/LayoutTitle";
 
 export default function BroadcastTemplate({
   children,
@@ -11,15 +13,21 @@ export default function BroadcastTemplate({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col space-y-4 p-4">
-      <h2 className="text-4xl font-bold tracking-tight">Broadcasts</h2>
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel>
-          <BroadcastSidebar />
+    <>
+      <LayoutTitle title="Broadcasts" />
+      <ResizablePanelGroup direction="horizontal" autoSaveId="broadcast">
+        <ResizablePanel defaultSize={30} minSize={20}>
+          <ScrollArea className="h-screen">
+            <BroadcastSidebar />
+          </ScrollArea>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel>{children}</ResizablePanel>
+        <ResizablePanel defaultSize={70}>
+          <ScrollArea className="h-screen">
+            <div className="flex flex-col space-y-4 p-6">{children}</div>
+          </ScrollArea>
+        </ResizablePanel>
       </ResizablePanelGroup>
-    </div>
+    </>
   );
 }

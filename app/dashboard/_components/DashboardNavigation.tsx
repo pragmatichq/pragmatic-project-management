@@ -36,18 +36,17 @@ export function DashboardNavigation({
         setIsCollapsed(false);
       }}
       className={cn(
-        "h-screen flex flex-col",
+        "h-screen flex flex-col bg-secondary text-secondary-foreground",
         isCollapsed && "min-w-[50px] transition-all duration-300 ease-in-out"
       )}
     >
       <div
         className={cn(
-          "flex-none flex h-[44px] items-center font-bold justify-start px-5"
+          "flex-none flex items-center font-bold justify-start mt-3 px-5"
         )}
       >
         {isCollapsed ? "P" : "Pragmatic"}
       </div>
-      <Separator />
       <Sidebar
         isCollapsed={isCollapsed}
         links={[

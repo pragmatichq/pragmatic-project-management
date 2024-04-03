@@ -1,24 +1,19 @@
 import React, { useCallback, useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
-import Document from "@tiptap/extension-document";
-import { EditorMenuBar } from "../../../../../components/shared/EditorMenuBar";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 import { Button } from "../../../../../components/ui/button";
 import { debounce, safeJSONParse } from "@/lib/utils";
-import { useStableQuery } from "@/lib/hooks/useStableQuery";
 import {
   titleExtensions,
   titleEditorProps,
   textareaEditorProps,
   textareaExtensions,
 } from "@/lib/editor-settings";
+import { EditorMenuBar } from "@/components/shared/EditorMenuBar";
+import { Badge } from "@/components/ui/badge";
 
 export function BroadcastEditor({
   broadcast,
@@ -28,7 +23,7 @@ export function BroadcastEditor({
   const updateBroadcast = useMutation(api.broadcasts.update);
 
   const updateContent = async (): Promise<void> => {
-    if (!broadcast) return; // Ensure broadcast is defined
+    if (!broadcast) return;
     let newTitle = titleEditor?.getJSON()?.content?.[0]?.content?.[0]?.text;
     const response = await updateBroadcast({
       broadcastId: broadcast._id, // Access _id directly since broadcast is checked to be non-null
@@ -39,7 +34,7 @@ export function BroadcastEditor({
   };
 
   const saveBroadcastLocally = async (editor: any, type: string) => {
-    if (!broadcast) return; // Ensure broadcast is defined
+    if (!broadcast) return;
     const key = `broadcast-${type}-${broadcast._id}`;
     const value = JSON.stringify(editor.getJSON());
     localStorage.setItem(key, value);
@@ -119,7 +114,15 @@ export function BroadcastEditor({
         <>
           <EditorContent editor={titleEditor} />
           <div className="bg-muted p-2 rounded-sm border-solid border">
+            <div className="flex justify-between">
+              <EditorMenuBar editor={contentEditor!} />
+              <Badge className="w-fit h-fit capitalize mt-1">
+                {broadcast.status}
+              </Badge>
+            </div>
             <EditorContent editor={contentEditor} />
+          </div>
+          <div className="flex gap-2">
             <Button
               onClick={() => {
                 localStorage.removeItem("broadcast-content-" + broadcast._id);
@@ -161,7 +164,6 @@ export function BroadcastEditor({
             >
               Draft
             </Button>
-            Current state: {broadcast.status}
           </div>
         </>
       )}

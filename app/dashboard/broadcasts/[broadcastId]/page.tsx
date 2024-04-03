@@ -7,9 +7,6 @@ import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-
-import { ActionDetails } from "@/components/action/action-details";
-import { ActionWithMembers } from "@/lib/types";
 import { BroadcastEditor } from "./_components/BroadcastEditor";
 
 interface SingleBroadcastPageProps {
