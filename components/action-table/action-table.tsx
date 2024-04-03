@@ -22,8 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DataTableToolbar } from "@/components/action-table/action-table-toolbar";
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
-import { FilterContext } from "@/app/dashboard/actions/FilterContext";
+import { FilterContext } from "@/app/dashboard/actions/_contexts/FilterContext";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

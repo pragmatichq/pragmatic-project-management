@@ -56,7 +56,7 @@ const flag = [
 
 import type { Table } from "@tanstack/react-table";
 import { Rows3Icon } from "lucide-react";
-import { FilterContext } from "@/app/dashboard/actions/FilterContext";
+import { FilterContext } from "@/app/dashboard/actions/_contexts/FilterContext";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
