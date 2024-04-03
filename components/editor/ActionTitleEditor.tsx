@@ -1,6 +1,6 @@
-import { EditorProvider } from "@tiptap/react";
+import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
-import React from "react";
+import React, { useCallback } from "react";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { Id } from "@/convex/_generated/dataModel";
@@ -49,23 +49,23 @@ export function ActionTitleEditor({ action }: { action: ActionWithMembers }) {
     }
   };
 
-  const debouncedUpdateContent = debounce(updateContent, 800);
+  const editor = useEditor({
+    extensions,
+    editorProps,
+    content: action.title,
+    onCreate: ({ editor }) => {
+      editor.view.dom.setAttribute("spellcheck", "false");
+      editor.view.dom.setAttribute("autocomplete", "off");
+      editor.view.dom.setAttribute("autocapitalize", "off");
+    },
+    onUpdate: ({ editor }) => {
+      debouncedUpdateContent(editor);
+    },
+  });
 
-  return (
-    <EditorProvider
-      editorProps={editorProps}
-      content={action.title}
-      extensions={extensions}
-      onCreate={({ editor }) => {
-        editor.view.dom.setAttribute("spellcheck", "false");
-        editor.view.dom.setAttribute("autocomplete", "off");
-        editor.view.dom.setAttribute("autocapitalize", "off");
-      }}
-      onUpdate={({ editor }) => {
-        debouncedUpdateContent(editor);
-      }}
-    >
-      {""}
-    </EditorProvider>
-  );
+  const debouncedUpdateContent = useCallback(debounce(updateContent, 800), [
+    editor,
+  ]);
+
+  return <EditorContent editor={editor} />;
 }

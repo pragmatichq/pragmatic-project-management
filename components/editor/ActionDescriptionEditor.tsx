@@ -1,4 +1,9 @@
-import { EditorProvider } from "@tiptap/react";
+import {
+  Editor,
+  EditorContent,
+  EditorProvider,
+  useEditor,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
@@ -7,7 +12,7 @@ import Mention from "@tiptap/extension-mention";
 
 import { EditorMenuBar } from "./EditorMenuBar";
 
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -70,21 +75,23 @@ export function ActionDescriptionEditor({
     toast.success("Action description updated");
   };
 
-  const debouncedUpdateContent = debounce(updateContent, 800);
+  const editor: Editor | null = useEditor({
+    extensions,
+    editorProps,
+    content: action.description,
+    onUpdate: ({ editor }) => {
+      debouncedUpdateContent(editor);
+    },
+  });
+
+  const debouncedUpdateContent = useCallback(debounce(updateContent, 800), [
+    editor,
+  ]);
 
   return (
     <div className="bg-muted p-2 rounded-sm border-solid border">
-      <EditorProvider
-        editorProps={editorProps}
-        slotBefore={<EditorMenuBar />}
-        content={action.description}
-        extensions={extensions}
-        onUpdate={({ editor }) => {
-          debouncedUpdateContent(editor);
-        }}
-      >
-        {""}
-      </EditorProvider>
+      <EditorMenuBar editor={editor!} />
+      <EditorContent editor={editor!} />
     </div>
   );
 }

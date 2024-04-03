@@ -59,9 +59,7 @@ export default defineSchema({
   broadcasts: defineTable({
     organization: v.id("organizations"),
     title: v.optional(v.string()),
-    content: v.optional(
-      v.object({ type: v.string(), content: v.array(v.any()) })
-    ),
+    content: v.optional(v.string()),
     publish_date: v.optional(v.string()),
     status: v.string(),
     created_by: v.optional(v.id("users")),

@@ -25,7 +25,6 @@ export default function ActionListPage() {
     "groupBy",
     parseAsArrayOf(parseAsString).withDefault(["status"])
   );
-  console.log(groupBy);
   const isFiltered = [assignees, statuses, flags, timeFrames].some(
     (array) => array.length > 0
   );

@@ -1,10 +1,8 @@
 import { ConvexError, v } from "convex/values";
-import { getManyVia } from "convex-helpers/server/relationships.js";
 import {
   queryWithOrganization,
   mutationWithOrganization,
 } from "./customFunctions";
-import { Id } from "./_generated/dataModel";
 
 export const list = queryWithOrganization({
   args: {
@@ -25,6 +23,17 @@ export const list = queryWithOrganization({
     let broadcasts = await filteredBroadcasts.collect();
 
     return broadcasts;
+  },
+});
+
+export const get = queryWithOrganization({
+  args: {
+    broadcastId: v.id("broadcasts"),
+  },
+  handler: async (ctx, args) => {
+    let broadcast = ctx.db.get(args.broadcastId);
+
+    return broadcast;
   },
 });
 
@@ -65,9 +74,7 @@ export const update = mutationWithOrganization({
     title: v.optional(v.string()),
     status: v.optional(v.string()),
     publish_date: v.optional(v.string()),
-    content: v.optional(
-      v.object({ type: v.string(), content: v.array(v.any()) })
-    ),
+    content: v.optional(v.string()),
   },
 
   handler: async (ctx, args) => {
@@ -83,9 +90,18 @@ export const update = mutationWithOrganization({
       throw new ConvexError("Action belongs to other organization");
     }
 
-    const task = await ctx.db.patch(args.broadcastId, {
-      ...rest,
-    });
-    return task;
+    const updates: { [key: string]: any } = Object.entries(rest).reduce(
+      (acc: any, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {}
+    );
+
+    // Use the updates object to only send provided arguments
+    const broadcast = await ctx.db.patch(broadcastId, updates);
+    return broadcast;
   },
 });

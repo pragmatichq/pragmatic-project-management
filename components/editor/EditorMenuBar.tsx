@@ -1,4 +1,3 @@
-import { useCurrentEditor } from "@tiptap/react";
 import { useState } from "react";
 
 import { Button } from "../ui/button";
@@ -25,49 +24,49 @@ import {
   TextIcon,
   ListChecksIcon,
 } from "lucide-react";
+import { Editor } from "@tiptap/react";
 
 interface DropdownMapping {
-  [key: string]: (editor: any) => any;
+  [key: string]: (editor: Editor) => any;
 }
 
 const dropdown = [
   {
     label: "Paragraph",
     icon: <TextIcon size={16} />,
-    action: (editor: any) => editor.chain().setParagraph().focus().run(),
+    action: (editor: Editor) => editor.chain().setParagraph().focus().run(),
   },
   {
     label: "Heading 1",
     icon: <Heading1Icon size={16} />,
-    action: (editor: any) =>
+    action: (editor: Editor) =>
       editor.chain().toggleHeading({ level: 1 }).focus().run(),
   },
   {
     label: "Heading 2",
     icon: <Heading2Icon size={16} />,
-    action: (editor: any) =>
+    action: (editor: Editor) =>
       editor.chain().toggleHeading({ level: 2 }).focus().run(),
   },
   {
     label: "Heading 3",
     icon: <Heading3Icon size={16} />,
-    action: (editor: any) =>
+    action: (editor: Editor) =>
       editor.chain().toggleHeading({ level: 3 }).focus().run(),
   },
 ];
 
 const dropdownMapping: DropdownMapping = {
-  Paragraph: (editor: any) => editor?.isActive("paragraph"),
-  "Heading 1": (editor: any) => editor?.isActive("heading", { level: 1 }),
-  "Heading 2": (editor: any) => editor?.isActive("heading", { level: 2 }),
-  "Heading 3": (editor: any) => editor?.isActive("heading", { level: 3 }),
+  Paragraph: (editor: Editor) => editor?.isActive("paragraph"),
+  "Heading 1": (editor: Editor) => editor?.isActive("heading", { level: 1 }),
+  "Heading 2": (editor: Editor) => editor?.isActive("heading", { level: 2 }),
+  "Heading 3": (editor: Editor) => editor?.isActive("heading", { level: 3 }),
 };
 
-export const EditorMenuBar = () => {
+export const EditorMenuBar = ({ editor }: { editor: Editor }) => {
   const [selectedDropdown, setSelectedDropdown] = useState<string>(
     dropdown[0].label
   );
-  const { editor } = useCurrentEditor();
 
   if (!editor) {
     return null;

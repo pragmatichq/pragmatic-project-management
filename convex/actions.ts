@@ -35,7 +35,6 @@ export const list = queryWithOrganization({
     if (args.flags && args.flags.length > 0) {
       actions = actions.filter((action: any) => {
         if (action.flags) {
-          console.log("Triggered", args.flags, action.flags);
           return action.flags.some((flag: any) => args.flags!.includes(flag));
         }
         return false;
