@@ -8,7 +8,7 @@ import { useStableQuery } from "@/lib/hooks/useStableQuery";
 import { DataTable } from "@/components/action-table/action-table";
 import { getActionTableColumns } from "@/components/action-table/action-table-columns";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { FilterContext } from "./FilterContext";
+import { FilterContext } from "./_contexts/FilterContext";
 import NewAction from "./_components/NewAction";
 
 const useArrayQueryState = (name: string) =>
