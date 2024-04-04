@@ -25,8 +25,8 @@ export function ActionDetails(action: ActionWithMembers) {
   return (
     <ResizablePanelGroup direction="horizontal" autoSaveId="action-details">
       <ResizablePanel defaultSize={80} minSize={50}>
-        <ScrollArea className="h-screen">
-          <div className="grow grid gap-4 auto-rows-min p-4">
+        <ScrollArea className="h-[calc(100vh-40px)]">
+          <div className="grow grid gap-4 auto-rows-min p-6">
             <div className="sticky top-0 bg-white py-2 -my-2 z-50">
               <ActionTitleEditor action={action} />
             </div>
@@ -66,7 +66,7 @@ export function ActionDetails(action: ActionWithMembers) {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={20} minSize={16}>
-        <div className="p-4 flex flex-col h-screen">
+        <div className="p-6 flex flex-col h-[calc(100vh-40px)]">
           <div className="flex-none">
             <h3 className="text-2xl font-bold my-2">Discussions</h3>
           </div>

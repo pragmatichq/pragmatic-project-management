@@ -2,8 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { NotebookPenIcon, PlusCircleIcon } from "lucide-react";
+import { useContext, useEffect } from "react";
+import { LayoutContext } from "../_contexts/LayoutContext";
 
 export default function BroadcastsPage() {
+  const { setBreadcrumbs } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setBreadcrumbs(["Broadcasts"]);
+  }, []);
   return (
     <div className="mx-auto text-center flex flex-col gap-8 p-8 rounded bg-muted text-muted-foreground border">
       <NotebookPenIcon className="mx-auto size-12" />

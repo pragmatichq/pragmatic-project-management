@@ -11,6 +11,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ActionDetails } from "./_components/ActionDetails";
 import { ActionWithMembers } from "@/lib/types";
 import LayoutTitle from "@/components/shared/LayoutTitle";
+import { useContext, useEffect } from "react";
+import { LayoutContext } from "../../_contexts/LayoutContext";
 
 interface SingleActionPageProps {
   params: { actionId: Id<"actions"> };
@@ -31,16 +33,11 @@ export default function SingleActionPage({ params }: SingleActionPageProps) {
     }
   }
 
-  return (
-    <>
-      {!action ? (
-        <LoadingSpinner />
-      ) : (
-        <>
-          <LayoutTitle title={action.title as string} />
-          <ActionDetails {...action} />
-        </>
-      )}
-    </>
-  );
+  const { setBreadcrumbs } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setBreadcrumbs(["Actions", action?.title!]);
+  }, [action]);
+
+  return <>{!action ? <LoadingSpinner /> : <ActionDetails {...action} />}</>;
 }

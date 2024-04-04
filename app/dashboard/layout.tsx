@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -10,14 +10,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthLoading, Authenticated } from "convex/react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DashboardNavigation } from "./_components/DashboardNavigation";
-import { Separator } from "@/components/ui/separator";
-import { UserButton } from "@clerk/nextjs";
+import { LayoutContext } from "./_contexts/LayoutContext";
+import LayoutTitle from "@/components/shared/LayoutTitle";
 
 export default function DashboardTemplate({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [breadcrumbs, setBreadcrumbs] = useState<string[]>([]);
   return (
     <>
       <Authenticated>
@@ -29,7 +30,17 @@ export default function DashboardTemplate({
           >
             <DashboardNavigation panelDefaultSize={10} />
             <ResizableHandle />
-            <ResizablePanel defaultSize={90}>{children}</ResizablePanel>
+            <ResizablePanel defaultSize={90} className="max-h-screen">
+              <LayoutContext.Provider
+                value={{
+                  breadcrumbs,
+                  setBreadcrumbs,
+                }}
+              >
+                <LayoutTitle />
+                {children}
+              </LayoutContext.Provider>
+            </ResizablePanel>
           </ResizablePanelGroup>
         </TooltipProvider>
       </Authenticated>

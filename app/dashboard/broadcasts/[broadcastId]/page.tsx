@@ -8,6 +8,8 @@ import { Id, Doc } from "@/convex/_generated/dataModel";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { BroadcastEditor } from "./_components/BroadcastEditor";
+import { useContext, useEffect } from "react";
+import { LayoutContext } from "../../_contexts/LayoutContext";
 
 interface SingleBroadcastPageProps {
   params: { broadcastId: Id<"broadcasts"> };
@@ -27,6 +29,12 @@ export default function SingleBroadcast({ params }: SingleBroadcastPageProps) {
       throw e;
     }
   }
+
+  const { setBreadcrumbs } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setBreadcrumbs(["Broadcasts", broadcast?.title!]);
+  }, []);
 
   return (
     <>

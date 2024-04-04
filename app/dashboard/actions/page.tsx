@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { useQueryState, parseAsArrayOf, parseAsString } from "nuqs";
 import { api } from "@/convex/_generated/api";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";
@@ -10,12 +10,18 @@ import { getActionTableColumns } from "@/components/action-table/action-table-co
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./_contexts/FilterContext";
 import NewAction from "./_components/NewAction";
-import LayoutTitle from "@/components/shared/LayoutTitle";
+import { LayoutContext } from "../_contexts/LayoutContext";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
 
 export default function ActionListPage() {
+  const { setBreadcrumbs } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setBreadcrumbs(["Action Table"]);
+  }, []);
+
   const columns = useMemo(() => getActionTableColumns(), []);
 
   const [statuses, setStatuses] = useArrayQueryState("status");
@@ -52,31 +58,28 @@ export default function ActionListPage() {
       {!actions ? (
         <LoadingSpinner />
       ) : (
-        <>
-          <LayoutTitle title="Action Table" />
-          <div className="flex flex-col space-y-2 p-4 max-h-screen overflow-scroll">
-            <FilterContext.Provider
-              value={{
-                statuses,
-                setStatuses,
-                timeFrames,
-                setTimeFrames,
-                flags,
-                setFlags,
-                assignees,
-                setAssignees,
-                groupBy,
-                setGroupBy,
-                isFiltered,
-              }}
-            >
-              <DataTable data={actions} columns={columns} />
-              <div className="flex justify-end">
-                <NewAction />
-              </div>
-            </FilterContext.Provider>
-          </div>
-        </>
+        <div className="flex flex-col space-y-2 p-6 max-h-[calc(100vh-40px)] overflow-auto">
+          <FilterContext.Provider
+            value={{
+              statuses,
+              setStatuses,
+              timeFrames,
+              setTimeFrames,
+              flags,
+              setFlags,
+              assignees,
+              setAssignees,
+              groupBy,
+              setGroupBy,
+              isFiltered,
+            }}
+          >
+            <DataTable data={actions} columns={columns} />
+            <div className="flex justify-end">
+              <NewAction />
+            </div>
+          </FilterContext.Provider>
+        </div>
       )}
     </>
   );
