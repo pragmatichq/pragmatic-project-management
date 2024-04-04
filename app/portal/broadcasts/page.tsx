@@ -4,9 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Search, ListFilter, Heart } from "lucide-react";
+import { api } from "@/convex/_generated/api";
+import { useStableQuery } from "@/lib/hooks/useStableQuery";
+import { Search, ListFilter } from "lucide-react";
 
 export default function BroadcastListing() {
+  const broadcasts = useStableQuery(api.broadcasts.list, {
+    status: "published",
+  });
   return (
     <section className="my-8 flex flex-col space-y-4">
       <h2 className="text-4xl font-bold tracking-tight">Broadcasts</h2>
@@ -24,60 +29,29 @@ export default function BroadcastListing() {
             <ListFilter className="mr-2 h-4 w-4" /> Filters
           </Button>
         </div>
-        <Separator className="my-8" />
-        <div className="flex gap-4 flex-row">
-          <div className="w-[200px]">
-            <h2 className="text-sm mt-0.5">March 20, 2024</h2>
-          </div>
-          <div>
-            <Badge variant="secondary">Release</Badge>
-            <h2 className="text-2xl font-bold my-4">Big New Marketing News!</h2>
-            <div className="prose">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Vestibulum in elementum lectus. In metus nulla, efficitur vel
-                convallis sit amet, pharetra non justo. Nullam neque nisl,
-                fringilla nec mi id, pretium molestie tellus. Etiam elit odio,
-                laoreet facilisis eros non, commodo sollicitudin mi. Fusce in
-                euismod lectus. Mauris eget molestie nunc, eget dignissim ipsum.
-                Fusce facilisis mauris ipsum, nec iaculis nulla ultricies a.
-                Phasellus volutpat aliquet mi ut tincidunt.
-              </p>
-              <p>
-                Maecenas ut porttitor justo. Etiam suscipit ligula ut lorem
-                ornare, at elementum mi dignissim. Vestibulum ante ipsum primis
-                in faucibus orci luctus et ultrices posuere cubilia curae;
-                Praesent imperdiet massa non massa tristique volutpat.
-                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-                posuere cubilia curae; Pellentesque congue eleifend diam, id
-                vestibulum metus porttitor in. Aenean ac efficitur leo. Nullam
-                mattis justo velit, quis porta neque placerat eget. Sed
-                porttitor justo a urna ullamcorper blandit. Aliquam mattis
-                lobortis mauris, at bibendum eros tincidunt nec. Morbi at eros
-                sollicitudin, dapibus neque et, facilisis sapien. Quisque
-                elementum justo ut tellus lobortis porttitor laoreet vitae nisi.
-                Phasellus sagittis mattis risus, vel hendrerit erat posuere nec.
-                Suspendisse fermentum justo ac justo tristique viverra.
-                Phasellus dui tellus, rutrum ut turpis eu, blandit dignissim mi.
-              </p>
-              <p>
-                Etiam cursus lacus nec dolor facilisis ullamcorper. Vestibulum
-                auctor arcu velit, ac cursus massa scelerisque accumsan. Proin
-                sollicitudin ut ante at euismod. Proin risus ipsum, gravida eu
-                tortor at, lacinia porttitor libero. Fusce id eros lectus.
-                Aenean pharetra elementum neque ac aliquet. Ut suscipit mattis
-                massa at laoreet. Nam porta nulla sed felis porta, id sodales
-                turpis laoreet. In hendrerit nibh sed eros fringilla, et
-                eleifend est elementum. Donec ut purus vitae nulla euismod
-                aliquet id eget elit. Donec at varius nulla. Nulla scelerisque
-                posuere neque, non interdum diam tristique in. Integer ut
-                lacinia orci. Sed euismod ex nibh, vel ultricies dui congue a.
-                Curabitur ac mauris maximus, vulputate massa laoreet,
-                consectetur augue. In eget interdum ipsum.
-              </p>
-            </div>
-          </div>
-        </div>
+        {broadcasts &&
+          broadcasts.map((broadcast) => (
+            <>
+              <Separator className="my-8" />
+              <div className="flex gap-4 flex-row" key={broadcast._id}>
+                <div className="w-[200px]">
+                  <h2 className="text-sm mt-0.5">March 20, 2024</h2>
+                </div>
+                <div>
+                  <Badge variant="secondary">Release</Badge>
+                  <h2 className="text-4xl font-extrabold my-4">
+                    {broadcast.title}
+                  </h2>
+                  <div
+                    className="prose"
+                    dangerouslySetInnerHTML={{
+                      __html: broadcast.content as string,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </>
+          ))}
       </div>
     </section>
   );

@@ -18,7 +18,7 @@ export default function BroadcastSidebar() {
 
   return (
     <>
-      <div className="flex flex-col space-y-2 p-6 h-[calc(100vh-30px)] overflow-auto">
+      <div className="flex flex-col space-y-2">
         <div className="flex justify-between">
           <Button variant={"outline"} className="text-xs p-3 h-10">
             <PlusCircleIcon className="mr-2 h-4 w-4" /> Create

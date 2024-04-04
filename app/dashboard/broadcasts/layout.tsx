@@ -14,17 +14,15 @@ export default function BroadcastTemplate({
   return (
     <ResizablePanelGroup direction="horizontal" autoSaveId="broadcast">
       <ResizablePanel defaultSize={30} minSize={20}>
-        <ScrollArea className="h-screen">
+        <div className="p-6 h-[calc(100vh-45px)] overflow-auto">
           <BroadcastSidebar />
-        </ScrollArea>
+        </div>
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={70}>
-        <ScrollArea className="h-screen">
-          <div className="flex flex-col space-y-4 p-6 max-h-[calc(100vh-40px)]">
-            {children}
-          </div>
-        </ScrollArea>
+        <div className="flex flex-col space-y-4 p-6 h-[calc(100vh-45px)] overflow-auto">
+          {children}
+        </div>
       </ResizablePanel>
     </ResizablePanelGroup>
   );

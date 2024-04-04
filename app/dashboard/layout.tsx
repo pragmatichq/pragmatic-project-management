@@ -26,11 +26,10 @@ export default function DashboardTemplate({
           <ResizablePanelGroup
             autoSaveId="dashboard-layout"
             direction="horizontal"
-            className="h-full items-stretch"
           >
             <DashboardNavigation panelDefaultSize={10} />
             <ResizableHandle />
-            <ResizablePanel defaultSize={90} className="max-h-screen">
+            <ResizablePanel defaultSize={90}>
               <LayoutContext.Provider
                 value={{
                   breadcrumbs,

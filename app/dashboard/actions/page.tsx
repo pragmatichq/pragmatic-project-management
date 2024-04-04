@@ -11,6 +11,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./_contexts/FilterContext";
 import NewAction from "./_components/NewAction";
 import { LayoutContext } from "../_contexts/LayoutContext";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
@@ -58,28 +59,28 @@ export default function ActionListPage() {
       {!actions ? (
         <LoadingSpinner />
       ) : (
-        <div className="flex flex-col space-y-2 p-6 max-h-[calc(100vh-40px)] overflow-auto">
-          <FilterContext.Provider
-            value={{
-              statuses,
-              setStatuses,
-              timeFrames,
-              setTimeFrames,
-              flags,
-              setFlags,
-              assignees,
-              setAssignees,
-              groupBy,
-              setGroupBy,
-              isFiltered,
-            }}
-          >
+        <FilterContext.Provider
+          value={{
+            statuses,
+            setStatuses,
+            timeFrames,
+            setTimeFrames,
+            flags,
+            setFlags,
+            assignees,
+            setAssignees,
+            groupBy,
+            setGroupBy,
+            isFiltered,
+          }}
+        >
+          <div className="flex flex-col space-y-2 p-6 max-h-[calc(100vh-45px)] overflow-auto">
             <DataTable data={actions} columns={columns} />
             <div className="flex justify-end">
               <NewAction />
             </div>
-          </FilterContext.Provider>
-        </div>
+          </div>
+        </FilterContext.Provider>
       )}
     </>
   );
