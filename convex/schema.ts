@@ -15,6 +15,7 @@ export default defineSchema({
     last_updated: v.string(),
     status: v.string(),
     is_archived: v.boolean(),
+    is_triage: v.boolean(),
     title: v.optional(v.string()),
     initiative: v.optional(v.id("initiatives")),
     description: v.optional(

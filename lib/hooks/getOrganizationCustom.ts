@@ -3,11 +3,10 @@ type Status = {
   order: number;
 };
 
-// Define the statuses array with the Status type
 export const statuses: Status[] = [
   {
-    value: "Consideration",
-    order: 1,
+    value: "In Consideration",
+    order: 3,
   },
   {
     value: "Planned",
@@ -15,7 +14,7 @@ export const statuses: Status[] = [
   },
   {
     value: "In Progress",
-    order: 3,
+    order: 1,
   },
   {
     value: "On Hold",
