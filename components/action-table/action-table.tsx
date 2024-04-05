@@ -12,6 +12,8 @@ import {
   flexRender,
   GroupingState,
   getGroupedRowModel,
+  getExpandedRowModel,
+  ExpandedState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -23,6 +25,8 @@ import {
 } from "@/components/ui/table";
 import { DataTableToolbar } from "@/components/action-table/action-table-toolbar";
 import { FilterContext } from "@/app/dashboard/actions/_contexts/FilterContext";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,34 +37,49 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const { groupBy } = useContext(FilterContext);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const { groupBy, sortBy, expandedGroups, setExpandedGroups } =
+    useContext(FilterContext);
+  const [sorting, setSorting] = useState<SortingState>(sortBy);
   const [grouping, setGrouping] = useState<GroupingState>(groupBy);
+  const [expanded, setExpanded] = useState<ExpandedState>(expandedGroups);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   useEffect(() => {
     setGrouping(groupBy);
-  }, [groupBy]);
+    setSorting(sortBy);
+    setExpanded(expandedGroups);
+  }, [groupBy, sortBy, expandedGroups]);
+
+  const toggleExpandedGroups = (groupName: string) => {
+    if (expandedGroups.hasOwnProperty(groupName)) {
+      // @ts-ignore
+      const { [groupName]: _, ...newExpandedGroups } = expandedGroups;
+      return newExpandedGroups;
+    } else {
+      // @ts-ignore
+      return { ...expandedGroups, [groupName]: true };
+    }
+  };
 
   const table = useReactTable({
     data,
     columns,
     groupedColumnMode: false,
-    onGroupingChange: setGrouping,
+    autoResetExpanded: false,
+    getExpandedRowModel: getExpandedRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
       grouping,
+      expanded,
       columnVisibility,
     },
     defaultColumn: { minSize: 150, maxSize: 400 },
   });
-
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
@@ -101,30 +120,27 @@ export function DataTable<TData, TValue>({
                           className="bg-gray-700 text-white"
                           colSpan={columns.length}
                         >
-                          <span className="font-bold">
+                          <Button
+                            className="font-bold flex items-center p-1 pr-2 -ml-2"
+                            onClick={() => {
+                              setExpandedGroups(toggleExpandedGroups(row.id));
+                              console.log(row);
+                            }}
+                            variant={"ghost"}
+                          >
+                            {row.getIsExpanded() ? (
+                              <ChevronDown className="mr-1" />
+                            ) : (
+                              <ChevronRight className="mr-1" />
+                            )}
                             {!isUngrouped ? (
                               groupedValue + " (" + row.subRows.length + ")"
                             ) : (
                               <span>Ungrouped</span>
                             )}
-                          </span>
+                          </Button>
                         </TableCell>
                       </TableRow>
-                      {row.subRows.map((subRow) => (
-                        <TableRow key={subRow.id}>
-                          {subRow.getVisibleCells().map((cell) => (
-                            <TableCell
-                              key={cell.id}
-                              className="max-w-[300px] truncate"
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
                     </React.Fragment>
                   );
                 } else {

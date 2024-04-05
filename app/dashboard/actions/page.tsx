@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useContext, useEffect, useMemo } from "react";
-import { useQueryState, parseAsArrayOf, parseAsString } from "nuqs";
+import {
+  useQueryState,
+  parseAsArrayOf,
+  parseAsString,
+  parseAsStringEnum,
+  parseAsJson,
+} from "nuqs";
 import { api } from "@/convex/_generated/api";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";
 
@@ -11,6 +17,27 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./_contexts/FilterContext";
 import NewAction from "./_components/NewAction";
 import { BreadcrumbContext } from "../_contexts/BreadcrumbContext";
+import { ColumnSort, ExpandedState } from "@tanstack/react-table";
+import { createParser } from "nuqs";
+
+const columnSortParser = createParser<ColumnSort[]>({
+  parse(queryValue: string): ColumnSort[] | null {
+    if (!queryValue) return null;
+    return queryValue
+      .split(";")
+      .map((part) => {
+        const [desc, id] = part.split(",");
+        if ((desc !== "true" && desc !== "false") || !id) {
+          return null; // invalid format
+        }
+        return { desc: desc === "true", id };
+      })
+      .filter((cs): cs is ColumnSort => cs !== null);
+  },
+  serialize(values: ColumnSort[]): string {
+    return values.map((value) => `${value.desc},${value.id}`).join(";");
+  },
+});
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
@@ -33,6 +60,18 @@ export default function ActionListPage() {
     "groupBy",
     parseAsArrayOf(parseAsString).withDefault(["status"])
   );
+  const [sortBy, setSortBy] = useQueryState(
+    "sortBy",
+    columnSortParser.withDefault([{ desc: false, id: "status" }])
+  );
+  const [expandedGroups, setExpandedGroups] = useQueryState(
+    "expanded",
+    parseAsJson().withDefault({
+      "status:Planned": true,
+      "status:In Progress": true,
+    })
+  );
+
   const isFiltered = [
     assigneesFilter,
     statusesFilter,
@@ -74,6 +113,10 @@ export default function ActionListPage() {
             setAssigneesFilter,
             groupBy,
             setGroupBy,
+            sortBy,
+            setSortBy,
+            expandedGroups,
+            setExpandedGroups,
             isFiltered,
           }}
         >

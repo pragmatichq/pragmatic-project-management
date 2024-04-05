@@ -9,7 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { BreadcrumbContext } from "@/app/dashboard/_contexts/BreadcrumbContext";
 import Link from "next/link";
 
@@ -29,12 +29,12 @@ export default function DashboardBreadcrumbs() {
               </BreadcrumbLink>
             </BreadcrumbItem>
             {breadcrumbs.map((breadcrumb, index) => (
-              <>
+              <React.Fragment key={index}>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage>{breadcrumb}</BreadcrumbPage>
                 </BreadcrumbItem>
-              </>
+              </React.Fragment>
             ))}
           </BreadcrumbList>
         </Breadcrumb>

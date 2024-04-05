@@ -1,3 +1,4 @@
+import { ColumnSort, ExpandedState } from "@tanstack/react-table";
 import { createContext } from "react";
 
 export type FilterContextType = {
@@ -11,6 +12,10 @@ export type FilterContextType = {
   setAssigneesFilter: React.Dispatch<React.SetStateAction<string[]>>;
   groupBy: string[];
   setGroupBy: React.Dispatch<React.SetStateAction<string[]>>;
+  sortBy: ColumnSort[];
+  setSortBy: React.Dispatch<React.SetStateAction<ColumnSort[]>>;
+  expandedGroups: ExpandedState;
+  setExpandedGroups: React.Dispatch<React.SetStateAction<ExpandedState>>;
   isFiltered: boolean;
 };
 
@@ -25,5 +30,9 @@ export const FilterContext = createContext<FilterContextType>({
   setAssigneesFilter: () => {},
   groupBy: [],
   setGroupBy: () => {},
+  sortBy: [],
+  setSortBy: () => {},
+  expandedGroups: {},
+  setExpandedGroups: () => {},
   isFiltered: false,
 });

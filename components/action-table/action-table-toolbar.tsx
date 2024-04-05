@@ -24,6 +24,7 @@ import {
   statuses,
   time_frames,
   flags,
+  Group,
 } from "@/lib/hooks/getOrganizationCustom";
 
 import type { Table } from "@tanstack/react-table";
@@ -33,6 +34,8 @@ import { FilterContext } from "@/app/dashboard/actions/_contexts/FilterContext";
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
+
+// Create a new variable, map through time_frames, and return an object that looks like this: { "time_frame:[time_frames[0]]", true, "time_frame:[time_frames[1]]": true, ... }
 
 export function DataTableToolbar<TData>({
   table,
@@ -47,6 +50,10 @@ export function DataTableToolbar<TData>({
     assigneesFilter,
     setAssigneesFilter,
     setGroupBy,
+    sortBy,
+    setSortBy,
+    expandedGroups,
+    setExpandedGroups,
     isFiltered,
   } = useContext(FilterContext);
   const { memberships, isLoaded } = useOrganization({ memberships: true });
@@ -60,10 +67,28 @@ export function DataTableToolbar<TData>({
   }, [memberships, isLoaded]);
 
   const currentGrouping = table.getState().grouping[0] || "";
+  interface Acc {
+    [key: string]: boolean;
+  }
+
+  const defaultGroupExpanded = (groupStates: Group[], group: string) => {
+    return groupStates
+      .filter((frame) => frame.default_expanded) // Filter array to include only items with default_open === true
+      .reduce((acc: Acc, { value }) => {
+        acc[`${group}:${value}`] = true;
+        return acc;
+      }, {});
+  };
 
   const handleGroupingChange = (value: string) => {
     const newGrouping = value === "" ? [] : [value];
     setGroupBy(newGrouping);
+    setSortBy([{ id: value, desc: false }]);
+    if (value === "status") {
+      setExpandedGroups(defaultGroupExpanded(statuses, "status"));
+    } else {
+      setExpandedGroups(defaultGroupExpanded(time_frames, "time_frame"));
+    }
   };
 
   return (
