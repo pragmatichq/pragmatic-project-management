@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Separator } from "@/components/ui/separator";
-import { Sidebar } from "./Sidebar";
+import { DashboardSidebar } from "./DashboardSidebar";
 import { cn } from "@/lib/utils";
 import {
   Inbox,
@@ -14,6 +14,7 @@ import {
   Map,
   PartyPopper,
   Archive,
+  HomeIcon,
 } from "lucide-react";
 
 export function DashboardNavigation({
@@ -47,13 +48,13 @@ export function DashboardNavigation({
       >
         {isCollapsed ? "P" : "Pragmatic"}
       </div>
-      <Sidebar
+      <DashboardSidebar
         isCollapsed={isCollapsed}
         links={[
           {
-            title: "Inbox",
+            title: "Dashboard",
             label: "",
-            icon: Inbox,
+            icon: HomeIcon,
             url: "/dashboard",
           },
           {

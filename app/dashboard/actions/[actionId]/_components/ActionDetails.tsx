@@ -16,7 +16,6 @@ import { Label } from "@/components/ui/label";
 
 import FileUpload from "@/components/action/action-file-upload";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { CommentEditor } from "@/components/editor/CommentEditor";
 import { ActionWithMembers } from "@/lib/types";
 import { ActionTitleEditor } from "./ActionTitleEditor";
@@ -25,7 +24,7 @@ export function ActionDetails(action: ActionWithMembers) {
   return (
     <ResizablePanelGroup direction="horizontal" autoSaveId="action-details">
       <ResizablePanel defaultSize={80} minSize={50}>
-        <ScrollArea className="grow grid gap-4 auto-rows-min p-6 h-[calc(100vh-45px)] overflow-auto">
+        <div className="grow grid gap-6 auto-rows-min p-6 h-[calc(100vh-45px)] overflow-auto">
           <div className="sticky -top-6 py-2 bg-white z-50">
             <ActionTitleEditor action={action} />
           </div>
@@ -60,7 +59,7 @@ export function ActionDetails(action: ActionWithMembers) {
             <h3 className="text-2xl font-bold my-2">Files</h3>
             <FileUpload actionId={action._id} />
           </div>
-        </ScrollArea>
+        </div>
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={20} minSize={16}>

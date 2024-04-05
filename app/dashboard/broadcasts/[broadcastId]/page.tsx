@@ -9,7 +9,8 @@ import { Id, Doc } from "@/convex/_generated/dataModel";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { BroadcastEditor } from "./_components/BroadcastEditor";
 import { useContext, useEffect } from "react";
-import { LayoutContext } from "../../_contexts/LayoutContext";
+import { BreadcrumbContext } from "../../_contexts/BreadcrumbContext";
+import { useStableQuery } from "@/lib/hooks/useStableQuery";
 
 interface SingleBroadcastPageProps {
   params: { broadcastId: Id<"broadcasts"> };
@@ -19,7 +20,7 @@ export default function SingleBroadcast({ params }: SingleBroadcastPageProps) {
   let broadcast: Doc<"broadcasts"> | undefined;
 
   try {
-    broadcast = useQuery(api.broadcasts.get, {
+    broadcast = useStableQuery(api.broadcasts.get, {
       broadcastId: params.broadcastId,
     }) as Doc<"broadcasts">;
   } catch (e) {
@@ -30,11 +31,11 @@ export default function SingleBroadcast({ params }: SingleBroadcastPageProps) {
     }
   }
 
-  const { setBreadcrumbs } = useContext(LayoutContext);
+  const { setBreadcrumbs } = useContext(BreadcrumbContext);
 
   useEffect(() => {
     setBreadcrumbs(["Broadcasts", broadcast?.title!]);
-  }, []);
+  }, [broadcast]);
 
   return (
     <>

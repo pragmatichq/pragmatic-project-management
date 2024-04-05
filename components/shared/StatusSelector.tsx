@@ -16,13 +16,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Badge } from "@/components/ui/badge";
+import { statuses } from "@/lib/hooks/getOrganizationCustom";
 
 interface StatusSelectorProps {
   action: Doc<"actions">;
 }
 
 export function StatusSelector({ action }: StatusSelectorProps) {
-  const statuses = ["Triage", "In Progress", "Next Up", "Consideration"];
   const updateActionStatus = useMutation(api.actions.update);
 
   return (
@@ -35,13 +35,16 @@ export function StatusSelector({ action }: StatusSelectorProps) {
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
           value={action.status}
-          onValueChange={(status) =>
-            updateActionStatus({ actionId: action._id, status })
+          onValueChange={(statusValue) =>
+            updateActionStatus({ actionId: action._id, status: statusValue })
           }
         >
           {statuses.map((statusOption) => (
-            <DropdownMenuRadioItem key={statusOption} value={statusOption}>
-              <Badge>{statusOption}</Badge>
+            <DropdownMenuRadioItem
+              key={statusOption.value}
+              value={statusOption.value}
+            >
+              <Badge>{statusOption.value}</Badge>
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

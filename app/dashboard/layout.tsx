@@ -10,8 +10,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthLoading, Authenticated } from "convex/react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DashboardNavigation } from "./_components/DashboardNavigation";
-import { LayoutContext } from "./_contexts/LayoutContext";
-import LayoutTitle from "@/components/shared/LayoutTitle";
+import { BreadcrumbContext } from "./_contexts/BreadcrumbContext";
+import DashboardBreadcrumbs from "./_components/DashboardBreadcrumbs";
 
 export default function DashboardTemplate({
   children,
@@ -30,15 +30,15 @@ export default function DashboardTemplate({
             <DashboardNavigation panelDefaultSize={10} />
             <ResizableHandle />
             <ResizablePanel defaultSize={90}>
-              <LayoutContext.Provider
+              <BreadcrumbContext.Provider
                 value={{
                   breadcrumbs,
                   setBreadcrumbs,
                 }}
               >
-                <LayoutTitle />
+                <DashboardBreadcrumbs />
                 {children}
-              </LayoutContext.Provider>
+              </BreadcrumbContext.Provider>
             </ResizablePanel>
           </ResizablePanelGroup>
         </TooltipProvider>

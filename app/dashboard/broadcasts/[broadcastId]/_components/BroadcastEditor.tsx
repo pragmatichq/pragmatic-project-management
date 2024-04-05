@@ -80,34 +80,6 @@ export function BroadcastEditor({
     broadcast,
   ]);
 
-  useEffect(() => {
-    if (titleEditor && broadcast?.title) {
-      titleEditor.commands.setContent(
-        localStorage.getItem("broadcast-title-" + broadcast?._id)
-          ? safeJSONParse(
-              localStorage.getItem(
-                "broadcast-title-" + broadcast?._id
-              ) as string
-            )
-          : broadcast?.title
-      );
-    }
-  }, [broadcast, titleEditor]);
-
-  useEffect(() => {
-    if (contentEditor && broadcast?.content) {
-      contentEditor.commands.setContent(
-        localStorage.getItem("broadcast-content-" + broadcast?._id)
-          ? safeJSONParse(
-              localStorage.getItem(
-                "broadcast-content-" + broadcast?._id
-              ) as string
-            )
-          : broadcast?.content
-      );
-    }
-  }, [broadcast, contentEditor]);
-
   return (
     <>
       {broadcast && (

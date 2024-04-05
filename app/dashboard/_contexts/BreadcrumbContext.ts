@@ -1,11 +1,11 @@
 import { createContext } from "react";
 
-export type FilterContextType = {
+export type BreadcrumbContextType = {
   breadcrumbs: string[];
   setBreadcrumbs: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-export const LayoutContext = createContext<FilterContextType>({
+export const BreadcrumbContext = createContext<BreadcrumbContextType>({
   breadcrumbs: [],
   setBreadcrumbs: () => {},
 });

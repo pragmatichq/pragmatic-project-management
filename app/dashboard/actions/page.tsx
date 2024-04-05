@@ -10,14 +10,13 @@ import { getActionTableColumns } from "@/components/action-table/action-table-co
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./_contexts/FilterContext";
 import NewAction from "./_components/NewAction";
-import { LayoutContext } from "../_contexts/LayoutContext";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { BreadcrumbContext } from "../_contexts/BreadcrumbContext";
 
 const useArrayQueryState = (name: string) =>
   useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
 
 export default function ActionListPage() {
-  const { setBreadcrumbs } = useContext(LayoutContext);
+  const { setBreadcrumbs } = useContext(BreadcrumbContext);
 
   useEffect(() => {
     setBreadcrumbs(["Action Table"]);
@@ -25,17 +24,21 @@ export default function ActionListPage() {
 
   const columns = useMemo(() => getActionTableColumns(), []);
 
-  const [statuses, setStatuses] = useArrayQueryState("status");
-  const [timeFrames, setTimeFrames] = useArrayQueryState("timeframe");
-  const [assignees, setAssignees] = useArrayQueryState("assignee");
-  const [flags, setFlags] = useArrayQueryState("flags");
+  const [statusesFilter, setStatusesFilter] = useArrayQueryState("status");
+  const [timeFramesFilter, setTimeFramesFilter] =
+    useArrayQueryState("timeframe");
+  const [assigneesFilter, setAssigneesFilter] = useArrayQueryState("assignee");
+  const [flagsFilter, setFlagsFilter] = useArrayQueryState("flags");
   const [groupBy, setGroupBy] = useQueryState(
     "groupBy",
     parseAsArrayOf(parseAsString).withDefault(["status"])
   );
-  const isFiltered = [assignees, statuses, flags, timeFrames].some(
-    (array) => array.length > 0
-  );
+  const isFiltered = [
+    assigneesFilter,
+    statusesFilter,
+    flagsFilter,
+    timeFramesFilter,
+  ].some((array) => array.length > 0);
 
   const createView = (savedView: string) => {
     if (isFiltered) {
@@ -48,10 +51,10 @@ export default function ActionListPage() {
   savedView = createView(savedView);
 
   const actions = useStableQuery(api.actions.list, {
-    statuses,
-    timeFrames,
-    assignees,
-    flags,
+    statuses: statusesFilter,
+    timeFrames: timeFramesFilter,
+    assignees: assigneesFilter,
+    flags: flagsFilter,
   });
 
   return (
@@ -61,14 +64,14 @@ export default function ActionListPage() {
       ) : (
         <FilterContext.Provider
           value={{
-            statuses,
-            setStatuses,
-            timeFrames,
-            setTimeFrames,
-            flags,
-            setFlags,
-            assignees,
-            setAssignees,
+            statusesFilter,
+            setStatusesFilter,
+            timeFramesFilter,
+            setTimeFramesFilter,
+            flagsFilter,
+            setFlagsFilter,
+            assigneesFilter,
+            setAssigneesFilter,
             groupBy,
             setGroupBy,
             isFiltered,

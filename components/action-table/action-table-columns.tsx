@@ -1,5 +1,5 @@
 "use client";
-import { ColumnDef, Row, SortingFn, Table } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/action-table/action-table-column-header";
 
@@ -14,6 +14,15 @@ import { Doc } from "@/convex/_generated/dataModel";
 import Link from "next/link";
 import ContextMenu from "@/app/dashboard/actions/_components/ContextMenu";
 import useRelativeDate from "@/lib/hooks/useRelativeDate";
+
+import { statuses } from "@/lib/hooks/getOrganizationCustom";
+
+const statusMapping: { [key: string]: number } = {};
+
+statuses.reduce((acc, status) => {
+  acc[status.value] = status.order;
+  return acc;
+}, statusMapping);
 
 export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
   {
@@ -48,7 +57,16 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       }
       return "N/A";
     },
-    meta: { size: "100px" },
+    sortingFn: (rowA, rowB, columnId) => {
+      const valueA: string = rowA.getValue(columnId);
+      const valueB: string = rowB.getValue(columnId);
+
+      // Get the order from the statusMapping object
+      const orderA = statusMapping[valueA] || 0;
+      const orderB = statusMapping[valueB] || 0;
+
+      return orderA - orderB; // Compare by order
+    },
   },
   {
     accessorKey: "time_frame",

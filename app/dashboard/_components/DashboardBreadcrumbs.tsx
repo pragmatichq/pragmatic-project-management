@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
-import { Separator } from "../ui/separator";
+import { Separator } from "../../../components/ui/separator";
 import { HomeIcon } from "lucide-react";
 import {
   Breadcrumb,
@@ -10,36 +10,32 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useContext } from "react";
-import { LayoutContext } from "@/app/dashboard/_contexts/LayoutContext";
+import { BreadcrumbContext } from "@/app/dashboard/_contexts/BreadcrumbContext";
+import Link from "next/link";
 
-export default function LayoutTitle() {
-  const { breadcrumbs } = useContext(LayoutContext);
+export default function DashboardBreadcrumbs() {
+  const { breadcrumbs } = useContext(BreadcrumbContext);
   return (
     <div className="">
       <div className="text-sm w-full p-2 pl-4 flex justify-between">
         <Breadcrumb className="flex items-center">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink className="flex">
-                <HomeIcon className="w-4 h-4 mr-2" />
-                <span>Dashboard</span>
+              <BreadcrumbLink asChild>
+                <Link href="/dashboard" className="flex items-center">
+                  <HomeIcon className="size-[0.85rem] mr-2" />
+                  <span>Dashboard</span>
+                </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            {breadcrumbs.map((breadcrumb, index) =>
-              index === breadcrumbs.length - 1 ? (
+            {breadcrumbs.map((breadcrumb, index) => (
+              <>
+                <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage>{breadcrumb}</BreadcrumbPage>
                 </BreadcrumbItem>
-              ) : (
-                <>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink>{breadcrumb}</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                </>
-              )
-            )}
+              </>
+            ))}
           </BreadcrumbList>
         </Breadcrumb>
         <UserButton />

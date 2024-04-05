@@ -20,39 +20,11 @@ import { useOrganization } from "@clerk/nextjs";
 import { useMemo } from "react";
 
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
-
-const status = [
-  {
-    value: "Triage",
-  },
-  {
-    value: "In Progress",
-  },
-  {
-    value: "Next Up",
-  },
-  {
-    value: "Consideration",
-  },
-];
-
-const time_frame = [
-  {
-    value: "Today",
-  },
-  {
-    value: "Next Week",
-  },
-];
-
-const flag = [
-  {
-    value: "Ready for Review",
-  },
-  {
-    value: "Need Information",
-  },
-];
+import {
+  statuses,
+  time_frames,
+  flags,
+} from "@/lib/hooks/getOrganizationCustom";
 
 import type { Table } from "@tanstack/react-table";
 import { Rows3Icon } from "lucide-react";
@@ -66,14 +38,14 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const {
-    statuses,
-    setStatuses,
-    timeFrames,
-    setTimeFrames,
-    flags,
-    setFlags,
-    assignees,
-    setAssignees,
+    statusesFilter,
+    setStatusesFilter,
+    timeFramesFilter,
+    setTimeFramesFilter,
+    flagsFilter,
+    setFlagsFilter,
+    assigneesFilter,
+    setAssigneesFilter,
     setGroupBy,
     isFiltered,
   } = useContext(FilterContext);
@@ -109,18 +81,18 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
-            options={status}
-            setter={setStatuses}
-            filter={statuses}
+            options={statuses}
+            setter={setStatusesFilter}
+            filter={statusesFilter}
           />
         )}
         {table.getColumn("time_frame") && (
           <DataTableFacetedFilter
             column={table.getColumn("time_frame")}
             title="Time Frames"
-            options={time_frame}
-            setter={setTimeFrames}
-            filter={timeFrames}
+            options={time_frames}
+            setter={setTimeFramesFilter}
+            filter={timeFramesFilter}
           />
         )}
 
@@ -128,9 +100,9 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("flags")}
             title="Flags"
-            options={flag}
-            setter={setFlags}
-            filter={flags}
+            options={flags}
+            setter={setFlagsFilter}
+            filter={flagsFilter}
           />
         )}
 
@@ -139,18 +111,18 @@ export function DataTableToolbar<TData>({
             column={table.getColumn("assignees")}
             title="Assignees"
             options={assignee}
-            setter={setAssignees}
-            filter={assignees}
+            setter={setAssigneesFilter}
+            filter={assigneesFilter}
           />
         )}
         {isFiltered ? (
           <Button
             variant="ghost"
             onClick={() => {
-              setAssignees([]);
-              setFlags([]);
-              setStatuses([]);
-              setTimeFrames([]);
+              setAssigneesFilter([]);
+              setFlagsFilter([]);
+              setStatusesFilter([]);
+              setTimeFramesFilter([]);
             }}
             className="h-8 px-2 lg:px-3"
           >

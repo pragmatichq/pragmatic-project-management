@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { NotebookPenIcon, PlusCircleIcon } from "lucide-react";
 import { useContext, useEffect } from "react";
-import { LayoutContext } from "../_contexts/LayoutContext";
+import { BreadcrumbContext } from "../_contexts/BreadcrumbContext";
 
 export default function BroadcastsPage() {
-  const { setBreadcrumbs } = useContext(LayoutContext);
+  const { setBreadcrumbs } = useContext(BreadcrumbContext);
 
   useEffect(() => {
     setBreadcrumbs(["Broadcasts"]);

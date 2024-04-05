@@ -4,7 +4,6 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import BroadcastSidebar from "./_components/BroadcastSidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function BroadcastTemplate({
   children,

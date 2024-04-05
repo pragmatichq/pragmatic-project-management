@@ -21,7 +21,7 @@ interface NavProps {
   }[];
 }
 
-export function Sidebar({ links, isCollapsed }: NavProps) {
+export function DashboardSidebar({ links, isCollapsed }: NavProps) {
   return (
     <div
       data-collapsed={isCollapsed}
