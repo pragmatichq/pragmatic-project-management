@@ -146,7 +146,7 @@ export const create = mutationWithOrganization({
       last_updated: new Date().toISOString(),
       due_date: "",
       time_frame: "",
-      status: "In Consideration",
+      status: "Planned",
       is_archived: false,
       is_triage: false,
     });

@@ -5,10 +5,6 @@ type Status = {
 
 export const statuses: Status[] = [
   {
-    value: "In Consideration",
-    order: 3,
-  },
-  {
     value: "Planned",
     order: 2,
   },
@@ -18,15 +14,15 @@ export const statuses: Status[] = [
   },
   {
     value: "On Hold",
-    order: 4,
+    order: 3,
   },
   {
     value: "Completed",
-    order: 5,
+    order: 4,
   },
   {
     value: "Cancelled",
-    order: 6,
+    order: 5,
   },
 ];
 
