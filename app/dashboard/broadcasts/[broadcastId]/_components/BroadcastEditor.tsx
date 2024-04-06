@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -13,7 +13,6 @@ import {
   textareaExtensions,
 } from "@/lib/editor-settings";
 import { EditorMenuBar } from "@/components/shared/EditorMenuBar";
-import { Badge } from "@/components/ui/badge";
 
 export function BroadcastEditor({
   broadcast,
@@ -82,72 +81,22 @@ export function BroadcastEditor({
 
   return (
     <>
-      {broadcast && (
+      {broadcast && contentEditor && titleEditor && (
         <>
-          <div className="flex gap-1 justify-end">
-            {edited && (
-              <>
-                <Button
-                  onClick={() => {
-                    contentEditor?.commands.setContent(broadcast.content ?? "");
-                    titleEditor?.commands.setContent(broadcast.title ?? "");
-                    setEdited(false);
-                    toast.info("Reverted changes");
-                  }}
-                  variant={"destructive"}
-                  className="h-10 px-3 text-xs"
-                >
-                  Revert Draft
-                </Button>
-                <Button
-                  onClick={() => {
-                    updateContent();
-                    setEdited(false);
-                  }}
-                  className="h-10 px-3 text-xs"
-                >
-                  Publish Changes
-                </Button>
-              </>
-            )}
-            {!edited && broadcast.status === "published" && (
-              <Button onClick={() => setEdited(true)}>Edit</Button>
-            )}
-            {broadcast?.status === "draft" ? (
-              <Button
-                onClick={() => {
-                  updateBroadcast({
-                    broadcastId: broadcast._id,
-                    status: "published",
-                  });
-                  toast.success("Broadcast published");
-                }}
-                className="h-10 px-3 text-xs"
-              >
-                Publish
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  updateBroadcast({
-                    broadcastId: broadcast._id,
-                    status: "draft",
-                  });
-                  toast.success("Broadcast set to draft");
-                }}
-                variant={"outline"}
-                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white h-10 px-3 text-xs"
-              >
-                Unpublish
-              </Button>
-            )}
-          </div>
-
+          <ActionButtons
+            edited={edited}
+            broadcast={broadcast}
+            contentEditor={contentEditor}
+            titleEditor={titleEditor}
+            setEdited={setEdited}
+            updateContent={updateContent}
+            updateBroadcast={updateBroadcast}
+          />
           <EditorContent editor={titleEditor} />
           <div
             className={cn(
               broadcast?.status === "published" && !edited
-                ? "-mt-2"
+                ? "-mt-2 -ml-2"
                 : "bg-muted p-2 rounded-sm border-solid border"
             )}
           >
@@ -163,3 +112,86 @@ export function BroadcastEditor({
     </>
   );
 }
+
+interface ActionButtonsProps {
+  edited: boolean;
+  broadcast: Doc<"broadcasts">;
+  contentEditor: Editor;
+  titleEditor: Editor;
+  setEdited: (edited: boolean) => void;
+  updateContent: () => Promise<void>;
+  updateBroadcast: any;
+}
+
+const ActionButtons: React.FC<ActionButtonsProps> = ({
+  edited,
+  broadcast,
+  contentEditor,
+  titleEditor,
+  setEdited,
+  updateContent,
+  updateBroadcast,
+}) => {
+  // Logic for rendering action buttons
+  return (
+    <div className="flex gap-1 justify-end">
+      {edited && (
+        <>
+          <Button
+            onClick={() => {
+              contentEditor?.commands.setContent(broadcast.content ?? "");
+              titleEditor?.commands.setContent(broadcast.title ?? "");
+              setEdited(false);
+              toast.info("Reverted changes");
+            }}
+            variant={"destructive"}
+            className="h-10 px-3 text-xs"
+          >
+            Revert Draft
+          </Button>
+          <Button
+            onClick={() => {
+              updateContent();
+              setEdited(false);
+            }}
+            className="h-10 px-3 text-xs"
+          >
+            Publish Changes
+          </Button>
+        </>
+      )}
+      {!edited && broadcast.status === "published" && (
+        <Button onClick={() => setEdited(true)}>Edit</Button>
+      )}
+      {broadcast?.status === "draft" ? (
+        <Button
+          onClick={() => {
+            updateBroadcast({
+              broadcastId: broadcast._id,
+              status: "published",
+            });
+            toast.success("Broadcast published");
+          }}
+          className="h-10 px-3 text-xs"
+        >
+          Publish
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            updateBroadcast({
+              broadcastId: broadcast._id,
+              status: "draft",
+            });
+            toast.success("Broadcast set to draft");
+            setEdited(false);
+          }}
+          variant={"outline"}
+          className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white h-10 px-3 text-xs"
+        >
+          Unpublish
+        </Button>
+      )}
+    </div>
+  );
+};

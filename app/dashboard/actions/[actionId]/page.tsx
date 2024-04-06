@@ -13,6 +13,7 @@ import { ActionWithMembers } from "@/lib/types";
 import LayoutTitle from "@/app/dashboard/_components/DashboardBreadcrumbs";
 import { useContext, useEffect } from "react";
 import { BreadcrumbContext } from "../../_contexts/BreadcrumbContext";
+import { useStableQuery } from "@/lib/hooks/useStableQuery";
 
 interface SingleActionPageProps {
   params: { actionId: Id<"actions"> };
@@ -22,7 +23,7 @@ export default function SingleActionPage({ params }: SingleActionPageProps) {
   let action: ActionWithMembers | undefined;
 
   try {
-    action = useQuery(api.actions.get, {
+    action = useStableQuery(api.actions.get, {
       actionId: params.actionId,
     }) as ActionWithMembers;
   } catch (e) {

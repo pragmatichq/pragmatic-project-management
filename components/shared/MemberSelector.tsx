@@ -78,7 +78,7 @@ export function MemberSelector({ action, purpose }: MemberSelectorProps) {
             <AddItemPlaceholder />
           ) : (
             // TODO: Using memberDetails.length as a workaround for AvatarGroup not rerendering when the memberDetails changes, causes flashing
-            <AvatarGroup limit={2} key={memberDetails.length}>
+            <AvatarGroup limit={2}>
               <AvatarGroupList>
                 {memberDetails.map((assignee, index) => (
                   <Avatar

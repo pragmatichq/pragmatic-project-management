@@ -158,6 +158,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
       }
       return "N/A";
     },
+    sortDescFirst: true,
   },
   {
     id: "actions",
