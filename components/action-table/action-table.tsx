@@ -27,6 +27,7 @@ import { DataTableToolbar } from "@/components/action-table/action-table-toolbar
 import { FilterContext } from "@/app/dashboard/actions/_contexts/FilterContext";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
+import { parseExpanded } from "./parse-helpers";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,24 +42,25 @@ export function DataTable<TData, TValue>({
     useContext(FilterContext);
   const [sorting, setSorting] = useState<SortingState>(sortBy);
   const [grouping, setGrouping] = useState<GroupingState>(groupBy);
-  const [expanded, setExpanded] = useState<ExpandedState>(expandedGroups);
+  const [expanded, setExpanded] = useState<ExpandedState>(
+    parseExpanded(expandedGroups)
+  );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   useEffect(() => {
     setGrouping(groupBy);
     setSorting(sortBy);
-    setExpanded(expandedGroups);
+    setExpanded(parseExpanded(expandedGroups));
   }, [groupBy, sortBy, expandedGroups]);
 
   const toggleExpandedGroups = (groupName: string) => {
-    if (expandedGroups.hasOwnProperty(groupName)) {
-      // @ts-ignore
-      const { [groupName]: _, ...newExpandedGroups } = expandedGroups;
-      return newExpandedGroups;
-    } else {
-      // @ts-ignore
-      return { ...expandedGroups, [groupName]: true };
-    }
+    return (prevExpandedGroups: string[]) => {
+      if (prevExpandedGroups.includes(groupName)) {
+        return prevExpandedGroups.filter((group) => group !== groupName);
+      } else {
+        return [...prevExpandedGroups, groupName];
+      }
+    };
   };
 
   const table = useReactTable({
@@ -147,10 +149,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableRow key={row.id}>
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          key={cell.id}
-                          className="max-w-[300px] truncate"
-                        >
+                        <TableCell key={cell.id} className="max-w-[300px]">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()

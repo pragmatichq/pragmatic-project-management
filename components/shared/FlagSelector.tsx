@@ -49,7 +49,7 @@ export function FlagSelector({ action }: FlagSelectorProps) {
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger className="flex justify-start items-center w-full h-10 hover:bg-gray-100">
+        <DropdownMenuTrigger className="flex justify-start items-center w-full min-h-10 hover:bg-gray-100 flex-wrap gap-1">
           {!action.flags || action.flags.length === 0 ? (
             <AddItemPlaceholder />
           ) : (

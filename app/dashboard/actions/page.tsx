@@ -1,13 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useMemo } from "react";
-import {
-  useQueryState,
-  parseAsArrayOf,
-  parseAsString,
-  parseAsStringEnum,
-  parseAsJson,
-} from "nuqs";
+import { useQueryState, parseAsArrayOf, parseAsString } from "nuqs";
 import { api } from "@/convex/_generated/api";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";
 
@@ -66,10 +60,10 @@ export default function ActionListPage() {
   );
   const [expandedGroups, setExpandedGroups] = useQueryState(
     "expanded",
-    parseAsJson().withDefault({
-      "status:Planned": true,
-      "status:In Progress": true,
-    })
+    parseAsArrayOf(parseAsString).withDefault([
+      "status:Planned",
+      "status:In Progress",
+    ])
   );
 
   const isFiltered = [

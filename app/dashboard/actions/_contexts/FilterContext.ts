@@ -14,8 +14,8 @@ export type FilterContextType = {
   setGroupBy: React.Dispatch<React.SetStateAction<string[]>>;
   sortBy: ColumnSort[];
   setSortBy: React.Dispatch<React.SetStateAction<ColumnSort[]>>;
-  expandedGroups: ExpandedState;
-  setExpandedGroups: React.Dispatch<React.SetStateAction<ExpandedState>>;
+  expandedGroups: string[];
+  setExpandedGroups: React.Dispatch<React.SetStateAction<string[]>>;
   isFiltered: boolean;
 };
 
@@ -32,7 +32,7 @@ export const FilterContext = createContext<FilterContextType>({
   setGroupBy: () => {},
   sortBy: [],
   setSortBy: () => {},
-  expandedGroups: {},
+  expandedGroups: [],
   setExpandedGroups: () => {},
   isFiltered: false,
 });

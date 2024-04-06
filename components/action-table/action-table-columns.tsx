@@ -15,7 +15,7 @@ import Link from "next/link";
 import ContextMenu from "@/app/dashboard/actions/_components/ContextMenu";
 import useRelativeDate from "@/lib/hooks/useRelativeDate";
 
-import { statuses } from "@/lib/hooks/getOrganizationCustom";
+import { statuses, time_frames } from "@/lib/hooks/getOrganizationCustom";
 
 const statusMapping: { [key: string]: number } = {};
 
@@ -23,6 +23,13 @@ statuses.reduce((acc, status) => {
   acc[status.value] = status.order;
   return acc;
 }, statusMapping);
+
+const timeFrameMapping: { [key: string]: number } = {};
+
+time_frames.reduce((acc, status) => {
+  acc[status.value] = status.order;
+  return acc;
+}, timeFrameMapping);
 
 export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
   {
@@ -80,6 +87,16 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
         return <Badge variant="secondary">{value}</Badge>;
       }
       return "N/A";
+    },
+    sortingFn: (rowA, rowB, columnId) => {
+      const valueA: string = rowA.getValue(columnId);
+      const valueB: string = rowB.getValue(columnId);
+
+      // Get the order from the statusMapping object
+      const orderA = timeFrameMapping[valueA] || 0;
+      const orderB = timeFrameMapping[valueB] || 0;
+
+      return orderA - orderB; // Compare by order
     },
   },
   {

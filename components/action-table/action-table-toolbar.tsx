@@ -30,12 +30,11 @@ import {
 import type { Table } from "@tanstack/react-table";
 import { Rows3Icon } from "lucide-react";
 import { FilterContext } from "@/app/dashboard/actions/_contexts/FilterContext";
+import { parseGroupStringWithDefaults } from "./parse-helpers";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
-
-// Create a new variable, map through time_frames, and return an object that looks like this: { "time_frame:[time_frames[0]]", true, "time_frame:[time_frames[1]]": true, ... }
 
 export function DataTableToolbar<TData>({
   table,
@@ -67,27 +66,17 @@ export function DataTableToolbar<TData>({
   }, [memberships, isLoaded]);
 
   const currentGrouping = table.getState().grouping[0] || "";
-  interface Acc {
-    [key: string]: boolean;
-  }
-
-  const defaultGroupExpanded = (groupStates: Group[], group: string) => {
-    return groupStates
-      .filter((frame) => frame.default_expanded) // Filter array to include only items with default_open === true
-      .reduce((acc: Acc, { value }) => {
-        acc[`${group}:${value}`] = true;
-        return acc;
-      }, {});
-  };
 
   const handleGroupingChange = (value: string) => {
     const newGrouping = value === "" ? [] : [value];
     setGroupBy(newGrouping);
     setSortBy([{ id: value, desc: false }]);
     if (value === "status") {
-      setExpandedGroups(defaultGroupExpanded(statuses, "status"));
+      setExpandedGroups(parseGroupStringWithDefaults(statuses, "status"));
     } else {
-      setExpandedGroups(defaultGroupExpanded(time_frames, "time_frame"));
+      setExpandedGroups(
+        parseGroupStringWithDefaults(time_frames, "time_frame")
+      );
     }
   };
 
