@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Doc } from "@/convex/_generated/dataModel";
 import { Button } from "../../../../../components/ui/button";
-import { debounce, safeJSONParse } from "@/lib/utils";
+import { cn, debounce, safeJSONParse } from "@/lib/utils";
 import {
   titleExtensions,
   titleEditorProps,
@@ -20,58 +20,46 @@ export function BroadcastEditor({
 }: {
   broadcast: Doc<"broadcasts"> | undefined;
 }) {
+  const [edited, setEdited] = useState(false);
   const updateBroadcast = useMutation(api.broadcasts.update);
 
   const updateContent = async (): Promise<void> => {
     if (!broadcast) return;
     let newTitle = titleEditor?.getJSON()?.content?.[0]?.content?.[0]?.text;
     const response = await updateBroadcast({
-      broadcastId: broadcast._id, // Access _id directly since broadcast is checked to be non-null
+      broadcastId: broadcast._id,
       content: contentEditor?.getHTML(),
       title: newTitle,
     });
-    toast.success("Broadcast draft saved");
-  };
-
-  const saveBroadcastLocally = async (editor: any, type: string) => {
-    if (!broadcast) return;
-    const key = `broadcast-${type}-${broadcast._id}`;
-    const value = JSON.stringify(editor.getJSON());
-    localStorage.setItem(key, value);
+    if (broadcast.status === "draft") {
+      toast.success("Broadcast draft saved");
+    } else {
+      toast.success("Broadcast edits published");
+    }
   };
 
   const titleEditor = useEditor({
     extensions: titleExtensions,
-    content: localStorage.getItem("broadcast-title-" + broadcast?._id)
-      ? safeJSONParse(
-          localStorage.getItem("broadcast-title-" + broadcast?._id) as string
-        )
-      : broadcast?.title,
+    content: broadcast?.title,
     editorProps: titleEditorProps,
     onUpdate: ({ editor }) => {
-      if (broadcast?.status !== "published") {
+      if (!edited) {
         debouncedUpdateContent(editor);
-      } else {
-        saveBroadcastLocally(editor, "title");
       }
     },
+    editable: false,
   });
 
   const contentEditor = useEditor({
     extensions: textareaExtensions,
-    content: localStorage.getItem("broadcast-content-" + broadcast?._id)
-      ? safeJSONParse(
-          localStorage.getItem("broadcast-content-" + broadcast?._id) as string
-        )
-      : broadcast?.content,
+    content: broadcast?.content,
     editorProps: textareaEditorProps,
     onUpdate: ({ editor }) => {
-      if (broadcast?.status !== "published") {
+      if (!edited) {
         debouncedUpdateContent(editor);
-      } else {
-        saveBroadcastLocally(editor, "content");
       }
     },
+    editable: false,
   });
 
   const debouncedUpdateContent = useCallback(debounce(updateContent, 800), [
@@ -80,62 +68,95 @@ export function BroadcastEditor({
     broadcast,
   ]);
 
+  useEffect(() => {
+    if (broadcast?.status === "published" && !edited) {
+      contentEditor?.setOptions({ editable: false });
+      titleEditor?.setOptions({ editable: false });
+      return;
+    }
+    contentEditor?.setOptions({ editable: true });
+    titleEditor?.setOptions({ editable: true });
+  }, [broadcast, edited, titleEditor, contentEditor]);
+
+  console.log(titleEditor?.options.editable);
+
   return (
     <>
       {broadcast && (
         <>
+          <div className="flex gap-1 justify-end">
+            {edited && (
+              <>
+                <Button
+                  onClick={() => {
+                    contentEditor?.commands.setContent(broadcast.content ?? "");
+                    titleEditor?.commands.setContent(broadcast.title ?? "");
+                    setEdited(false);
+                    toast.info("Reverted changes");
+                  }}
+                  variant={"destructive"}
+                  className="h-10 px-3 text-xs"
+                >
+                  Revert Draft
+                </Button>
+                <Button
+                  onClick={() => {
+                    updateContent();
+                    setEdited(false);
+                  }}
+                  className="h-10 px-3 text-xs"
+                >
+                  Publish Changes
+                </Button>
+              </>
+            )}
+            {!edited && broadcast.status === "published" && (
+              <Button onClick={() => setEdited(true)}>Edit</Button>
+            )}
+            {broadcast?.status === "draft" ? (
+              <Button
+                onClick={() => {
+                  updateBroadcast({
+                    broadcastId: broadcast._id,
+                    status: "published",
+                  });
+                  toast.success("Broadcast published");
+                }}
+                className="h-10 px-3 text-xs"
+              >
+                Publish
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  updateBroadcast({
+                    broadcastId: broadcast._id,
+                    status: "draft",
+                  });
+                  toast.success("Broadcast set to draft");
+                }}
+                variant={"outline"}
+                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white h-10 px-3 text-xs"
+              >
+                Unpublish
+              </Button>
+            )}
+          </div>
+
           <EditorContent editor={titleEditor} />
-          <div className="bg-muted p-2 rounded-sm border-solid border">
+          <div
+            className={cn(
+              broadcast?.status === "published" && !edited
+                ? "-mt-2"
+                : "bg-muted p-2 rounded-sm border-solid border"
+            )}
+          >
             <div className="flex justify-between">
-              <EditorMenuBar editor={contentEditor!} />
-              <Badge className="w-fit h-fit capitalize mt-1">
-                {broadcast.status}
-              </Badge>
+              {broadcast?.status === "published" && !edited ? null : (
+                <EditorMenuBar editor={contentEditor!} />
+              )}
             </div>
             <EditorContent editor={contentEditor} />
-          </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => {
-                localStorage.removeItem("broadcast-content-" + broadcast._id);
-                localStorage.removeItem("broadcast-title-" + broadcast._id);
-                contentEditor?.commands.setContent(broadcast.content ?? "");
-                titleEditor?.commands.setContent(broadcast.title ?? "");
-              }}
-            >
-              Revert Draft
-            </Button>
-            <Button
-              onClick={() => {
-                updateContent();
-                localStorage.removeItem("broadcast-content-" + broadcast._id);
-                localStorage.removeItem("broadcast-title-" + broadcast._id);
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              onClick={() => {
-                updateBroadcast({
-                  broadcastId: broadcast._id,
-                  status: "published",
-                });
-                console.log(broadcast);
-              }}
-            >
-              Publish
-            </Button>
-            <Button
-              onClick={() => {
-                updateBroadcast({
-                  broadcastId: broadcast._id,
-                  status: "draft",
-                });
-                console.log(broadcast);
-              }}
-            >
-              Draft
-            </Button>
           </div>
         </>
       )}
