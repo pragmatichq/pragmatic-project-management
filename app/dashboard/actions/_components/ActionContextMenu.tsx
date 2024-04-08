@@ -34,7 +34,9 @@ export default function ContextMenu({ action }: { action: any }) {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() =>
-            navigator.clipboard.writeText(`/dashboard/actions/${action._id}`)
+            navigator.clipboard.writeText(
+              window.location.hostname + `/dashboard/actions/${action._id}`
+            )
           }
         >
           Copy Link

@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { isValid, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -22,4 +23,10 @@ export function safeJSONParse(item: string) {
   } catch (error) {
     return null;
   }
+}
+
+export function parseDate(dateString: string | undefined): Date | undefined {
+  if (!dateString) return undefined;
+  const parsed = parseISO(dateString);
+  return isValid(parsed) ? parsed : undefined;
 }

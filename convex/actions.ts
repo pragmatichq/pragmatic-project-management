@@ -11,6 +11,7 @@ export const list = queryWithOrganization({
     timeFrames: v.optional(v.array(v.string())),
     assignees: v.optional(v.array(v.string())),
     flags: v.optional(v.array(v.string())),
+    stakeholders: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     let filteredActions = await ctx.db
@@ -79,6 +80,14 @@ export const list = queryWithOrganization({
       actions = actions.filter((action: any) =>
         action.assignees.some((assignee: any) =>
           args.assignees!.includes(assignee)
+        )
+      );
+    }
+
+    if (args.stakeholders && args.stakeholders.length > 0) {
+      actions = actions.filter((action: any) =>
+        action.stakeholders.some((stakeholder: any) =>
+          args.stakeholders!.includes(stakeholder)
         )
       );
     }

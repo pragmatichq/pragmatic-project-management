@@ -2,12 +2,11 @@
 
 import { notFound } from "next/navigation";
 
-import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { BroadcastEditor } from "./_components/BroadcastEditor";
+import { BroadcastEditor } from "../_components/BroadcastEditor";
 import { useContext, useEffect } from "react";
 import { BreadcrumbContext } from "../../_contexts/BreadcrumbContext";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";

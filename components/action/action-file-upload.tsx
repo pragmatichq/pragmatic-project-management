@@ -97,7 +97,7 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
                 )}
               </div>
             ) : (
-              <div className="grid gap-10 grid-cols-5 p-4">
+              <div className="grid gap-10 grid-cols-5 p-4 items-center">
                 {files?.map((file) => (
                   <Link
                     href={file.url as string}
@@ -105,8 +105,8 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
                     key={file.url}
                     className="space-y-3"
                   >
-                    <div className="overflow-hidden rounded-md border-[1px] group relative w-full min-h-[156px]">
-                      <div className="w-full h-full min-h-[156px] flex items-center justify-center bg-accent text-accent-foreground font-medium">
+                    <div className="overflow-hidden rounded-md border-[1px] group relative w-full aspect-square">
+                      <div className="w-full h-full flex items-center justify-center bg-accent text-accent-foreground font-medium">
                         <div className="flex flex-col gap-2 items-center justify-center">
                           <FileTextIcon />
                           <span>
@@ -123,12 +123,12 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
                         .indexOf("image") >= 0 ? (
                         <Image
                           src={
-                            "https://image.thum.io/get/image/fit/500x500/" +
+                            "https://image.thum.io/get/image/fit/250x250/" +
                             file.url
                           }
                           alt={file.filename}
-                          width="200"
-                          height="200"
+                          width="250"
+                          height="250"
                           className="h-full w-full object-cover transition-all group-hover:scale-105 aspect-square absolute top-0 left-0"
                           onError={(e) => (
                             console.log("error"),
@@ -142,12 +142,12 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
                           .indexOf("pdf") >= 0 ? (
                         <Image
                           src={
-                            "https://image.thum.io/get/pdfSource/width/500/" +
+                            "https://image.thum.io/get/pdfSource/width/250/" +
                             file.url
                           }
                           alt={file.filename}
-                          width="200"
-                          height="200"
+                          width="250"
+                          height="250"
                           className="h-auto w-auto object-cover transition-all group-hover:scale-105 aspect-square  absolute top-0 left-0"
                           onError={(e) => (
                             console.log("error"),
@@ -196,6 +196,12 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
           </div>
         )}
       </Dropzone>
+      <div className="mt-2 flex w-full justify-end">
+        <Button>
+          <UploadIcon className="mr-2 h-4 w-4" />
+          Upload File
+        </Button>
+      </div>
     </>
   );
 }

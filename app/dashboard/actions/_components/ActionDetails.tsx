@@ -5,7 +5,7 @@ import { MemberSelector } from "@/components/shared/MemberSelector";
 import { StatusSelector } from "@/components/shared/StatusSelector";
 import { FlagSelector } from "@/components/shared/FlagSelector";
 import { CommentList } from "@/components/shared/CommentList";
-import { ActionDescriptionEditor } from "@/app/dashboard/actions/[actionId]/_components/ActionDescriptionEditor";
+import { ActionDescriptionEditor } from "@/app/dashboard/actions/_components/ActionDescriptionEditor";
 
 import {
   ResizableHandle,

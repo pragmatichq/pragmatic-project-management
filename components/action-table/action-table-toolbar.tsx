@@ -24,7 +24,6 @@ import {
   statuses,
   time_frames,
   flags,
-  Group,
 } from "@/lib/hooks/getOrganizationCustom";
 
 import type { Table } from "@tanstack/react-table";
@@ -48,16 +47,16 @@ export function DataTableToolbar<TData>({
     setFlagsFilter,
     assigneesFilter,
     setAssigneesFilter,
+    stakeholdersFilter,
+    setStakeholdersFilter,
     setGroupBy,
-    sortBy,
     setSortBy,
-    expandedGroups,
     setExpandedGroups,
     isFiltered,
   } = useContext(FilterContext);
   const { memberships, isLoaded } = useOrganization({ memberships: true });
 
-  const assignee = useMemo(() => {
+  const members = useMemo(() => {
     if (!isLoaded || !memberships?.data) return [];
     return memberships.data.map((member) => ({
       value: member.publicUserData.userId,
@@ -124,9 +123,18 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("assignees")}
             title="Assignees"
-            options={assignee}
+            options={members}
             setter={setAssigneesFilter}
             filter={assigneesFilter}
+          />
+        )}
+        {table.getColumn("stakeholders") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("stakeholders")}
+            title="Stakeholders"
+            options={members}
+            setter={setStakeholdersFilter}
+            filter={stakeholdersFilter}
           />
         )}
         {isFiltered ? (
@@ -137,6 +145,7 @@ export function DataTableToolbar<TData>({
               setFlagsFilter([]);
               setStatusesFilter([]);
               setTimeFramesFilter([]);
+              setStakeholdersFilter([]);
             }}
             className="h-8 px-2 lg:px-3"
           >

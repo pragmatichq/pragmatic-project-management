@@ -2,15 +2,13 @@
 
 import { notFound } from "next/navigation";
 
-import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id, Doc } from "@/convex/_generated/dataModel";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-import { ActionDetails } from "./_components/ActionDetails";
+import { ActionDetails } from "../_components/ActionDetails";
 import { ActionWithMembers } from "@/lib/types";
-import LayoutTitle from "@/app/dashboard/_components/DashboardBreadcrumbs";
 import { useContext, useEffect } from "react";
 import { BreadcrumbContext } from "../../_contexts/BreadcrumbContext";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";

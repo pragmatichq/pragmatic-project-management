@@ -9,32 +9,9 @@ import { DataTable } from "@/components/action-table/action-table";
 import { getActionTableColumns } from "@/components/action-table/action-table-columns";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { FilterContext } from "./_contexts/FilterContext";
-import NewAction from "./_components/NewAction";
+import { CreateNewActionButton } from "./_components/ActionQueries";
 import { BreadcrumbContext } from "../_contexts/BreadcrumbContext";
-import { ColumnSort, ExpandedState } from "@tanstack/react-table";
-import { createParser } from "nuqs";
-
-const columnSortParser = createParser<ColumnSort[]>({
-  parse(queryValue: string): ColumnSort[] | null {
-    if (!queryValue) return null;
-    return queryValue
-      .split(";")
-      .map((part) => {
-        const [desc, id] = part.split(",");
-        if ((desc !== "true" && desc !== "false") || !id) {
-          return null; // invalid format
-        }
-        return { desc: desc === "true", id };
-      })
-      .filter((cs): cs is ColumnSort => cs !== null);
-  },
-  serialize(values: ColumnSort[]): string {
-    return values.map((value) => `${value.desc},${value.id}`).join(";");
-  },
-});
-
-const useArrayQueryState = (name: string) =>
-  useQueryState(name, parseAsArrayOf(parseAsString).withDefault([]));
+import { columnSortParser, useArrayQueryState } from "@/lib/queryStateHelpers";
 
 export default function ActionListPage() {
   const { setBreadcrumbs } = useContext(BreadcrumbContext);
@@ -50,6 +27,8 @@ export default function ActionListPage() {
     useArrayQueryState("timeframe");
   const [assigneesFilter, setAssigneesFilter] = useArrayQueryState("assignee");
   const [flagsFilter, setFlagsFilter] = useArrayQueryState("flags");
+  const [stakeholdersFilter, setStakeholdersFilter] =
+    useArrayQueryState("stakeholders");
   const [groupBy, setGroupBy] = useQueryState(
     "groupBy",
     parseAsArrayOf(parseAsString).withDefault(["status"])
@@ -71,6 +50,7 @@ export default function ActionListPage() {
     statusesFilter,
     flagsFilter,
     timeFramesFilter,
+    stakeholdersFilter,
   ].some((array) => array.length > 0);
 
   const createView = (savedView: string) => {
@@ -88,6 +68,7 @@ export default function ActionListPage() {
     timeFrames: timeFramesFilter,
     assignees: assigneesFilter,
     flags: flagsFilter,
+    stakeholders: stakeholdersFilter,
   });
 
   return (
@@ -105,6 +86,8 @@ export default function ActionListPage() {
             setFlagsFilter,
             assigneesFilter,
             setAssigneesFilter,
+            stakeholdersFilter,
+            setStakeholdersFilter,
             groupBy,
             setGroupBy,
             sortBy,
@@ -117,7 +100,7 @@ export default function ActionListPage() {
           <div className="flex flex-col space-y-2 p-6 max-h-[calc(100vh-45px)] overflow-auto">
             <DataTable data={actions} columns={columns} />
             <div className="flex justify-end">
-              <NewAction />
+              <CreateNewActionButton />
             </div>
           </div>
         </FilterContext.Provider>

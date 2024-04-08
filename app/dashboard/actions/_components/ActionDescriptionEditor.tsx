@@ -1,5 +1,5 @@
 import { Editor, EditorContent, useEditor } from "@tiptap/react";
-import { EditorMenuBar } from "../../../../../components/shared/EditorMenuBar";
+import { EditorMenuBar } from "../../../../components/shared/EditorMenuBar";
 import React, { useCallback } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";

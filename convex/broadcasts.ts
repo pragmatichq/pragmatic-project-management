@@ -43,7 +43,7 @@ export const create = mutationWithOrganization({
     const broadcast = await ctx.db.insert("broadcasts", {
       organization: ctx.orgId,
       publish_date: new Date().toISOString(),
-      status: "Draft",
+      status: "draft",
       // @ts-ignore
       created_by: ctx.userId,
     });

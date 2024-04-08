@@ -10,6 +10,8 @@ export type FilterContextType = {
   setFlagsFilter: React.Dispatch<React.SetStateAction<string[]>>;
   assigneesFilter: string[];
   setAssigneesFilter: React.Dispatch<React.SetStateAction<string[]>>;
+  stakeholdersFilter: string[];
+  setStakeholdersFilter: React.Dispatch<React.SetStateAction<string[]>>;
   groupBy: string[];
   setGroupBy: React.Dispatch<React.SetStateAction<string[]>>;
   sortBy: ColumnSort[];
@@ -28,6 +30,8 @@ export const FilterContext = createContext<FilterContextType>({
   setFlagsFilter: () => {},
   assigneesFilter: [],
   setAssigneesFilter: () => {},
+  stakeholdersFilter: [],
+  setStakeholdersFilter: () => {},
   groupBy: [],
   setGroupBy: () => {},
   sortBy: [],

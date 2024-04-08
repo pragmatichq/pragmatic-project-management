@@ -24,7 +24,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -32,7 +31,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function NewAction() {
+export function CreateNewActionButton() {
   const router = useRouter();
   const addAction = useMutation(api.actions.create);
   const form = useForm<z.infer<typeof formSchema>>({

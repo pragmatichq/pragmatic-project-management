@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Doc } from "@/convex/_generated/dataModel";
 
 import Link from "next/link";
-import ContextMenu from "@/app/dashboard/actions/_components/ContextMenu";
+import ContextMenu from "@/app/dashboard/actions/_components/ActionContextMenu";
 import useRelativeDate from "@/lib/hooks/useRelativeDate";
 
 import { statuses, time_frames } from "@/lib/hooks/getOrganizationCustom";
