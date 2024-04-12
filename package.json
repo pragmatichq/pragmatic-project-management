@@ -68,6 +68,7 @@
         "next-themes": "^0.2.1",
         "nuqs": "^1.17.1",
         "react": "^18",
+        "react-animate-height": "^3.2.3",
         "react-data-table-component": "^7.6.2",
         "react-day-picker": "^8.10.0",
         "react-dom": "^18",
