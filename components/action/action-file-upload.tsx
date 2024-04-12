@@ -131,10 +131,9 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
                             width="250"
                             height="250"
                             className="h-full w-full object-cover transition-all group-hover:scale-105 aspect-square absolute top-0 left-0"
-                            onError={(e) => (
-                              console.log("error"),
+                            onError={(e) =>
                               (e.currentTarget.style.display = "none")
-                            )}
+                            }
                           />
                         ) : file.metadata &&
                           file.metadata.contentType &&
@@ -150,10 +149,9 @@ export default function FileUpload({ actionId }: { actionId: Id<"actions"> }) {
                             width="250"
                             height="250"
                             className="h-auto w-auto object-cover transition-all group-hover:scale-105 aspect-square  absolute top-0 left-0"
-                            onError={(e) => (
-                              console.log("error"),
+                            onError={(e) =>
                               (e.currentTarget.style.display = "none")
-                            )}
+                            }
                           />
                         ) : null}
                         <div className="duration-300 absolute inset-2 z-10 flex justify-end items-start">

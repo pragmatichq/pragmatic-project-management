@@ -132,10 +132,6 @@ function KanbanBoard() {
     defaultTasks.sort((a, b) => a.order - b.order)
   );
 
-  useEffect(() => {
-    console.log(tasks);
-  }, [tasks]);
-
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const sensors = useSensors(
@@ -258,7 +254,6 @@ function KanbanBoard() {
         const activeIndex = tasks.findIndex((t) => t.id === activeId);
 
         tasks[activeIndex].columnId = overId;
-        console.log("DROPPING TASK OVER COLUMN", { activeIndex });
         return arrayMove(tasks, activeIndex, activeIndex);
       });
     }

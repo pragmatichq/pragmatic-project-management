@@ -126,7 +126,6 @@ export function DataTable<TData, TValue>({
                             className="font-bold flex items-center p-1 pr-2 -ml-2"
                             onClick={() => {
                               setExpandedGroups(toggleExpandedGroups(row.id));
-                              console.log(row);
                             }}
                             variant={"ghost"}
                           >

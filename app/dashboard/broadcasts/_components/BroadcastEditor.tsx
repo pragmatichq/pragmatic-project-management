@@ -86,8 +86,6 @@ export function BroadcastEditor({
     titleEditor?.setOptions({ editable: true });
   }, [broadcast, edited, titleEditor, contentEditor]);
 
-  console.log(titleEditor?.options.editable);
-
   return (
     <>
       {broadcast && contentEditor && titleEditor && (

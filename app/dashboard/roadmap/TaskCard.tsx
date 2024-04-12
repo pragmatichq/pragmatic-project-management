@@ -42,10 +42,6 @@ function TaskCard({ task }: Props) {
     transform: CSS.Transform.toString(transform),
   };
 
-  useEffect(() => {
-    console.log(isDragging);
-  }, [isDragging]);
-
   if (isDragging) {
     return (
       <div
