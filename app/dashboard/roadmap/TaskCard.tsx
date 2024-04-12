@@ -46,7 +46,7 @@ function TaskCard({ task }: Props) {
     return (
       <div
         ref={setNodeRef}
-        className="p-2.5 h-[100px] min-h-[100px] rounded-xl border"
+        className="p-2.5 h-[100px] min-h-[100px] rounded-xl border border-dashed"
       />
     );
   }

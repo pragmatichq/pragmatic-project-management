@@ -24,8 +24,11 @@ export default defineSchema({
     time_frame: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
     due_date: v.optional(v.string()),
+    order: v.optional(v.number()),
     created_by: v.optional(v.id("users")),
-  }).index("by_organization", ["organization"]),
+  })
+    .index("by_organization", ["organization"])
+    .index("by_order", ["order"]),
   actionAssignees: defineTable({
     organization: v.id("organizations"),
     action: v.id("actions"),

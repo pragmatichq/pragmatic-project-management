@@ -149,6 +149,14 @@ export const create = mutationWithOrganization({
     title: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const lastOrderedAction = await ctx.db
+      .query("actions")
+      .withIndex("by_order")
+      .order("desc")
+      .take(1);
+
+    console.log(lastOrderedAction[0].order);
+
     const action = await ctx.db.insert("actions", {
       title: args.title,
       organization: ctx.orgId,
@@ -158,6 +166,7 @@ export const create = mutationWithOrganization({
       status: "Planned",
       is_archived: false,
       is_triage: false,
+      order: lastOrderedAction.length ? lastOrderedAction[0].order! + 1 : 1,
     });
     return action;
   },
