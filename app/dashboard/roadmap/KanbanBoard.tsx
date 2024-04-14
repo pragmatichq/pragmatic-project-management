@@ -23,8 +23,9 @@ import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import { ActionWithMembers } from "@/lib/types";
 
-function KanbanBoard({ currentActions }: any) {
+function KanbanBoard(currentActions: ActionWithMembers[]) {
   const updateAction = useMutation(api.actions.update);
 
   const updateActionWithProps = async ({
@@ -46,7 +47,7 @@ function KanbanBoard({ currentActions }: any) {
     });
     toast.success("Action updated");
   };
-  const [actions, setActions] = useState([]);
+  const [actions, setActions] = useState<ActionWithMembers[]>([]);
 
   useEffect(() => {
     setActions(currentActions.sort((a, b) => a.order! - b.order!));
@@ -151,7 +152,7 @@ function KanbanBoard({ currentActions }: any) {
     });
   }
 
-  function calculateNewOrder(actions, index) {
+  function calculateNewOrder(actions: ActionWithMembers[], index: number) {
     // Logic to calculate new order
     if (index === 0) {
       return actions.length > 1 ? actions[1].order! / 2 : 0.5;
@@ -179,23 +180,22 @@ function KanbanBoard({ currentActions }: any) {
     if (!isActiveATask) return;
 
     if (isActiveATask && isOverATask) {
-      setActions((actions) => {
-        if (actions) {
-          const activeIndex = actions.findIndex((t) => t._id === activeId);
-          const overIndex = actions.findIndex((t) => t._id === overId);
+      setActions((prevActions) => {
+        if (prevActions) {
+          const activeIndex = prevActions.findIndex((t) => t._id === activeId);
+          const overIndex = prevActions.findIndex((t) => t._id === overId);
 
           if (
-            actions[activeIndex].time_frame != actions[overIndex].time_frame
+            prevActions[activeIndex].time_frame !=
+            prevActions[overIndex].time_frame
           ) {
-            actions[activeIndex].time_frame = actions[overIndex].time_frame;
+            prevActions[activeIndex].time_frame =
+              prevActions[overIndex].time_frame;
             const newOverIndex = overIndex === 0 ? 0 : overIndex - 1; // Ensure not to use negative index
-            return arrayMove(actions, activeIndex, newOverIndex);
+            return arrayMove(prevActions, activeIndex, newOverIndex);
           }
-
-          console.log(arrayMove(actions, activeIndex, overIndex));
-
-          return arrayMove(actions, activeIndex, overIndex);
         }
+        return prevActions; // Make sure to return the previous state if no changes were made
       });
     }
 
@@ -207,9 +207,11 @@ function KanbanBoard({ currentActions }: any) {
         if (actions) {
           const activeIndex = actions.findIndex((t) => t._id === activeId);
 
-          actions[activeIndex].time_frame = overId;
+          actions[activeIndex].time_frame = overId as string;
 
           return arrayMove(actions, activeIndex, activeIndex);
+        } else {
+          return actions;
         }
       });
     }
