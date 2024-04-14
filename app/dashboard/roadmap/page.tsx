@@ -12,7 +12,7 @@ export default function RoadmapPage() {
   return (
     <>
       {defaultActions ? (
-        <KanbanBoard actions={defaultActions} />
+        <KanbanBoard currentActions={defaultActions} />
       ) : (
         <LoadingSpinner />
       )}

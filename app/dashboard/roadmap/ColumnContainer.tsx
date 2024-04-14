@@ -26,7 +26,7 @@ function ColumnContainer({ actions, column }: { actions: any; column: any }) {
     <div className="w-[350px]">
       {actions ? (
         <>
-          <h2 className="text-lg font-bold mb-2">{column?.title}</h2>
+          <h2 className="text-lg font-bold mb-2">{column?.value}</h2>
           <div
             ref={setNodeRef}
             className="flex flex-col gap-2 overflow-hidden min-h-[116px]"
