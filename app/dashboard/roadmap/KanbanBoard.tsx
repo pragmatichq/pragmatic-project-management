@@ -25,7 +25,7 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { ActionWithMembers } from "@/lib/types";
 
-function KanbanBoard(currentActions: ActionWithMembers[]) {
+function KanbanBoard({ currentActions }: any) {
   const updateAction = useMutation(api.actions.update);
 
   const updateActionWithProps = async ({
@@ -50,7 +50,7 @@ function KanbanBoard(currentActions: ActionWithMembers[]) {
   const [actions, setActions] = useState<ActionWithMembers[]>([]);
 
   useEffect(() => {
-    setActions(currentActions.sort((a, b) => a.order! - b.order!));
+    setActions(currentActions.sort((a: any, b: any) => a.order! - b.order!));
   }, [currentActions]);
 
   const [activeAction, setActiveAction] = useState<Doc<"actions"> | null>(null);
@@ -180,22 +180,25 @@ function KanbanBoard(currentActions: ActionWithMembers[]) {
     if (!isActiveATask) return;
 
     if (isActiveATask && isOverATask) {
-      setActions((prevActions) => {
-        if (prevActions) {
-          const activeIndex = prevActions.findIndex((t) => t._id === activeId);
-          const overIndex = prevActions.findIndex((t) => t._id === overId);
+      setActions((actions) => {
+        if (actions) {
+          const activeIndex = actions.findIndex((t) => t._id === activeId);
+          const overIndex = actions.findIndex((t) => t._id === overId);
 
           if (
-            prevActions[activeIndex].time_frame !=
-            prevActions[overIndex].time_frame
+            actions[activeIndex].time_frame != actions[overIndex].time_frame
           ) {
-            prevActions[activeIndex].time_frame =
-              prevActions[overIndex].time_frame;
+            actions[activeIndex].time_frame = actions[overIndex].time_frame;
             const newOverIndex = overIndex === 0 ? 0 : overIndex - 1; // Ensure not to use negative index
-            return arrayMove(prevActions, activeIndex, newOverIndex);
+            return arrayMove(actions, activeIndex, newOverIndex);
           }
+
+          console.log(arrayMove(actions, activeIndex, overIndex));
+
+          return arrayMove(actions, activeIndex, overIndex);
+        } else {
+          return actions;
         }
-        return prevActions; // Make sure to return the previous state if no changes were made
       });
     }
 
