@@ -155,8 +155,6 @@ export const create = mutationWithOrganization({
       .order("desc")
       .take(1);
 
-    console.log(lastOrderedAction[0].order);
-
     const action = await ctx.db.insert("actions", {
       title: args.title,
       organization: ctx.orgId,
@@ -196,6 +194,8 @@ export const update = mutationWithOrganization({
     status: v.optional(v.string()),
     due_date: v.optional(v.string()),
     flags: v.optional(v.array(v.string())),
+    order: v.optional(v.number()),
+    time_frame: v.optional(v.string()),
     description: v.optional(
       v.object({ type: v.string(), content: v.array(v.any()) })
     ),

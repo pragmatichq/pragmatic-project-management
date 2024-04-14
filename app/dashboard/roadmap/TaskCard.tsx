@@ -1,26 +1,8 @@
-import { useEffect } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Doc } from "@/convex/_generated/dataModel";
 
-export type Id = string | number;
-
-export type Column = {
-  id: Id;
-  title: string;
-};
-
-export type Task = {
-  id: Id;
-  columnId: Id;
-  content: string;
-  order: number;
-};
-
-interface Props {
-  task: Task;
-}
-
-function TaskCard({ task }: Props) {
+function TaskCard({ action }: { action: any }) {
   const {
     setNodeRef,
     attributes,
@@ -29,10 +11,10 @@ function TaskCard({ task }: Props) {
     transition,
     isDragging,
   } = useSortable({
-    id: task.id,
+    id: action._id,
     data: {
-      type: "Task",
-      task,
+      type: "Action",
+      action,
     },
     disabled: false,
   });
@@ -60,7 +42,7 @@ function TaskCard({ task }: Props) {
       className="p-2.5 h-[100px] min-h-[100px] items-center flex text-left rounded-xl cursor-grab relative bg-white border"
     >
       <p className="select-none	my-auto h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap">
-        {task.content}
+        {action.title}
       </p>
     </div>
   );
