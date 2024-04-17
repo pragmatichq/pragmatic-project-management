@@ -28,7 +28,7 @@ export default defineSchema({
     created_by: v.optional(v.id("users")),
   })
     .index("by_organization", ["organization"])
-    .index("by_order", ["order"]),
+    .index("by_organization_order", ["organization", "order"]),
   actionAssignees: defineTable({
     organization: v.id("organizations"),
     action: v.id("actions"),

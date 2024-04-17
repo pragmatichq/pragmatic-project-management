@@ -16,7 +16,7 @@ export const list = queryWithOrganization({
   handler: async (ctx, args) => {
     let filteredActions = await ctx.db
       .query("actions")
-      .withIndex("by_organization")
+      .withIndex("by_organization_order")
       .filter((q) => q.eq(q.field("organization"), ctx.orgId));
 
     if (args.statuses && args.statuses.length > 0) {
@@ -151,7 +151,7 @@ export const create = mutationWithOrganization({
   handler: async (ctx, args) => {
     const lastOrderedAction = await ctx.db
       .query("actions")
-      .withIndex("by_order")
+      .withIndex("by_organization_order")
       .order("desc")
       .take(1);
 

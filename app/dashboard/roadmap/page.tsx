@@ -2,17 +2,16 @@
 
 import { useStableQuery } from "@/lib/hooks/useStableQuery";
 import { api } from "@/convex/_generated/api";
-import KanbanBoard from "./KanbanBoard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import RoadmapPortal from "./RoadmapKanban";
 
 export default function RoadmapPage() {
   const defaultActions = useStableQuery(api.actions.list, {});
-  console.log(defaultActions);
 
   return (
     <>
       {defaultActions ? (
-        <KanbanBoard currentActions={defaultActions} />
+        <RoadmapPortal actionsData={defaultActions} />
       ) : (
         <LoadingSpinner />
       )}
