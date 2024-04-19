@@ -34,18 +34,23 @@ export const statuses: Group[] = [
 
 export const time_frames: Group[] = [
   {
-    value: "Today",
+    value: "30 Days",
     order: 1,
     default_expanded: true,
   },
   {
-    value: "This Week",
+    value: "60 Days",
     order: 2,
     default_expanded: true,
   },
   {
-    value: "Next Week",
+    value: "90 Days",
     order: 3,
+    default_expanded: true,
+  },
+  {
+    value: "Later",
+    order: 4,
     default_expanded: true,
   },
 ];

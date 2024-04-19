@@ -60,7 +60,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
-        return <StatusSelector action={info.row.original} />;
+        return <StatusSelector action={info.row.original} mode="status" />;
       }
       return "N/A";
     },
@@ -84,7 +84,7 @@ export const getActionTableColumns = (): ColumnDef<Doc<"actions">>[] => [
     cell: (info) => {
       const value = info.getValue();
       if (typeof value === "string") {
-        return <Badge variant="secondary">{value}</Badge>;
+        return <StatusSelector action={info.row.original} mode="time_frame" />;
       }
       return "N/A";
     },

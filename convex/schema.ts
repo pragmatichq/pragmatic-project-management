@@ -68,4 +68,16 @@ export default defineSchema({
     status: v.string(),
     created_by: v.optional(v.id("users")),
   }).index("by_organization_publish_date", ["organization", "publish_date"]),
+  savedViews: defineTable({
+    organization: v.id("organizations"),
+    name: v.string(),
+    query: v.string(),
+    created_by: v.id("users"),
+  }).index("by_organization", ["organization"]),
+  briefTemplates: defineTable({
+    organization: v.id("organizations"),
+    name: v.string(),
+    content: v.object({ type: v.string(), content: v.array(v.any()) }),
+    created_by: v.id("users"),
+  }),
 });

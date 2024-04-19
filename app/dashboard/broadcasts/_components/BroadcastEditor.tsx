@@ -156,7 +156,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 
   return (
     <div className="flex-1 space-y-2">
-      <div className="flex flex-col justify-end w-[200px] border p-2 bg-muted text-muted-foreground rounded-sm space-y-1">
+      <div className="flex flex-col justify-end w-[170px] border p-2 bg-muted text-muted-foreground rounded-sm space-y-1">
         <Label className="text-xs">Publish Date</Label>
         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
@@ -171,7 +171,11 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
               }
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {validDate ? format(validDate, "PPP") : <span>Pick a date</span>}
+              {validDate ? (
+                format(validDate, "MM/dd/yyyy")
+              ) : (
+                <span>Pick a date</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -188,7 +192,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           </PopoverContent>
         </Popover>
       </div>
-      <div className="flex flex-col justify-end w-[200px] border p-2 bg-muted text-muted-foreground rounded-sm space-y-1">
+      <div className="flex flex-col justify-end w-[170px] border p-2 bg-muted text-muted-foreground rounded-sm space-y-1">
         <Label className="text-xs">Actions</Label>
         {broadcast?.status === "draft" ? (
           <Button

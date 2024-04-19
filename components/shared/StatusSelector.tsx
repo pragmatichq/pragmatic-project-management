@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import React from "react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Doc, Id } from "@/convex/_generated/dataModel";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,35 +14,42 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Badge } from "@/components/ui/badge";
-import { statuses } from "@/lib/hooks/getOrganizationCustom";
+import { statuses, time_frames } from "@/lib/hooks/getOrganizationCustom"; // Assuming this now also provides timeFrames
+import { Doc } from "@/convex/_generated/dataModel";
 
 interface StatusSelectorProps {
   action: Doc<"actions">;
+  mode: "status" | "time_frame"; // New prop to decide the mode
 }
 
-export function StatusSelector({ action }: StatusSelectorProps) {
-  const updateActionStatus = useMutation(api.actions.update);
+export function StatusSelector({ action, mode }: StatusSelectorProps) {
+  const updateAction = useMutation(api.actions.update);
+
+  // Depending on the mode, use either statuses or timeFrames
+  const options = mode === "status" ? statuses : time_frames;
+  const currentValue = action[mode];
+
+  const handleUpdate = (newValue: string) => {
+    updateAction({ actionId: action._id, [mode]: newValue });
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex justify-start items-center text-left font-normal text-[14px] w-full h-10 hover:bg-gray-100">
-        <Badge>{action.status}</Badge>
+        {currentValue ? <Badge>{currentValue}</Badge> : "-"}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Project Status</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          {mode === "status" ? "Project Status" : "Time Frame"}
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
-          value={action.status}
-          onValueChange={(statusValue) =>
-            updateActionStatus({ actionId: action._id, status: statusValue })
-          }
+          value={currentValue}
+          onValueChange={handleUpdate}
         >
-          {statuses.map((statusOption) => (
-            <DropdownMenuRadioItem
-              key={statusOption.value}
-              value={statusOption.value}
-            >
-              <Badge>{statusOption.value}</Badge>
+          {options.map((option) => (
+            <DropdownMenuRadioItem key={option.value} value={option.value}>
+              <Badge>{option.value}</Badge>
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

@@ -8,16 +8,18 @@ import {
   DropResult,
   DraggableProvided,
   DroppableProvided,
+  DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { time_frames } from "@/lib/hooks/getOrganizationCustom";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-const calculateNewOrder = (sortedActions, newIndex) => {
+const calculateNewOrder = (sortedActions: any, newIndex: any) => {
   if (newIndex === 0) {
     // First position in the list
     return sortedActions.length > 1 ? sortedActions[1].order / 2 : 0.5;
@@ -114,7 +116,7 @@ export default function RoadmapPortal({
 
     // Integrate the moved action back into the main array
     updatedActions.push(movedAction);
-    updatedActions.sort((a, b) => a.order - b.order); // Ensure the global list is sorted by order
+    updatedActions.sort((a, b) => a.order! - b.order!); // Ensure the global list is sorted by order
 
     setActions(updatedActions); // Update state
 
@@ -135,65 +137,65 @@ export default function RoadmapPortal({
   }, [time_frames]);
 
   return (
-    <div className="flex flex-col p-6 space-y-4">
+    <div className="h-[calc(100vh-45px)] overflow-auto p-6 space-y-4">
       <h2 className="text-4xl font-bold tracking-tight">Roadmap</h2>
-      <ScrollArea>
-        <div className="flex flex-row gap-4 items-start">
-          <DragDropContext onDragEnd={onDragEnd}>
-            {timeFramesIncludingUnset.map((time_frame) => (
-              <React.Fragment key={time_frame.value}>
-                <Card className="bg-slate-50 min-w-[300px] min-h-[156px]">
-                  <CardHeader className="p-3">
-                    <CardTitle>{time_frame.value}</CardTitle>
-                  </CardHeader>
-                  <Droppable droppableId={time_frame.value}>
-                    {(provided: DroppableProvided) => (
-                      <CardContent
-                        className="flex flex-col p-3"
-                        ref={provided.innerRef}
-                      >
-                        {actions
-                          .filter(
-                            (action) =>
-                              action.time_frame === time_frame.value ||
-                              (time_frame.value === "No Time Frame" &&
-                                !action.time_frame)
-                          )
-                          .map((action, index) => {
-                            return (
-                              <Draggable
-                                key={action._id}
-                                draggableId={action._id}
-                                index={index}
-                              >
-                                {(provided: DraggableProvided) => (
-                                  <Card
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="w-full my-1"
-                                  >
-                                    <CardHeader>
-                                      <CardTitle className="text-base">
-                                        {action.title}
-                                      </CardTitle>
-                                    </CardHeader>
-                                  </Card>
-                                )}
-                              </Draggable>
-                            );
-                          })}
-                        {provided.placeholder}
-                      </CardContent>
-                    )}
-                  </Droppable>
-                </Card>
-              </React.Fragment>
-            ))}
-          </DragDropContext>
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      <div className="flex flex-row gap-4 items-start">
+        <DragDropContext onDragEnd={onDragEnd}>
+          {timeFramesIncludingUnset.map((time_frame) => (
+            <React.Fragment key={time_frame.value}>
+              <div className="min-w-[300px]">
+                <h3 className="p-1 text-lg font-medium">{time_frame.value}</h3>
+                <Droppable droppableId={time_frame.value}>
+                  {(
+                    provided: DroppableProvided,
+                    snapshot: DroppableStateSnapshot
+                  ) => (
+                    <div
+                      className={cn(
+                        (snapshot.isDraggingOver &&
+                        !snapshot.draggingFromThisWith
+                          ? "bg-secondary"
+                          : "") +
+                          " flex rounded-md flex-col p-1 min-h-[74px] transition-colors ease-in"
+                      )}
+                      ref={provided.innerRef}
+                    >
+                      {actions
+                        .filter(
+                          (action) =>
+                            action.time_frame === time_frame.value ||
+                            (time_frame.value === "No Time Frame" &&
+                              !action.time_frame)
+                        )
+                        .map((action, index) => {
+                          return (
+                            <Draggable
+                              key={action._id}
+                              draggableId={action._id}
+                              index={index}
+                            >
+                              {(provided: DraggableProvided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="w-full my-1 p-4 bg-white border rounded-sm"
+                                >
+                                  {action.title}
+                                </div>
+                              )}
+                            </Draggable>
+                          );
+                        })}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </div>
+            </React.Fragment>
+          ))}
+        </DragDropContext>
+      </div>
     </div>
   );
 }

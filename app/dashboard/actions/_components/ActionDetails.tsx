@@ -31,7 +31,12 @@ export function ActionDetails(action: ActionWithMembers) {
           <div className="flex gap-6 flex-rows -mb-2">
             <div className="flex flex-col gap-1">
               <Label className="text-xs">Status</Label>
-              <StatusSelector action={action} />
+              <StatusSelector action={action} mode="status" />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <Label className="text-xs">Time Frame</Label>
+              <StatusSelector action={action} mode="time_frame" />
             </div>
             <div className="flex flex-col gap-1">
               <Label className="text-xs">Assignees</Label>
