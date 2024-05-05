@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { api } from "@/convex/_generated/api";
 import { useStableQuery } from "@/lib/hooks/useStableQuery";
 import { Search, ListFilter } from "lucide-react";
+import { format } from "date-fns";
+import { parseDate } from "@/lib/utils";
 
 export default function BroadcastListing() {
   const broadcasts = useStableQuery(api.broadcasts.list, {
@@ -30,28 +32,36 @@ export default function BroadcastListing() {
           </Button>
         </div>
         {broadcasts &&
-          broadcasts.map((broadcast) => (
-            <>
-              <Separator className="my-8" />
-              <div className="flex gap-4 flex-row" key={broadcast._id}>
-                <div className="w-[200px]">
-                  <h2 className="text-sm mt-0.5">March 20, 2024</h2>
+          broadcasts.map((broadcast) => {
+            const validDate = parseDate(broadcast.publish_date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (validDate! > today || !validDate) return null;
+            return (
+              <>
+                <Separator className="my-8" />
+                <div className="flex gap-4 flex-row" key={broadcast._id}>
+                  <div className="w-[200px]">
+                    <h2 className="text-sm mt-0.5">
+                      {format(broadcast.publish_date!, "LLLL d, yyyy")}
+                    </h2>
+                  </div>
+                  <div>
+                    <Badge variant="secondary">Release</Badge>
+                    <h2 className="text-4xl font-extrabold my-4">
+                      {broadcast.title}
+                    </h2>
+                    <div
+                      className="prose"
+                      dangerouslySetInnerHTML={{
+                        __html: broadcast.content as string,
+                      }}
+                    ></div>
+                  </div>
                 </div>
-                <div>
-                  <Badge variant="secondary">Release</Badge>
-                  <h2 className="text-4xl font-extrabold my-4">
-                    {broadcast.title}
-                  </h2>
-                  <div
-                    className="prose"
-                    dangerouslySetInnerHTML={{
-                      __html: broadcast.content as string,
-                    }}
-                  ></div>
-                </div>
-              </div>
-            </>
-          ))}
+              </>
+            );
+          })}
       </div>
     </section>
   );

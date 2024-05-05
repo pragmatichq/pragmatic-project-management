@@ -36,7 +36,7 @@ export function DashboardSidebar({ links, isCollapsed }: NavProps) {
                   href={link.url}
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "icon" }),
-                    "h-9 w-9"
+                    "h-9 w-9 hover:bg-muted"
                   )}
                 >
                   <link.icon className="h-4 w-4" />
@@ -58,7 +58,7 @@ export function DashboardSidebar({ links, isCollapsed }: NavProps) {
               href={link.url}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "justify-start"
+                "justify-start hover:bg-muted"
               )}
             >
               <link.icon className="mr-2 h-4 w-4" />
