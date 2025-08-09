@@ -4,9 +4,9 @@ MVP for a project management / internal communication tool built for marketing t
 
 ## Tech Stack
 
-**Client:** Next.js, Tailwind, Clerk
+**Client:** Next.js, Tailwind
 
-**Server:** Convex
+**Server:** Convex, Clerk
 
 ## Demo
 
